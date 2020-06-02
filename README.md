@@ -1,0 +1,1 @@
+CAD contest 2020 problem B
