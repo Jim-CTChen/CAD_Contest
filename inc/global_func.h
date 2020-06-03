@@ -2,6 +2,7 @@
 #define GLOBAL_FUNC_H
 
 void clear();
+void init();
 
 
 

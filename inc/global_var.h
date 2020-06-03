@@ -9,13 +9,26 @@ class Layer;
 class MasterCell;
 class SameGGrid;
 class AdjHGGrid;
+class Grid;
 
+// information
+int maxCellMove = 0;
+
+int row_of_gGrid = 0;
+int column_of_gGrid = 0;
+int layer_of_gGrid = 0;
+
+
+// data
 unordered_map <string, Layer*> layers;  
 
 unordered_map <string, MasterCell*> mastercells;
 
-vector<AdjHGGrid> adjGGrids;
+Grid*** model = 0;
+
 vector<SameGGrid> sameGGrids;
+vector<AdjHGGrid> adjGGrids;
+
 
 
 
