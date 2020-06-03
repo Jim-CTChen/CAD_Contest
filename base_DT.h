@@ -15,12 +15,13 @@ class Netlist;
 class Layer{
     public:
         Layer(string n, int i, char d, int s):name(n), index(i), direction(d), supply(s){}
-        string get_name()      { return name;}
-        char   get_direction() { return direction; }
-        int    get_index()     { return index; }
-        int    get_supply()    { return supply; }
+        string get_name()       { return name;}
+        char   get_direction()  { return direction; }
+        int    get_index()      { return index; }
+        int    get_supply()     { return supply; }
 
     private:
+        // data member
         string name;
         char direction;
         int index = 0;
@@ -33,28 +34,30 @@ class Steiner_pts{
             coord = pair<int, int> (x, y);
         }
         ~Steiner_pts();
-        void set_fanin(Steiner_pts* s){ fanin = s; }
-        void set_fanout(Steiner_pts* s){ fanout.push_back(s); }
-        void set_netlist(Netlist* n) { nlist = n; }
-        void reset_fanout(){ fanout.clear(); }
+        void set_fanin(Steiner_pts* s)  { fanin = s; }
+        void set_fanout(Steiner_pts* s) { fanout.push_back(s); }
+        void set_netlist(Netlist* n)    { nlist = n; }
+        void reset_fanout()             { fanout.clear(); }
     private:
-        pair<int, int> coord;
-        int layer;
-        Steiner_pts* fanin;
+        // data member
+        pair<int, int>       coord;
+        int                  layer;
+        Steiner_pts*         fanin;
         vector<Steiner_pts*> fanout;
-        Netlist* nlist;
+        Netlist*             nlist;
 };
 
 class Pin{
     public:
-        Pin(string n, string l):name(n){ layer = layers[l].get_index(); }
-        ~Pin(){ delete steiner_pts; }
+        Pin(string n, string l):name(n) { layer = layers[l].get_index(); }
+        ~Pin()                          { delete steiner_pts; }
         void set_steiner_pts(int x, int y){
             steiner_pts = new Steiner_pts(x, y, layer);
         }
     private:
-        int layer;
-        string name;
+        // data member
+        int          layer;
+        string       name;
         Steiner_pts* steiner_pts = 0;
 };
 
@@ -64,9 +67,32 @@ class Blockage{
             layer = layers[l].get_index();
         }
     private:
+        // data member
         string name;
-        int layer;
-        int extra_demand;
+        int    layer;
+        int    extra_demand;
+};
+
+class SameGGrid{
+    public:
+        SameGGrid(string m1, string m2, int l, int ex):mc1(m1), mc2(m2), layer(l), extra_demand(ex){}
+        ~SameGGrid();
+    private:
+        // data member
+        string mc1, mc2;
+        int    layer;
+        int    extra_demand;
+};
+
+class AdjHGGrid{
+    public:
+        AdjHGGrid(string m1, string m2, int l, int ex):mc1(m1), mc2(m2), layer(l), extra_demand(ex);
+        ~AdjHGGrid();
+    private:
+        // data member
+        string mc1, mc2;
+        int   layer;
+        int   extra_demand;
 };
 
 class MasterCell{
@@ -77,11 +103,16 @@ class MasterCell{
         }
     void set_pin(string, string);
     void set_blockage(string, string, int);
-    unordered_map<string, Pin>& get_pins() { return pins; }
+    void add_sGGrid(SameGGrid* s)           { sGGrid.push_back(s); }
+    void add_aGGrid(AdjHGGrid* a)           { aGGrid.push_back(a); }
+    unordered_map<string, Pin>& get_pins()  { return pins; }
     private:
-        string name;
-        unordered_map<string, Pin> pins;
-        vector<Blockage> blockages;
+        // data member
+        string                      name;
+        unordered_map<string, Pin>  pins;
+        vector<Blockage>            blockages;
+        vector<SameGGrid*>          sGGrid;
+        vector<AdjHGGrid*>          aGGrid;
 };
 
 class Cell{
@@ -90,11 +121,12 @@ class Cell{
         ~Cell();
         void moveTo(int, int); // cell movement
     private:
-        MasterCell* mc;
-        unordered_map<string, Pin> pins;
-        pair<int, int> coord;
-        bool movable;
-        string name;
+        // data member
+        MasterCell*                 mc;
+        unordered_map<string, Pin>  pins;
+        pair<int, int>              coord;
+        bool                        movable;
+        string                      name;
 };
 
 
