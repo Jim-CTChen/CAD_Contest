@@ -15,16 +15,16 @@ class Grid;
 
 class Layer{ 
     public:
-        Layer(string n, int i, char d, int s):name(n), index(i), direction(d), supply(s){}
+        Layer(string n, int i, string d, int s):name(n), index(i), direction(d), supply(s){}
         string get_name()       { return name;}
-        char   get_direction()  { return direction; }
+        string   get_direction()  { return direction; }
         int    get_index()      { return index; }
         int    get_supply()     { return supply; }
 
     private:
         // data member
         string name;
-        char direction;
+        string direction;
         int index = 0;
         int supply = 0;
 };
@@ -103,7 +103,7 @@ class SameGGrid{
 class AdjHGGrid{
     friend class Grid;
     public:
-        AdjHGGrid(string m1, string m2, int l, int ex):mc1(m1), mc2(m2), layer(l), extra_demand(ex);
+        AdjHGGrid(string m1, string m2, int l, int ex):mc1(m1), mc2(m2), layer(l), extra_demand(ex){}
         ~AdjHGGrid();
         string get_oppenent(const string& s) {
             if(mc1 == s)    return mc2;

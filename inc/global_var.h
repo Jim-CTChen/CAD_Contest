@@ -7,6 +7,7 @@
 using namespace std;
 class Layer;
 class MasterCell;
+class Netlist;
 class SameGGrid;
 class AdjHGGrid;
 class Grid;
@@ -23,6 +24,8 @@ int layer_of_gGrid = 0;
 unordered_map <string, Layer*> layers;  
 
 unordered_map <string, MasterCell*> mastercells;
+
+unordered_map <string, Netlist*> netlists;
 
 Grid*** model = 0;
 
