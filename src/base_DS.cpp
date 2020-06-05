@@ -2,7 +2,6 @@
 #include <string>
 #include <utility>
 #include <base_DS.h>
-#include <global_var.h>
 using namespace std;
 extern unordered_map <string, MasterCell*> mastercells;
 

@@ -2,16 +2,18 @@
 #include <unordered_map>
 #include <string>
 #include <fstream>
-#include <global_var.h>
 #include <global_func.h>
 #include <base_DS.h>
 #include <advance_DS.h>
+#include <utility.h>
+#include <definition.h>
 using namespace std;
 
+extern const string file_path;
 extern int row_of_gGrid;
 extern int column_of_gGrid;
 extern int layer_of_gGrid;
-extern int MaxCellMove;
+extern int maxCellMove;
 extern int row_of_gGrid;
 extern int column_of_gGrid;
 extern unordered_map <string, Layer*> layers;  
@@ -19,18 +21,26 @@ extern unordered_map <string, MasterCell*> mastercells;
 extern unordered_map <string, Netlist*> netlists;
 extern vector<SameGGrid> sameGGrids;
 extern vector<AdjHGGrid> adjGGrids;
-extern Grid*** model;
+extern Grid** model;
+extern Demand*** all_demand;
 
 
 void init()
 {
-    // form a 3-D model for Grids
-    model = new Grid** [row_of_gGrid];
+    // form a 2-D model for Grids
+    model = new Grid* [row_of_gGrid];
     for(int i = 0; i < row_of_gGrid; ++i)
     {
-        model[i] = new Grid* [column_of_gGrid];
+        model[i] = new Grid [column_of_gGrid];
+    }
+
+    // form a 3-D model for demands
+    all_demand = new Demand** [row_of_gGrid];
+    for(int i = 0; i < row_of_gGrid; ++i)
+    {
+        all_demand[i] = new Demand* [column_of_gGrid];
         for(int j = 0; j < column_of_gGrid; ++j){
-            model[i][j] = new Grid [layer_of_gGrid];
+            all_demand[i][j] = new Demand [layer_of_gGrid];
         }
     }
 }
@@ -48,37 +58,35 @@ void clear()
     
     // delete model
     for(int i = 0; i < row_of_gGrid;){
-        for(int j = 0; j < column_of_gGrid; ++j){
-            delete[] model[i][j];
-        }
+        delete[] model[i];
     }
     delete[] model;
+
+    // delete all_demand
+    for(int i = 0; i < row_of_gGrid;){
+        for(int j = 0; j < column_of_gGrid; ++j){
+            delete[] all_demand[i][j];
+        }
+    }
+    delete[] all_demand;
 }
 
-size_t myStrGetTok(const string& str, string& tok, size_t pos = 0,
-            const char del = ' ')
-{
-   size_t begin = str.find_first_not_of(del, pos);
-   if (begin == string::npos) { tok = ""; return begin; }
-   size_t end = str.find_first_of(del, begin);
-   tok = str.substr(begin, end - begin);
-   return end;
-}
+
 
 void readMaxCellMove(){
-    ifstream file("../test/case3.txt");
+    ifstream file(file_path);
     string tempstr;
     int temp;
     file >> tempstr;
     file >> temp;
-    MaxCellMove = temp;
+    maxCellMove = temp;
     file.close();
     
 }
 
 void readGGridBoundaryIdx(){
     ifstream file;
-    file.open("../test/case3.txt");
+    file.open(file_path);
     char line[100];
     string tok;
     int temp[4];
@@ -99,7 +107,7 @@ void readGGridBoundaryIdx(){
 
 void readLayer(){
     ifstream file;
-    file.open("../test/case3.txt");
+    file.open(file_path);
     char line[100];
     string tok;
     string temp[5];
@@ -125,7 +133,7 @@ void readLayer(){
 };
 void readNumNonDefaultSupplyGGrid(){
     ifstream file;
-    file.open("../test/case3.txt");
+    file.open(file_path);
     char line[100];
     string tok;
     int temp[4];
@@ -151,7 +159,7 @@ void readNumNonDefaultSupplyGGrid(){
 
 void readMasterCell(){
     ifstream file;
-    file.open("../test/case3.txt");
+    file.open(file_path);
     char line[100];
     string tok;
     string temp[4],tempPin[2],tempBlkg[3];
@@ -178,7 +186,7 @@ void readMasterCell(){
                         else if(k = 2){
                             tempPin[1] = tok;
                         }
-                        mastercells[temp[0]]->set_pin(tempPin[0],tempPin[1]);
+                        // mastercells[temp[0]]->set_pin(tempPin[0],tempPin[1]); // FIXME
                     }  
                 }
                 for(int j=0 ;j<stoi(temp[3]) ;j++){
@@ -206,7 +214,7 @@ void readMasterCell(){
 
 void readNeighborCellExtraDemand(){
     ifstream file;
-    file.open("../test/case3.txt");
+    file.open(file_path);
     char line[100];
     string tok;
     string temp[5];
@@ -238,7 +246,7 @@ void readNeighborCellExtraDemand(){
 
 void readCellInst(){
     ifstream file;
-    file.open("../test/case3.txt");
+    file.open(file_path);
     char line[100];
     string tok;
     string temp[6];
@@ -265,7 +273,7 @@ void readCellInst(){
 
 void readNets(){
     ifstream file;
-    file.open("../test/case3.txt");
+    file.open(file_path);
     char line[100];
     string tok;
     string temp[4],tempPin[2];
@@ -290,7 +298,7 @@ void readNets(){
                     tempPin[0] = tok;
                     pos = myStrGetTok(line,tok,0,' ');
                     tempPin[1] = tok;
-                    netlists[temp[1]]->add_root(Steiner_pts(mastercells[temp[1]]->);
+                    //netlists[temp[1]]->add_root(Steiner_pts(mastercells[temp[1]]->); // FIXME
                 }
             }
             break;

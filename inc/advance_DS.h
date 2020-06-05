@@ -36,4 +36,12 @@ class Grid{
         int demand; // netlist 初始化的時候有經過的grid要加
 };
 
+class Demand{
+    public:
+        Demand(){}
+        ~Demand(){}
+    private:
+        int demand;
+}
+
 #endif // ADVANCE_DS_H
