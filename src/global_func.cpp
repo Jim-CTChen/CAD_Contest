@@ -17,6 +17,7 @@ extern int column_of_gGrid;
 extern unordered_map <string, Layer*> layers;  
 extern unordered_map <string, MasterCell*> mastercells;
 extern unordered_map <string, Netlist*> netlists;
+extern unordered_map <string, Cell*> cells;
 extern vector<SameGGrid> sameGGrids;
 extern vector<AdjHGGrid> adjGGrids;
 
@@ -253,8 +254,7 @@ void readCellInst(){
                     temp[i] = tok;
                     pos = myStrGetTok(line,tok,pos,' ');      
                 }
-                // = mastercells(temp[1])->
-                //Grid[layernum][temp[2]][temp[3]].push_back(Cell(temp[1],temp[2],stoi(temp[3]),stoi(temp[4]),temp[5]));
+                cells.insert(pair<string,Cell*>(temp[1],new Cell(temp[1],mastercells[temp[2]],stoi(temp[3]),stoi(temp[4]),temp[5])));
             }
             break;
         }
@@ -266,8 +266,9 @@ void readNets(){
     file.open("../test/case3.txt");
     char line[100];
     string tok;
-    string temp[4],tempPin[2];
+    string temp[4],tempCell_Pin[2];
     int pos = 0 ,num = 0;
+    pair<int, int> tempCoord = {0,0};
     unordered_map<string, MasterCell*>::iterator iter;
     while(file.getline(line,100)){
         pos = myStrGetTok(line,tok,0,' ');
@@ -285,10 +286,18 @@ void readNets(){
                     file.getline(line,100);
                     pos = myStrGetTok(line,tok,0,' ');
                     pos = myStrGetTok(line,tok,pos,'/');
-                    tempPin[0] = tok;
+                    tempCell_Pin[0] = tok;
                     pos = myStrGetTok(line,tok,0,' ');
-                    tempPin[1] = tok;
-                    netlists[temp[1]]->add_root(Steiner_pts(mastercells[temp[1]]->)
+                    tempCell_Pin[1] = tok;
+                    tempCoord = cells[tempCell_Pin[0]]->get_coord();
+                        templayer = cells[tempCell_Pin[0]]->get_mc()->get_pins()->
+                    if(j == 0){  
+                        netlists[temp[1]]->add_root(Steiner_pts(tempCoord[0],tempCoord[1],templayer));
+                    }
+                    else{
+                        netlists[temp[1]]->add_pin(Steiner_pts(tempCoord[0],tempCoord[1],templayer));
+                    }
+                    
                 }
             }
             break;
@@ -298,6 +307,29 @@ void readNets(){
 };
 
 void readRoutes(){
+    ifstream file;
+    file.open("../test/case3.txt");
+    char line[100];
+    string tok;
+    string temp[6];
+    int pos = 0 ,num = 0;
+    while(file.getline(line,100)){
+        pos = myStrGetTok(line,tok,0,' ');
+        if(tok == "NumRoutes"){
+            myStrGetTok(line,tok,pos,' ');
+            num = stoi(tok); 
+            for(int i=0 ;i<num ;i++){
+                file.getline(line,100);
+                pos = myStrGetTok(line,tok,0,' ');
+                for(int i=0 ;i<6 ;i++){
+                    temp[i] = tok;
+                    pos = myStrGetTok(line,tok,pos,' ');      
+                }
+                
+            }
+            break;
+        }
+    }
 
 };
 

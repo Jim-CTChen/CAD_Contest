@@ -130,7 +130,7 @@ class MasterCell{
                                             { blockages.push_back(Blockage(n, l, d)); }
         void add_sGGrid(SameGGrid* s)       { sGGrid.push_back(s); }
         void add_aGGrid(AdjHGGrid* a)       { aGGrid.push_back(a); }
-        // vector<Pin>& get_pins()             { return pins; }
+        vector<Pin>& get_pins()             { return pins; }
     private:    
         // data member
         string                      name;
@@ -141,10 +141,14 @@ class MasterCell{
 };
 
 class Cell{
-    public:
-        Cell(string, string, int, int, string);
+    public: 
+        Cell(string, MasterCell*n, int a, int b, string):mc(n){
+            pins = mc->get_pins();
+            coord =pair<int, int>(a, b);
+        };
         ~Cell();
         void moveTo(int, int); // cell movement
+        MasterCell*& get_mc()  {return mc;}
         vector<Pin>& get_pins()  { return pins; }
     private:
         // data member
