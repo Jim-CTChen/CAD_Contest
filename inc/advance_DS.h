@@ -42,6 +42,6 @@ class Demand{
         ~Demand(){}
     private:
         int demand;
-}
+};
 
 #endif // ADVANCE_DS_H
