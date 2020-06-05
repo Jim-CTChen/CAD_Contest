@@ -1,25 +1,14 @@
-#ifndef GLOBAL_VAR_H
-#define GLOBAL_VAR_H
+#include <advance_DS.h>
+#include <base_DS.h>
+#include <definition.h>
+#include <global_func.h>
+#include <global_var.h>
 
-#include <string>
-#include <unordered_map>
-#include <vector>
-using namespace std;
-class Layer;
-class MasterCell;
-class SameGGrid;
-class AdjHGGrid;
-class Grid;
-
-// information
 int maxCellMove = 0;
-
 int row_of_gGrid = 0;
 int column_of_gGrid = 0;
 int layer_of_gGrid = 0;
 
-
-// data
 unordered_map <string, Layer*> layers;  
 
 unordered_map <string, MasterCell*> mastercells;
@@ -29,9 +18,8 @@ Grid*** model = 0;
 vector<SameGGrid> sameGGrids;
 vector<AdjHGGrid> adjGGrids;
 
-
-
-
-
-
-#endif // GLOBAL_VAR_H
+using namespace std;
+int main()
+{
+    cout << "hello world!" << endl;
+}

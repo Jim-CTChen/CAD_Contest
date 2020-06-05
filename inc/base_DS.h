@@ -8,10 +8,15 @@
 #include <vector>
 
 using namespace std; 
-extern unordered_map <string, Layer*> layers;
-extern unordered_map <string, MasterCell*> mastercells;
 class Netlist;
 class Grid;
+class Layer;
+class MasterCell;
+class Cell;
+
+extern unordered_map <string, Layer*> layers;
+extern unordered_map <string, MasterCell*> mastercells;
+
 
 class Layer{ 
     public:
@@ -35,7 +40,7 @@ class Steiner_pts{
         Steiner_pts(int x, int y, int z):layer(z){
             coord = pair<int, int> (x, y);
         }
-        ~Steiner_pts();
+        ~Steiner_pts(){}
         void set_fanin(Steiner_pts* s)  { fanin = s; }
         void set_fanout(Steiner_pts* s) { fanout.push_back(s); }
         void set_netlist(Netlist* n)    { nlist = n; }
@@ -55,8 +60,8 @@ class Steiner_pts{
 class Pin{
     friend class cell;
     public:
-        Pin(string n, string l):name(n) { layer = layers[l]->get_index(); }
-        ~Pin()                          { delete steiner_pts; }
+        Pin(string n, string l, Cell* c):name(n), cell(c){ layer = layers[l]->get_index(); }
+        ~Pin() { delete steiner_pts; }
         void set_steiner_pts(int x, int y){
             steiner_pts = new Steiner_pts(x, y, layer);
         }
@@ -65,6 +70,7 @@ class Pin{
         int          layer;
         string       name;
         Steiner_pts* steiner_pts = 0;
+        Cell*        cell;
 };
 
 class Blockage{
@@ -86,7 +92,7 @@ class SameGGrid{
     friend class Grid;
     public:
         SameGGrid(string m1, string m2, int l, int ex):mc1(m1), mc2(m2), layer(l), extra_demand(ex){}
-        ~SameGGrid();
+        ~SameGGrid(){}
         string get_oppenent(const string& s) {
             if(mc1 == s)    return mc2;
             else return mc1;
@@ -103,8 +109,8 @@ class SameGGrid{
 class AdjHGGrid{
     friend class Grid;
     public:
-        AdjHGGrid(string m1, string m2, int l, int ex):mc1(m1), mc2(m2), layer(l), extra_demand(ex);
-        ~AdjHGGrid();
+        AdjHGGrid(string m1, string m2, int l, int ex):mc1(m1), mc2(m2), layer(l), extra_demand(ex){}
+        ~AdjHGGrid(){}
         string get_oppenent(const string& s) {
             if(mc1 == s)    return mc2;
             else return mc1;
@@ -125,7 +131,7 @@ class MasterCell{
             pins.reserve(p);
             blockages.reserve(b);
         }
-        void set_pin(string n, string l)    { pins.push_back(Pin(n, l)); }
+        void set_pin(string n, string l, Cell* c)    { pins.push_back(Pin(n, l, c)); }
         void set_blockage(string n, string l, int d) 
                                             { blockages.push_back(Blockage(n, l, d)); }
         void add_sGGrid(SameGGrid* s)       { sGGrid.push_back(s); }
@@ -143,7 +149,7 @@ class MasterCell{
 class Cell{
     public:
         Cell(string, string, int, int, string);
-        ~Cell();
+        ~Cell(){}
         void moveTo(int, int); // cell movement
         vector<Pin>& get_pins()  { return pins; }
     private:

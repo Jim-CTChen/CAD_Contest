@@ -11,8 +11,8 @@ class Pin;
 
 class Netlist{
     public:
-        Netlist();
-        ~Netlist();
+        Netlist(){}
+        ~Netlist(){}
         void add_root( Steiner_pts* s) { root = s; }
         void add_pin(Pin* p) { pins.push_back(p); }
     private:
@@ -24,7 +24,7 @@ class Netlist{
 
 class Grid{
     public:
-        Grid();
+        Grid(){}
         ~Grid() { 
             for(int i = 0; i < cells.size(); ++i){
                 delete cells[i];
