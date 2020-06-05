@@ -1,6 +1,7 @@
 #include <iostream>
 #include <unordered_map>
 #include <string>
+#include <fstream>
 #include <global_var.h>
 #include <global_func.h>
 #include <base_DS.h>
@@ -10,8 +11,12 @@ using namespace std;
 extern int row_of_gGrid;
 extern int column_of_gGrid;
 extern int layer_of_gGrid;
+extern int MaxCellMove;
+extern int row_of_gGrid;
+extern int column_of_gGrid;
 extern unordered_map <string, Layer*> layers;  
 extern unordered_map <string, MasterCell*> mastercells;
+extern unordered_map <string, Netlist*> netlists;
 extern vector<SameGGrid> sameGGrids;
 extern vector<AdjHGGrid> adjGGrids;
 extern Grid*** model;
@@ -29,6 +34,7 @@ void init()
         }
     }
 }
+
 
 void clear()
 {
@@ -48,6 +54,254 @@ void clear()
     }
     delete[] model;
 }
+
+size_t myStrGetTok(const string& str, string& tok, size_t pos = 0,
+            const char del = ' ')
+{
+   size_t begin = str.find_first_not_of(del, pos);
+   if (begin == string::npos) { tok = ""; return begin; }
+   size_t end = str.find_first_of(del, begin);
+   tok = str.substr(begin, end - begin);
+   return end;
+}
+
+void readMaxCellMove(){
+    ifstream file("../test/case3.txt");
+    string tempstr;
+    int temp;
+    file >> tempstr;
+    file >> temp;
+    MaxCellMove = temp;
+    file.close();
+    
+}
+
+void readGGridBoundaryIdx(){
+    ifstream file;
+    file.open("../test/case3.txt");
+    char line[100];
+    string tok;
+    int temp[4];
+    int pos = 0;
+    while(file.getline(line,100)){
+        pos = myStrGetTok(line,tok,0,' ');
+        if(tok == "GGridBoundaryIdx"){
+            for(int i=0 ;i<4 ;i++){
+                pos = myStrGetTok(line,tok,pos,' ');
+                temp[i] = stoi(tok);
+            }
+            row_of_gGrid = temp[2];
+            column_of_gGrid = temp[3];
+            break;
+        } 
+    }
+};
+
+void readLayer(){
+    ifstream file;
+    file.open("../test/case3.txt");
+    char line[100];
+    string tok;
+    string temp[5];
+    int pos = 0 ,num = 0;
+    while(file.getline(line,100)){
+        pos = myStrGetTok(line,tok,0,' ');
+        if(tok == "NumLayer"){
+            myStrGetTok(line,tok,pos,' ');
+            num = stoi(tok); 
+            for(int i=0 ;i<num ;i++){
+                file.getline(line,100);
+                pos = myStrGetTok(line,tok,0,' ');
+                for(int i=0 ;i<5 ;i++){
+                    temp[i] = tok;
+                    pos = myStrGetTok(line,tok,pos,' ');      
+                }
+                layers.insert(pair<string,Layer*>(temp[1],new Layer(temp[1],stoi(temp[2]),temp[3],stoi(temp[4]))));
+            }
+            break;
+        }
+    }
+
+};
+void readNumNonDefaultSupplyGGrid(){
+    ifstream file;
+    file.open("../test/case3.txt");
+    char line[100];
+    string tok;
+    int temp[4];
+    int pos = 0 ,num = 0;
+    while(file.getline(line,100)){
+        pos = myStrGetTok(line,tok,0,' ');
+        if(tok == "NumNonDefaultSupplyGGrid"){
+            myStrGetTok(line,tok,pos,' ');
+            num = stoi(tok); 
+            for(int i=0 ;i<num ;i++){
+                file.getline(line,100);
+                pos = myStrGetTok(line,tok,0,' ');
+                for(int i=0 ;i<4 ;i++){
+                    temp[i] = stoi(tok);
+                    pos = myStrGetTok(line,tok,pos,' ');      
+                }
+                //model[tmep[2]][temp[0]][temp[1]].demand+=[temp[3]];
+            }
+            break;
+        }
+    }
+};
+
+void readMasterCell(){
+    ifstream file;
+    file.open("../test/case3.txt");
+    char line[100];
+    string tok;
+    string temp[4],tempPin[2],tempBlkg[3];
+    int pos = 0 ,num = 0;
+    while(file.getline(line,100)){
+        pos = myStrGetTok(line,tok,0,' ');
+        if(tok == "NumMasterCell"){
+            myStrGetTok(line,tok,pos,' ');
+            num = stoi(tok); 
+            for(int i=0 ;i<num ;i++){
+                file.getline(line,100);
+                for(int j=0 ;j<4 ;j++){
+                    pos = myStrGetTok(line,tok,0,' ');
+                    temp[i] = stoi(tok);     
+                }
+                mastercells.insert(pair<string,MasterCell*>(temp[1],new MasterCell(temp[1],stoi(temp[2]),stoi(temp[3]))));
+                for(int j=0 ;j<stoi(temp[2]) ;j++){
+                    file.getline(line,100);
+                    for(int k=0 ;k<3 ;k++){
+                        pos = myStrGetTok(line,tok,0,' ');
+                        if(k = 1){
+                            tempPin[0] = tok;
+                        }
+                        else if(k = 2){
+                            tempPin[1] = tok;
+                        }
+                        mastercells[temp[0]]->set_pin(tempPin[0],tempPin[1]);
+                    }  
+                }
+                for(int j=0 ;j<stoi(temp[3]) ;j++){
+                    file.getline(line,100);
+                    for(int k=0 ;k<4 ;k++){
+                        pos = myStrGetTok(line,tok,0,' ');
+                        if(k = 1){
+                            tempBlkg[0] = tok;
+                        }
+                        else if(k = 2){
+                            tempBlkg[1] = tok;
+                        }
+                        else if(k = 3){
+                            tempBlkg[2] = tok;
+                        }
+                        mastercells[temp[0]]->set_blockage(tempBlkg[1],tempBlkg[2],stoi(tempBlkg[3]));
+                    }  
+                }
+                
+            }
+            break;
+        }
+    }
+};
+
+void readNeighborCellExtraDemand(){
+    ifstream file;
+    file.open("../test/case3.txt");
+    char line[100];
+    string tok;
+    string temp[5];
+    int pos = 0 ,num = 0;
+    while(file.getline(line,100)){
+        pos = myStrGetTok(line,tok,0,' ');
+        if(tok == "NumNeighborCellExtraDemand"){
+            myStrGetTok(line,tok,pos,' ');
+            num = stoi(tok); 
+            for(int i=0 ;i<num ;i++){
+                file.getline(line,100);
+                pos = myStrGetTok(line,tok,0,' ');
+                for(int i=0 ;i<5 ;i++){
+                    temp[i] = tok;
+                    pos = myStrGetTok(line,tok,pos,' ');      
+                }
+                if(temp[0] == "samGGrid"){
+                    sameGGrids.push_back(SameGGrid(temp[1],temp[2],stoi(temp[3]),stoi(temp[4])));
+                }
+                else{
+                    adjGGrids.push_back(AdjHGGrid(temp[1],temp[2],stoi(temp[3]),stoi(temp[4])));
+                }
+            }
+            break;
+        }
+    }
+
+};
+
+void readCellInst(){
+    ifstream file;
+    file.open("../test/case3.txt");
+    char line[100];
+    string tok;
+    string temp[6];
+    int pos = 0 ,num = 0, layernum = 0;
+    while(file.getline(line,100)){
+        pos = myStrGetTok(line,tok,0,' ');
+        if(tok == "NumCellInst"){
+            myStrGetTok(line,tok,pos,' ');
+            num = stoi(tok); 
+            for(int i=0 ;i<num ;i++){
+                file.getline(line,100);
+                pos = myStrGetTok(line,tok,0,' ');
+                for(int i=0 ;i<6 ;i++){
+                    temp[i] = tok;
+                    pos = myStrGetTok(line,tok,pos,' ');      
+                }
+                // = mastercells(temp[1])->
+                //Grid[layernum][temp[2]][temp[3]].push_back(Cell(temp[1],temp[2],stoi(temp[3]),stoi(temp[4]),temp[5]));
+            }
+            break;
+        }
+    }
+};
+
+void readNets(){
+    ifstream file;
+    file.open("../test/case3.txt");
+    char line[100];
+    string tok;
+    string temp[4],tempPin[2];
+    int pos = 0 ,num = 0;
+    unordered_map<string, MasterCell*>::iterator iter;
+    while(file.getline(line,100)){
+        pos = myStrGetTok(line,tok,0,' ');
+        if(tok == "NumNets"){
+            myStrGetTok(line,tok,pos,' ');
+            num = stoi(tok); 
+            for(int i=0 ;i<num ;i++){
+                file.getline(line,100);
+                for(int j=0 ;j<4 ;j++){
+                    pos = myStrGetTok(line,tok,0,' ');
+                    temp[i] = stoi(tok);     
+                }
+                netlists.insert(pair<string, Netlist*>(temp[1],new Netlist()));
+                for(int j=0 ;j<stoi(temp[2]) ;j++){
+                    file.getline(line,100);
+                    pos = myStrGetTok(line,tok,0,' ');
+                    pos = myStrGetTok(line,tok,pos,'/');
+                    tempPin[0] = tok;
+                    pos = myStrGetTok(line,tok,0,' ');
+                    tempPin[1] = tok;
+                    netlists[temp[1]]->add_root(Steiner_pts(mastercells[temp[1]]->);
+                }
+            }
+            break;
+        }
+    }
+
+};
+
+void readRoutes(){
+
+};
 
 void add_sameGGrid(string m1, string m2, int l, int ex)
 {

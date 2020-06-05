@@ -4,6 +4,17 @@
 void clear();
 void init();
 
+void readMaxCellMove();
+void readGGridBoundaryIdx();
+void readLayer();
+void readNumNonDefaultSupplyGGrid();
+void readMasterCell();
+void readNeighborCellExtraDemand();
+void readCellInst();
+void readNets();
+void readRoutes();
+
+
 
 
 

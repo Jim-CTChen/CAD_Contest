@@ -20,16 +20,16 @@ extern unordered_map <string, MasterCell*> mastercells;
 
 class Layer{ 
     public:
-        Layer(string n, int i, char d, int s):name(n), index(i), direction(d), supply(s){}
+        Layer(string n, int i, string d, int s):name(n), index(i), direction(d), supply(s){}
         string get_name()       { return name;}
-        char   get_direction()  { return direction; }
+        string   get_direction()  { return direction; }
         int    get_index()      { return index; }
         int    get_supply()     { return supply; }
 
     private:
         // data member
         string name;
-        char direction;
+        string direction;
         int index = 0;
         int supply = 0;
 };

@@ -18,7 +18,7 @@ class Netlist{
     private:
         Steiner_pts*    root;
         vector<Pin*>    pins;
-};
+};                                                              
 
 
 
