@@ -7,6 +7,8 @@
 #include <advance_DS.h>
 #include <utility.h>
 #include <definition.h>
+#include <queue>
+#include <algorithm>
 using namespace std;
 
 // extern const string file_path;
@@ -49,14 +51,12 @@ void init()
 
 void clear()
 {
-    // delete layers & mastercells
-    for(auto it = layers.begin(); it!= layers.end(); it++){
-        delete it->second;
-    }
-    for(auto it = mastercells.begin(); it!= mastercells.end(); it++){
-        delete it->second;
-    }
-    
+    // delete layers & mastercells & netlists & cells
+    for(auto& it : layers)      delete it.second; layers.clear();
+    for(auto& it : mastercells) delete it.second; mastercells.clear();  
+    for(auto& it : netlists)    delete it.second; netlists.clear();
+    for(auto& it : cells)       delete it.second; cells.clear();
+
     // delete model
     for(int i = 0; i < row_of_gGrid;){
         delete[] model[i];
@@ -319,7 +319,7 @@ void readNets(){
 
 void readRoutes(){
     ifstream file;
-    file.open("../test/case3.txt");
+    file.open(file_path);
     char line[100];
     string tok;
     string temp[6];
@@ -356,4 +356,91 @@ void add_adjhGGrid(string m1, string m2, int l, int ex)
     adjGGrids.push_back(AdjHGGrid(m1, m2, l, ex));
     mastercells[m1]->add_aGGrid(&adjGGrids.back());
     mastercells[m2]->add_aGGrid(&adjGGrids.back());
+}
+
+void countDemand() // routing + blockage + extra demand
+{
+    // counting routing by iteration for netlist
+    for(auto &it : netlists) // for every netlist, count demand of routing
+    {
+        DEMANDFLAG++;
+        queue<Steiner_pts*> q; // for BFS
+        Steiner_pts* tmp = 0;
+        if(it.second->get_root() == 0) { // in case all pins in the netlist are in the same grid
+            tmp = it.second->get_pins()[0]->get_steiner_pts();
+            all_demand[tmp->get_coord().first][tmp->get_coord().second][tmp->get_layer()].addDemand(1);
+            break;
+        }
+        q.push(it.second->get_root());
+        while(!q.empty())
+        {
+            tmp = q.front();
+            tmp->addDemand();
+            for(auto &iit : tmp->get_fanout()){
+                q.push(iit);
+            }
+            q.pop();
+        }
+    }
+
+
+    // counting blockage demand
+    for(auto &it : cells) // for every cell
+    {
+        Cell* tmp = it.second;
+        for(auto &iit : tmp->get_mc()->get_blockage()){ // for every blockage in one cell
+            all_demand[tmp->get_coord.first][tmp->get_coord.second][iit.get_layer].addDemand(iit.get_extra_demand);
+        }
+    }
+
+    // counting extra_demand by iteration for grids
+    for (int i = 0; i < row_of_gGrid; ++i)
+    {
+        for(int j = 0; j < column_of_gGrid; ++j)
+        {
+            // counting MCs in one grid
+            unordered_map<string, int> countPreMC;
+            unordered_map<string, int> countCurMC;
+            unordered_map<string, int> countNxtMC;
+            for(auto& it : model[i][j].get_cells()){
+                countCurMC[it->get_mc()->get_name()]++;
+            }
+            if(j != 0){
+                for(auto& it : model[i][j-1].get_cells()){
+                    countPreMC[it->get_mc()->get_name()]++;
+                }
+            }
+            if(j != column_of_gGrid-1){
+                for(auto& it : model[i][j+1].get_cells()){
+                    countNxtMC[it->get_mc()->get_name()]++;
+                }
+            }
+
+            // calculating sameGGrids
+            for(auto& it : sameGGrids){
+                int minimum = min(countCurMC[it.get_mc1()], countCurMC[it.get_mc2()]);
+                all_demand[i][j][it.get_layer()].addDemand(it.get_extra_demand()*minimum);
+                // if(countCurMC[it.get_mc1()] >= countCurMC[it.get_mc2()]){
+                //     all_demand[i][j][it.get_layer()].addDemand(it.get_extra_demand()*countCurMC[it.get_mc2()]);
+                // }
+                // else all_demand[i][j][it.get_layer()].addDemand(it.get_extra_demand()*countCurMC[it.get_mc1()]);
+            }
+
+            // calculating adjGGrids
+            for(auto& it : adjGGrids)
+            {
+                int pairCurPre = 0;
+                int pairCurNxt = 0;
+                if(it.get_mc1() == it.get_mc2()){
+                    pairCurPre = min(countPreMC[it.get_mc1()],countCurMC[it.get_mc1()]);
+                    pairCurNxt = min(countCurMC[it.get_mc1()],countNxtMC[it.get_mc1()]);
+                }
+                else{
+                    pairCurPre = min(countPreMC[it.get_mc1()], countCurMC[it.get_mc2()]) + min(countPreMC[it.get_mc2()], countCurMC[it.get_mc1()]);
+                    pairCurNxt = min(countCurMC[it.get_mc1()], countNxtMC[it.get_mc2()]) + min(countCurMC[it.get_mc2()], countNxtMC[it.get_mc1()]);
+                }
+                all_demand[i][j][it.get_layer()].addDemand(it.get_extra_demand()*(pairCurPre+pairCurNxt));
+            }
+        }
+    }
 }

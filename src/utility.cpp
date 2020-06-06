@@ -13,3 +13,9 @@ size_t myStrGetTok(const string& str, string& tok, size_t pos = 0,
    tok = str.substr(begin, end - begin);
    return end;
 }
+
+// int getmin(int i, int j)
+// {
+//    if (i >= j) return j;
+//    else return i;
+// }

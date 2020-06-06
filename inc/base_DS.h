@@ -46,8 +46,13 @@ class Steiner_pts{
         void set_netlist(Netlist* n)    { nlist = n; }
         void reset_fanin()              { fanin = 0; }
         void reset_fanout()             { fanout.clear(); }
-        // pair<int, int> get_coord()      { return coord; }
-        // int get_layer()                 { return layer; }
+        int get_layer()                 { return layer; }
+        pair<int, int> get_coord()      { return coord; }
+        Steiner_pts* get_fanin()        { return fanin; }
+        vector<Steiner_pts*> get_fanout() { return fanout; }
+        char checkDirection(Steiner_pts*);
+        int getDistance(Steiner_pts*, char);
+        int addDemand();
     private:
         // data member
         pair<int, int>          coord;
@@ -55,6 +60,8 @@ class Steiner_pts{
         Steiner_pts*            fanin = 0;
         vector<Steiner_pts*>    fanout;
         Netlist*                nlist = 0;
+
+        // private fata function
 };
 
 class Pin{
@@ -62,9 +69,10 @@ class Pin{
     public:
         Pin(string n, string l, Cell* c):name(n), cell(c){ layer = layers[l]->get_index(); }
         ~Pin() { delete steiner_pts; }
-        void set_steiner_pts(int x, int y){
+        void set_steiner_pts(int x, int y) {
             steiner_pts = new Steiner_pts(x, y, layer);
         }
+        Steiner_pts* get_steiner_pts() { return steiner_pts; }
     private:
         // data member
         int          layer;
@@ -79,8 +87,8 @@ class Blockage{
         Blockage(string n, string l, int d):name(n), extra_demand(d){
             layer = layers[l]->get_index();
         }
-        // int get_layer()         { return layer;}
-        // int get_extra_demand()  { return extra_demand; }
+        int get_layer()         { return layer;}
+        int get_extra_demand()  { return extra_demand; }
     private:
         // data member
         string  name;
@@ -93,12 +101,14 @@ class SameGGrid{
     public:
         SameGGrid(string m1, string m2, int l, int ex):mc1(m1), mc2(m2), layer(l), extra_demand(ex){}
         ~SameGGrid(){}
-        string get_oppenent(const string& s) {
-            if(mc1 == s)    return mc2;
-            else return mc1;
-        }
-        // int get_layer()         { return layer; }
-        // int get_extra_demand()  { return extra_demand; }
+        // string get_oppenent(const string& s) {
+        //     if(mc1 == s)    return mc2;
+        //     else return mc1;
+        // }
+        string get_mc1()        { return mc1; }
+        string get_mc2()        { return mc2; }
+        int get_layer()         { return layer; }
+        int get_extra_demand()  { return extra_demand; }
     private:
         // data member
         string  mc1, mc2;
@@ -111,12 +121,14 @@ class AdjHGGrid{
     public:
         AdjHGGrid(string m1, string m2, int l, int ex):mc1(m1), mc2(m2), layer(l), extra_demand(ex){}
         ~AdjHGGrid(){}
-        string get_oppenent(const string& s) {
-            if(mc1 == s)    return mc2;
-            else return mc1;
-        }
-        // int get_layer()         { return layer; }
-        // int get_extra_demand()  { return extra_demand; }
+        // string get_oppenent(const string& s) {
+        //     if(mc1 == s)    return mc2;
+        //     else return mc1;
+        // }
+        string get_mc1()        { return mc1; }
+        string get_mc2()        { return mc2; } 
+        int get_layer()         { return layer; }
+        int get_extra_demand()  { return extra_demand; }
     private:
         // data member
         string  mc1, mc2;
@@ -134,16 +146,18 @@ class MasterCell{
         void set_pin(string n, string l, Cell* c)    { pins.push_back(Pin(n, l, c)); }
         void set_blockage(string n, string l, int d) 
                                             { blockages.push_back(Blockage(n, l, d)); }
-        void add_sGGrid(SameGGrid* s)       { sGGrid.push_back(s); }
-        void add_aGGrid(AdjHGGrid* a)       { aGGrid.push_back(a); }
-        vector<Pin>& get_pins()             { return pins; }
+        // void add_sGGrid(SameGGrid* s)       { sGGrid.push_back(s); }
+        // void add_aGGrid(AdjHGGrid* a)       { aGGrid.push_back(a); }
+        string get_name()                   { return name; }
+        vector<Pin> get_pins()              { return pins; }
+        vector<Blockage> get_blockage()     { return blockages; }
     private:    
         // data member
         string                      name;
         vector<Pin>                 pins;
         vector<Blockage>            blockages;
-        vector<SameGGrid*>          sGGrid;
-        vector<AdjHGGrid*>          aGGrid;
+        // vector<SameGGrid*>          sGGrid;
+        // vector<AdjHGGrid*>          aGGrid;
 };
 
 class Cell{
@@ -154,8 +168,9 @@ class Cell{
         }
         ~Cell(){}
         void moveTo(int, int); // cell movement
-        MasterCell*& get_mc()  { return mc; }
+        MasterCell* get_mc()  { return mc; }
         vector<Pin>& get_pins()  { return pins; }
+        pair<int, int> get_coord() { return coord; }
     private:
         // data member
         MasterCell*                 mc = 0;

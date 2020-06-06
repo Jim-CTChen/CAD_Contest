@@ -6,6 +6,7 @@
 using namespace std;
 
 size_t myStrGetTok(const string&, string&, size_t, const char);
+// int getmin(int, int);
 
 
 

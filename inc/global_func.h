@@ -13,6 +13,7 @@ void readNeighborCellExtraDemand();
 void readCellInst();
 void readNets();
 void readRoutes();
+void countDemand();
 
 
 
