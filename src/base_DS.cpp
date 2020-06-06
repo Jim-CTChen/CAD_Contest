@@ -18,3 +18,7 @@ Cell::Cell(string n, string m, int x, int y, string move){
         it->cell = this;
     }
 }
+
+bool Steiner_pts:: operator== (Steiner_pts& pts){
+    return (pts.get_coord() == (*this).get_coord()) && (pts.get_layer() == (*this).get_layer());
+}

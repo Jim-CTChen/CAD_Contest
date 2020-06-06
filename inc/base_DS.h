@@ -67,8 +67,9 @@ class Pin{
         void set_steiner_pts(int x, int y){
             steiner_pts = new Steiner_pts(x, y, layer);
         }
-        string get_name()  {return name;}
-        int get_layer()  {return layer;}
+        string& get_name()  {return name;}
+        int& get_layer()  {return layer;}
+        Cell*& get_cell()  {return cell;}
     private:
         // data member
         int          layer;

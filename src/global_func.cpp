@@ -383,9 +383,6 @@ void build_route(Steiner_pts* root){
     vector<pair<Steiner_pts*,Steiner_pts*>>::iterator it1;
     Steiner_pts* temp = root;
     while(true){
-        if(pts_to_pts.size() == 0){
-            break;
-        }
         for(auto it = pts_to_pts.begin(); it != pts_to_pts.end(); it++){
             if(it->first == temp){
                 temp->set_fanout(it->first);
