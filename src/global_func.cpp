@@ -344,19 +344,7 @@ void readRoutes(){
 
 };
 
-void add_sameGGrid(string m1, string m2, int l, int ex)
-{
-    sameGGrids.push_back(SameGGrid(m1, m2, l, ex));
-    mastercells[m1]->add_sGGrid(&sameGGrids.back());
-    mastercells[m2]->add_sGGrid(&sameGGrids.back());
-}
 
-void add_adjhGGrid(string m1, string m2, int l, int ex)
-{
-    adjGGrids.push_back(AdjHGGrid(m1, m2, l, ex));
-    mastercells[m1]->add_aGGrid(&adjGGrids.back());
-    mastercells[m2]->add_aGGrid(&adjGGrids.back());
-}
 
 void countDemand() // routing + blockage + extra demand
 {
