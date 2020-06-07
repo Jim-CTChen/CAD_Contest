@@ -21,7 +21,6 @@ extern unordered_map <string, Layer*> layers;
 extern unordered_map <string, MasterCell*> mastercells;
 extern unordered_map <string, Netlist*> netlists;
 extern unordered_map <string, Cell*> cells;
-extern vector<pair<Steiner_pts*,Steiner_pts*>> pts_to_pts;
 extern vector<SameGGrid> sameGGrids;
 extern vector<AdjHGGrid> adjGGrids;
 extern Grid** model;
@@ -301,13 +300,6 @@ void readNets(){
                     pos = myStrGetTok(line,tok,pos,'/');
                     tempCell_Pin[0] = tok;
                     pos = myStrGetTok(line,tok,pos,' ');
-                    tempCell_Pin[1] = tok; 
-                    /*for(int i=0 ;i<temp_pins.size(); i++){
-                        if(temp_pins[i].get_name() == tempCell_Pin[1]){
-                            temp_Pin = &temp_pins[i];//??????
-                            break;
-                        }
-                    }*/
                     for(int i=0 ;i < (cells[tempCell_Pin[1]]->get_pins()).size(); i++){
                         if((cells[tempCell_Pin[1]]->get_pins())[i].get_name() == tempCell_Pin[1]){
                             netlists[temp[1]]->add_pin(&(cells[tempCell_Pin[1]]->get_pins()[i]));
@@ -323,12 +315,13 @@ void readNets(){
 
 void readRoutes(){
     ifstream file;
-    file.open("../test/case3.txt");
+    file.open(file_path);
     string line;
     string tok;
     string temp[7];
     int pos = 0 ,num = 0;
     vector<Steiner_pts*>::iterator it;
+    vector<pair<Steiner_pts*,Steiner_pts*>> pts_to_pts;
     while(getline(file,line)){
         pos = myStrGetTok(line,tok,0,' ');
         if(tok == "NumRoutes"){
