@@ -1,6 +1,15 @@
 #ifndef GLOBAL_FUNC_H
 #define GLOBAL_FUNC_H
 
+#include <iostream>
+#include <string>
+#include <unordered_map>
+#include <vector>
+
+using namespace std;
+
+class Steiner_pts;
+
 void clear();
 void init();
 
@@ -13,8 +22,7 @@ void readNeighborCellExtraDemand();
 void readCellInst();
 void readNets();
 void readRoutes();
-void build_route(vector<pair<Steiner_pts*,Steiner_pts*>> pts_to_pts , Steiner_pts* root);
-//void build_route(vector<pair<int, int, int>>);
+void build_route(vector<pair<Steiner_pts*,Steiner_pts*>> , Steiner_pts* );
 
 
 
