@@ -13,6 +13,7 @@ void readNeighborCellExtraDemand();
 void readCellInst();
 void readNets();
 void readRoutes();
+void build_route(vector<pair<Steiner_pts*,Steiner_pts*>> pts_to_pts , Steiner_pts* root);
 //void build_route(vector<pair<int, int, int>>);
 
 

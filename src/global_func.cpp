@@ -313,6 +313,30 @@ void readNets(){
 
 };
 
+void build_route(vector<pair<Steiner_pts*,Steiner_pts*>> pts_to_pts , Steiner_pts* root){
+    vector<pair<Steiner_pts*,Steiner_pts*>>::iterator it1;
+    Steiner_pts* temp = root;
+    while(true){
+        for(auto it = pts_to_pts.begin(); it != pts_to_pts.end(); it++){
+            if(it->first == temp){
+                temp->set_fanout(it->first);
+                it->first->set_fanin(temp);
+                it1 = find(pts_to_pts.begin(), pts_to_pts.end(),pair<Steiner_pts*,Steiner_pts*>(it->first,it->second)); 
+                pts_to_pts.erase(it1);
+                build_route(pts_to_pts,it->first);
+            }
+            else if(it->second == temp){
+                temp->set_fanout(it->second);
+                it->second->set_fanin(temp);
+                it1 = find(pts_to_pts.begin(), pts_to_pts.end(),pair<Steiner_pts*,Steiner_pts*>(it->first,it->second)); 
+                pts_to_pts.erase(it1);
+                build_route(pts_to_pts,it->second);
+            }
+        }
+        break;
+    }
+}
+
 void readRoutes(){
     ifstream file;
     file.open(file_path);
@@ -337,15 +361,16 @@ void readRoutes(){
                 pts_to_pts.push_back(pair<Steiner_pts*,Steiner_pts*>(new Steiner_pts(stoi(temp[0]),stoi(temp[1]),stoi(temp[2])),
                 new Steiner_pts(stoi(temp[3]),stoi(temp[4]),stoi(temp[5]))));
                 for(auto it = pts_to_pts.begin(); it != pts_to_pts.end(); it++){
-                    it = find (netlists[temp[6]]->get_st_pts.begin(), netlists[temp[6]]->get_st_pts.end(), it->first);
-                    if(it != netlists[temp[6]]->get_st_pts.end()){
-                        netlists[temp[6]]->add_st_pts(it->first);
+                    for(auto it2 = netlists[temp[6]]->get_st_pts().begin(); it2 != netlists[temp[6]]->get_st_pts().end(); it++){
+                        it2 = find (netlists[temp[6]]->get_st_pts().begin(), netlists[temp[6]]->get_st_pts().end(), it->first);
+                        if(it2 != netlists[temp[6]]->get_st_pts().end()){
+                            netlists[temp[6]]->add_st_pts(it->first);
+                        }
+                        it2 = find (netlists[temp[6]]->get_st_pts().begin(), netlists[temp[6]]->get_st_pts().end(), it->second);
+                        if(it2 != netlists[temp[6]]->get_st_pts().end()){
+                            netlists[temp[6]]->add_st_pts(it->second);
+                        }
                     }
-                    it = find (netlists[temp[6]]->get_st_pts.begin(), netlists[temp[6]]->get_st_pts.end(), it->second);
-                    if(it != netlists[temp[6]]->get_st_pts.end()){
-                        netlists[temp[6]]->add_st_pts(it->second);
-                    }
-                    netlists[temp[6]]->add_st_pts(it->second);
                     for(int i = 0; i < netlists[temp[6]]->get_pins().size(); i++){
                         if((it->first)->get_layer() == netlists[temp[6]]->get_pins()[i]->get_layer()){
                             if((it->first)->get_coord() == netlists[temp[6]]->get_pins()[i]->get_cell()->get_coord()){
@@ -363,7 +388,7 @@ void readRoutes(){
                 }
                 it = find (netlists[temp[6]]->get_st_pts().begin(), netlists[temp[6]]->get_st_pts().end(),(netlists[temp[6]]->get_root()));
                 netlists[temp[6]]->erase_st_pts(it);
-                build_route(netlists[temp[6]]->get_root());
+                build_route(pts_to_pts , netlists[temp[6]]->get_root());
                 pts_to_pts.clear();
             }
             break;
@@ -372,29 +397,6 @@ void readRoutes(){
 
 };
 
-void build_route(Steiner_pts* root){
-    vector<pair<Steiner_pts*,Steiner_pts*>>::iterator it1;
-    Steiner_pts* temp = root;
-    while(true){
-        for(auto it = pts_to_pts.begin(); it != pts_to_pts.end(); it++){
-            if(it->first == temp){
-                temp->set_fanout(it->first);
-                it->first->set_fanin(temp);
-                it1 = find(pts_to_pts.begin(), pts_to_pts.end(),pair<Steiner_pts*,Steiner_pts*>(it->first,it->second)); 
-                pts_to_pts.erase(it1);
-                build_route(it->first);
-            }
-            else if(it->second == temp){
-                temp->set_fanout(it->second);
-                it->second->set_fanin(temp);
-                it1 = find(pts_to_pts.begin(), pts_to_pts.end(),pair<Steiner_pts*,Steiner_pts*>(it->first,it->second)); 
-                pts_to_pts.erase(it1);
-                build_route(it->second);
-            }
-        }
-        break;
-    }
-}
 
 void add_sameGGrid(string m1, string m2, int l, int ex)
 {
