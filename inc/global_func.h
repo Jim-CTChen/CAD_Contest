@@ -21,8 +21,9 @@ void readMasterCell();
 void readNeighborCellExtraDemand();
 void readCellInst();
 void readNets();
-void readRoutes();
-void build_route(vector<pair<Steiner_pts*,Steiner_pts*>> , Steiner_pts* );
+void readRoutes();  //pts_pts照net分開讀 在個別做find_root build_route
+void build_route(vector<pair<Steiner_pts*,Steiner_pts*>> , Steiner_pts* ); 
+void find_root(vector<pair<Steiner_pts*,Steiner_pts*>>  , string );
 
 
 

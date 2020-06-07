@@ -84,8 +84,8 @@ class Blockage{
         Blockage(string n, string l, int d):name(n), extra_demand(d){
             layer = layers[l]->get_index();
         }
-        // int get_layer()         { return layer;}
-        // int get_extra_demand()  { return extra_demand; }
+        int get_layer()         { return layer;}
+        int get_extra_demand()  { return extra_demand; }
     private:
         // data member
         string  name;
@@ -136,12 +136,14 @@ class MasterCell{
             pins.reserve(p);
             blockages.reserve(b);
         }
+        string& get_name()  {return name;}
         void set_pin(string n, string l, Cell* c)    { pins.push_back(Pin(n, l, c)); }
         void set_blockage(string n, string l, int d) 
                                             { blockages.push_back(Blockage(n, l, d)); }
         void add_sGGrid(SameGGrid* s)       { sGGrid.push_back(s); }
         void add_aGGrid(AdjHGGrid* a)       { aGGrid.push_back(a); }
         vector<Pin>& get_pins()             { return pins; }
+        vector<Blockage>& get_blkgs()       { return blockages;}
     private:    
         // data member
         string                      name;
