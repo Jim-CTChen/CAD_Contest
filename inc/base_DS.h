@@ -49,6 +49,8 @@ class Steiner_pts{
         pair<int, int> get_coord()      { return coord; }
         int get_layer()                 { return layer; }
         bool operator== (Steiner_pts&);
+        vector<Steiner_pts*> get_fanout()  { return fanout; }
+        void hi()  {cout << coord.first << " " << coord.second << " " << layer <<endl;}
 
     private:
         // data member

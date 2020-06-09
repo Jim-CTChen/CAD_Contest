@@ -339,32 +339,68 @@ void readNets(){
 
 void build_route(vector<pair<Steiner_pts*,Steiner_pts*>> pts_to_pts , Steiner_pts* root){
     vector<pair<Steiner_pts*,Steiner_pts*>>::iterator it1;
-    Steiner_pts* temp = root;
+    Steiner_pts* temp = root ;
     int k = 0;
     while(true){
         for(auto it = pts_to_pts.begin(); it != pts_to_pts.end(); it++){
-            if(it->first == temp){   
-                temp->set_fanout(it->second);
-                it->second->set_fanin(temp);
-                it1 = find(pts_to_pts.begin(), pts_to_pts.end(),pair<Steiner_pts*,Steiner_pts*>(it->first,it->second)); 
-                pts_to_pts.erase(it1);
-                if(pts_to_pts.size() == 0){
-                    break;
+            if(*(it->first) == *(temp)){  
+                if(((*(it->second)).get_fanout()).size() != 0) {
+                    temp = root;
+                    cout << "adsagasgsaga" <<pts_to_pts.size()<< endl;
+                    pts_to_pts.erase(it);
+                    cout << "adsagasgsaga" <<pts_to_pts.size()<< endl;
+                    build_route(pts_to_pts,temp);
                 }
-                build_route(pts_to_pts,it->second);
+                else{
+                    temp->set_fanout(it->second);
+                    it->second->set_fanin(temp);
+                    temp = it->second;
+                    (it)->first->hi();
+                    cout << "---------"<< endl;
+                    (it)->second->hi();
+                    cout << "---------"<< endl;
+                    pts_to_pts.erase(it);
+                    cout << "(" << pts_to_pts.size() << ")" <<endl;
+                    if(pts_to_pts.size() == 0){
+                        cout << 'a' <<endl;
+                        break;
+                    }
+                    build_route(pts_to_pts,temp);
+                }
+                
             }
-            else if(it->second == temp){
-                temp->set_fanout(it->first);
-                it->first->set_fanin(temp);
-                it1 = find(pts_to_pts.begin(), pts_to_pts.end(),pair<Steiner_pts*,Steiner_pts*>(it->first,it->second)); 
-                pts_to_pts.erase(it1);
-                if(pts_to_pts.size() == 0){
-                    break;
+            else if(*(it->second) == *(temp)){
+                if(((*(it->first)).get_fanout()).size() != 0) {
+                    temp = root;
+                    cout << "dsagasgsaga" << pts_to_pts.size()<< endl;
+                    pts_to_pts.erase(it);
+                    cout <<"dsagasgsaga" << pts_to_pts.size()<< endl;
+                    build_route(pts_to_pts,temp);
                 }
-                build_route(pts_to_pts,it->first);
+                else{
+                    temp->set_fanout(it->first);
+                    it->first->set_fanin(temp);
+                    temp = it->first;
+                    (it)->second->hi();
+                    cout << "---------"<< endl;
+                    (it)->first->hi();
+                    cout << "---------"<< endl;
+                    pts_to_pts.erase(it);
+                    cout << "(" << pts_to_pts.size() << ")" <<endl;
+                    if(pts_to_pts.size() == 0){
+                        cout << 'b' <<endl;
+                        break;
+                    }
+                    build_route(pts_to_pts,temp);
+                }
+                
+            }
+            else if(pts_to_pts.size() == 0){
+                cout << 'c' <<endl;
+                return ;
             }
         }
-        break;
+        return ;
     }
 }
 
@@ -385,9 +421,18 @@ void find_root(vector<pair<Steiner_pts*,Steiner_pts*>> pts_to_pts , string temp_
                 if((**it).get_layer() == netlists[temp_net]->get_pins()[i]->get_layer() && k == 0){
                     if((**it).get_coord() == netlists[temp_net]->get_pins()[i]->get_cell()->get_coord() && k == 0){
                         netlists[temp_net]->add_root(*it);
-                        k = 1;
-                        it2 = find (netlists[temp_net]->get_st_pts().begin(), netlists[temp_net]->get_st_pts().end(),(netlists[temp_net]->get_root()));
-                        netlists[temp_net]->erase_st_pts(it2);
+                        // cout << netlists[temp_net]->get_st_pts() .size() <<endl;
+                        // it2 = find (netlists[temp_net]->get_st_pts().begin(), netlists[temp_net]->get_st_pts().end(),(netlists[temp_net]->get_root())); //cancel root in st_pts
+                        // (*it2)->hi();
+                        // netlists[temp_net]->erase_st_pts(it2);
+                        for(auto it3 = netlists[temp_net]->get_st_pts().begin(); it3 != netlists[temp_net]->get_st_pts().end(); it3++){
+                            (*it3)->hi();
+                        }
+                        cout << "=========" << endl;
+                        (*(netlists[temp_net])->get_root()).hi() ;
+                        cout << "=========" << endl;
+                        
+                        return ;
                     } 
                 }   
             }     
@@ -430,8 +475,7 @@ void readRoutes(){
                 else{
                     if(it1 == nets.end()){   
                         find_root(pts_to_pts,temp_net);
-                        cout << netlists[temp_net]->get_st_pts().size() << endl;
-                        //build_route(pts_to_pts,netlists[temp_net]->get_root());
+                        build_route(pts_to_pts,netlists[temp_net]->get_root());
                         pts_to_pts.clear();
                         nets.push_back(temp[6]);
                         temp_net = temp[6];
@@ -448,7 +492,7 @@ void readRoutes(){
                 myStr2Int(temp[4], str2Int_5);
                 myStr2Int(temp[5], str2Int_6);
                 pts_to_pts.push_back(pair<Steiner_pts*,Steiner_pts*>(new Steiner_pts(str2Int_1,str2Int_2,str2Int_3),new Steiner_pts(str2Int_4,str2Int_5,str2Int_6)));
-                cout << temp_net << n << endl;
+                cout << temp_net <<  " " << n << endl;
                 
                 if(netlists[temp_net]->get_st_pts().size() == 0){      //put pts_pts elements in st_pts
                     netlists[temp_net]->add_st_pts(pts_to_pts[n].first);
@@ -479,7 +523,7 @@ void readRoutes(){
                 }
                 if(i == num-1){                    //the route of last net
                     find_root(pts_to_pts,temp_net);
-                    build_route(pts_to_pts,netlists[temp[6]]->get_root());
+                    //build_route(pts_to_pts,netlists[temp[6]]->get_root());
                     pts_to_pts.clear();
                 }
             }   
