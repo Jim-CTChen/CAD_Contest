@@ -337,70 +337,159 @@ void readNets(){
 
 };
 
-void build_route(vector<pair<Steiner_pts*,Steiner_pts*>> pts_to_pts , Steiner_pts* root){
-    vector<pair<Steiner_pts*,Steiner_pts*>>::iterator it1;
-    Steiner_pts* temp = root ;
-    int k = 0;
-    while(true){
-        for(auto it = pts_to_pts.begin(); it != pts_to_pts.end(); it++){
-            if(*(it->first) == *(temp)){  
-                if(((*(it->second)).get_fanout()).size() != 0) {
-                    temp = root;
-                    cout << "adsagasgsaga" <<pts_to_pts.size()<< endl;
-                    pts_to_pts.erase(it);
-                    cout << "adsagasgsaga" <<pts_to_pts.size()<< endl;
-                    build_route(pts_to_pts,temp);
-                }
-                else{
-                    temp->set_fanout(it->second);
-                    it->second->set_fanin(temp);
-                    temp = it->second;
-                    (it)->first->hi();
-                    cout << "---------"<< endl;
-                    (it)->second->hi();
-                    cout << "---------"<< endl;
-                    pts_to_pts.erase(it);
-                    cout << "(" << pts_to_pts.size() << ")" <<endl;
-                    if(pts_to_pts.size() == 0){
-                        cout << 'a' <<endl;
-                        break;
-                    }
-                    build_route(pts_to_pts,temp);
-                }
+bool between_two_st_pts(Steiner_pts* a, Steiner_pts* b, Steiner_pts* x){
+    if(x->get_layer() == a->get_layer()  && x->get_layer() == b->get_layer()) {
+        if(x->get_coord().first == a->get_coord().first && x->get_coord().first == b->get_coord().first){
+            if(x->get_coord().second < a->get_coord().second && x->get_coord().second > b->get_coord().second){
                 
+                return true;
             }
-            else if(*(it->second) == *(temp)){
-                if(((*(it->first)).get_fanout()).size() != 0) {
-                    temp = root;
-                    cout << "dsagasgsaga" << pts_to_pts.size()<< endl;
-                    pts_to_pts.erase(it);
-                    cout <<"dsagasgsaga" << pts_to_pts.size()<< endl;
-                    build_route(pts_to_pts,temp);
-                }
-                else{
-                    temp->set_fanout(it->first);
-                    it->first->set_fanin(temp);
-                    temp = it->first;
-                    (it)->second->hi();
-                    cout << "---------"<< endl;
-                    (it)->first->hi();
-                    cout << "---------"<< endl;
-                    pts_to_pts.erase(it);
-                    cout << "(" << pts_to_pts.size() << ")" <<endl;
-                    if(pts_to_pts.size() == 0){
-                        cout << 'b' <<endl;
-                        break;
-                    }
-                    build_route(pts_to_pts,temp);
-                }
-                
-            }
-            else if(pts_to_pts.size() == 0){
-                cout << 'c' <<endl;
-                return ;
+            else if(x->get_coord().second > a->get_coord().second && x->get_coord().second < b->get_coord().second){
+                return true;
             }
         }
-        return ;
+        else if(x->get_coord().second == a->get_coord().second && x->get_coord().second == b->get_coord().second){
+            
+            if(x->get_coord().first < a->get_coord().first && x->get_coord().first > b->get_coord().first){
+                return true;
+            }
+            else if(x->get_coord().first > a->get_coord().first && x->get_coord().first < b->get_coord().first){
+                return true;
+            }
+        }
+    }
+    else{
+        if(x->get_coord().first == a->get_coord().first  && x->get_coord() == b->get_coord()){
+            cout << "s";
+            if(x->get_layer() < a->get_layer()  && x->get_layer()  > b->get_layer() ){
+                return true;
+            }
+            else if(x->get_layer() > a->get_layer() && x->get_layer() < b->get_layer() ){
+                return true;
+            }
+        }
+    }
+    
+    
+    
+    return false;
+
+}
+
+void build_route(vector<pair<Steiner_pts*,Steiner_pts*>> pts_to_pts , Steiner_pts* root){
+    vector<Steiner_pts*>::iterator it1, it3;
+    Steiner_pts* temp = root ;
+    vector<Steiner_pts*> temp1 ,temp2 ,temp3 ;//root in temp1,leaf in temp2,finished root in temp3 
+    temp1.push_back(root);
+    while(pts_to_pts.size() > 0){
+        if(temp1.size() == 0 && temp2.size() == 0){
+            for(auto it2 = pts_to_pts.begin(); it2 != pts_to_pts.end(); it2++){
+                for(auto it4 = temp3.begin(); it4 != temp3.end()-1; it4++){
+                    for(auto it5 = it4+1; it5 != temp3.end(); it5++){
+                        if(between_two_st_pts(*it4,*it5,it2->first)){
+                            if((*it4)->is_fanout(*it5)){
+                                (*it4)->del_fanout(*it5);
+                                (*it5)->reset_fanin();
+                                (*it4)->set_fanout(it2->first);
+                                (it2->first)->set_fanin(*it4);
+                                (it2->first)->set_fanout(*it5);
+                                (*it5)->set_fanin(it2->first);
+                                temp2.push_back(it2->first);
+                                goto stop;
+                            }
+                            else if((*it5)->is_fanout(*it4)){
+                                (*it5)->del_fanout(*it4);
+                                (*it4)->reset_fanin();
+                                (*it5)->set_fanout(it2->first);
+                                (it2->first)->set_fanin(*it5);
+                                (it2->first)->set_fanout(*it4);
+                                (*it4)->set_fanin(it2->first);
+                                temp2.push_back(it2->first);                            
+                                goto stop;
+                            }     
+                        }
+                        else if(between_two_st_pts(*it4,*it5,it2->second)){
+                            if((*it4)->is_fanout(*it5)){
+                                (*it4)->del_fanout(*it5);
+                                (*it5)->reset_fanin();
+                                (*it4)->set_fanout(it2->second);
+                                (it2->second)->set_fanin(*it4);
+                                (it2->second)->set_fanout(*it5);
+                                (*it5)->set_fanin(it2->second);
+                                temp2.push_back(it2->second);
+                                goto stop;
+                            }
+                            else if((*it5)->is_fanout(*it4)){
+                                (*it5)->del_fanout(*it4);
+                                (*it4)->reset_fanin();
+                                (*it5)->set_fanout(it2->second);                            
+                                (it2->second)->set_fanin(*it5);
+                                (it2->second)->set_fanout(*it4);
+                                (*it4)->set_fanin(it2->second);
+                                temp2.push_back(it2->second);
+                                goto stop;
+                            } 
+                        }
+                    }
+                } 
+                stop: ; 
+            }
+        }
+        for(auto it = temp1.begin(); it != temp1.end(); it++){
+            for(auto it2 = pts_to_pts.begin(); it2 != pts_to_pts.end(); it2++){
+                if(*(it2->first) == **it){
+                    it1 = find (temp3.begin(), temp3.end(), (it2->second));
+                    it3 = find (temp2.begin(), temp2.end(), (it2->second));
+                    if(it1 != temp3.end() | it3 != temp2.end()){
+                        pts_to_pts.erase(it2);
+                        if(pts_to_pts.size() == 0){
+                            return ;
+                        }
+                        it2 -= 1;
+                    }     
+                    else{
+                        (*it)->set_fanout(it2->second);
+                        (it2->second)->set_fanin(*it);
+                        temp2.push_back(it2->second);
+                        pts_to_pts.erase(it2);            
+                        if(pts_to_pts.size() == 0){
+                            return ;
+                        }
+                        it2 -= 1;
+                    }
+                }
+                else if(*(it2->second) == **it){
+                    it1 = find (temp3.begin(), temp3.end(), (it2->first));
+                    it3 = find (temp2.begin(), temp2.end(), (it2->first));
+                    if(it1 != temp3.end() | it3 != temp2.end()){
+                        pts_to_pts.erase(it2);
+                        if(pts_to_pts.size() == 0){
+                            return ;
+                        }
+                        it2 -= 1;
+
+                    }
+                    else{
+                        (*it)->set_fanout(it2->first);
+                        (it2->first)->set_fanin(*it);
+                        temp2.push_back(it2->first);
+                        pts_to_pts.erase(it2);
+                        if(pts_to_pts.size() == 0){
+                            return ;
+                        }
+                        it2 -= 1;
+                    }  
+                }    
+            }
+        }
+        for(auto it = temp1.begin(); it != temp1.end(); it++){ 
+            temp3.push_back(*(it));
+        }
+        temp1.clear();
+        for(auto it = temp2.begin(); it != temp2.end(); it++){
+            temp1.push_back(*(it));
+        }
+        temp2.clear();
     }
 }
 
@@ -411,6 +500,11 @@ void find_root(vector<pair<Steiner_pts*,Steiner_pts*>> pts_to_pts , string temp_
         netlists[temp_net]->add_root(*(netlists[temp_net]->get_st_pts().begin()));
         it2 = find (netlists[temp_net]->get_st_pts().begin(), netlists[temp_net]->get_st_pts().end(),(netlists[temp_net]->get_root()));
         netlists[temp_net]->erase_st_pts(it2);
+        for(auto it3 = netlists[temp_net]->get_st_pts().begin(); it3 != netlists[temp_net]->get_st_pts().end(); it3++){
+            (*it3)->hi();
+        }
+        netlists[temp_net]->get_root()->hi();   
+        cout << "=====================" << endl;
     }
     else if(pts_to_pts.size() == 0){
         k = 0;
@@ -421,24 +515,19 @@ void find_root(vector<pair<Steiner_pts*,Steiner_pts*>> pts_to_pts , string temp_
                 if((**it).get_layer() == netlists[temp_net]->get_pins()[i]->get_layer() && k == 0){
                     if((**it).get_coord() == netlists[temp_net]->get_pins()[i]->get_cell()->get_coord() && k == 0){
                         netlists[temp_net]->add_root(*it);
-                        // cout << netlists[temp_net]->get_st_pts() .size() <<endl;
-                        // it2 = find (netlists[temp_net]->get_st_pts().begin(), netlists[temp_net]->get_st_pts().end(),(netlists[temp_net]->get_root())); //cancel root in st_pts
-                        // (*it2)->hi();
-                        // netlists[temp_net]->erase_st_pts(it2);
+                        it2 = find (netlists[temp_net]->get_st_pts().begin(), netlists[temp_net]->get_st_pts().end(),(netlists[temp_net]->get_root())); //cancel root in st_pts
+                        netlists[temp_net]->erase_st_pts(it2);
                         for(auto it3 = netlists[temp_net]->get_st_pts().begin(); it3 != netlists[temp_net]->get_st_pts().end(); it3++){
                             (*it3)->hi();
                         }
-                        cout << "=========" << endl;
-                        (*(netlists[temp_net])->get_root()).hi() ;
-                        cout << "=========" << endl;
-                        
+                        netlists[temp_net]->get_root()->hi();   
+                        cout << "=====================" << endl;
                         return ;
                     } 
                 }   
             }     
         }
-    }
-    
+    }  
 }
 
 void readRoutes(){
@@ -521,9 +610,9 @@ void readRoutes(){
                         netlists[temp[6]]->add_st_pts(pts_to_pts[n].second); 
                     }
                 }
-                if(i == num-1){                    //the route of last net
+                if(i == num-1){                    //the routing of last net
                     find_root(pts_to_pts,temp_net);
-                    //build_route(pts_to_pts,netlists[temp[6]]->get_root());
+                    build_route(pts_to_pts,netlists[temp[6]]->get_root());
                     pts_to_pts.clear();
                 }
             }   
@@ -531,7 +620,6 @@ void readRoutes(){
             break;
         }
     }
-
 };
  
 

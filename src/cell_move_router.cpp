@@ -43,4 +43,5 @@ int main()
     readCellInst();
     readNets();
     readRoutes();
+    cout << (netlists["N1"]->get_root()->get_fanout()).size();
 }
