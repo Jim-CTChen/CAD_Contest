@@ -10,7 +10,7 @@
 #include <definition.h>
 
 // Global variables
-const string file_path = "../test/case3.txt";
+// const string file_path = "../test/case3.txt";
 int maxCellMove = 0;
 int row_of_gGrid = 0;
 int column_of_gGrid = 0;
@@ -34,29 +34,15 @@ vector<AdjHGGrid> adjGGrids;
 using namespace std;
 int main()
 {
-    cout << "hello world!" << endl;
-    ifstream file;
-    file.open(file_path);
-    char line[100];
-    string tok;
-    string temp[6];
-    int pos = 0 ,num = 0;
-    while(file.getline(line,100)){
-        pos = myStrGetTok(line,tok,0,' ');
-        if(tok == "NumCellInst"){
-            myStrGetTok(line,tok,pos,' ');
-            num = stoi(tok); 
-            for(int i=0 ;i<num ;i++){
-                file.getline(line,100);
-                pos = myStrGetTok(line,tok,0,' ');
-                for(int i=0 ;i<6 ;i++){
-                    temp[i] = tok;
-                    pos = myStrGetTok(line,tok,pos,' ');      
-                }
-                cout << temp[0] <<endl;
-            }
-            break;
-        }
-    }
-
+    init();
+    readMaxCellMove();
+    readGGridBoundaryIdx();
+    readLayer();
+    readNumNonDefaultSupplyGGrid();
+    readMasterCell();
+    readNeighborCellExtraDemand();
+    readCellInst();
+    readNets();
+    readRoutes();
+    cout << (netlists["N1"]->get_root()->get_fanout()).size();
 }

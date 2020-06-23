@@ -14,13 +14,6 @@ size_t myStrGetTok(const string& str, string& tok, size_t pos = 0,
    return end;
 }
 
-<<<<<<< HEAD
-// int getmin(int i, int j)
-// {
-//    if (i >= j) return j;
-//    else return i;
-// }
-=======
 bool
 myStr2Int(const string& str, int& num)
 {
@@ -40,4 +33,3 @@ myStr2Int(const string& str, int& num)
    num *= sign;
    return valid;
 }
->>>>>>> readin2

@@ -1,7 +1,7 @@
 CXX = g++
 CFLAGS = -Wall -std=c++11 -Wno-psabi
 OPTFLAGS = -g
-LDFLAGS = -L/usr/local/lib -Llib/
+# LDFLAGS = -L/usr/local/lib -Llib/
 # OPTFLAGS = -O3
 
 SRC_DIR = src/
@@ -21,12 +21,11 @@ OBJ = $(SRC:%.cpp=%.o)
 all: $(BIN)
 
 $(BIN): $(OBJ)
-	@echo $(FASTROUTE_SRC)
-	$(CXX) $(CFLAGS) $(OPTFLAGS) $(LDFLAGS) $(LIBS) $^  $(BIN)
+	$(CXX) $(CFLAGS) $(OPTFLAGS) $^ $(LIBS) -o $(BIN)
 	@echo "FINISH"
 
 %.o : %.cpp
 	@echo ">> compiling: $<"
-	$(CXX) $(CFLAGS) $(INC) $(LDFLAGS) $(LIBS) -c $< -o $@
+	$(CXX) $(CFLAGS) $(INC) $(LIBS) -c $< -o $@
 clean:
-	rm -f $(BIN) $(OBJ) $(OBJ_FASTROUTE) $(OBJ_FLUTE)
+	rm -f $(BIN) $(OBJ)

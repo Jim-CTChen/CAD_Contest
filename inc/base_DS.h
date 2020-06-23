@@ -49,14 +49,14 @@ class Steiner_pts{
         int get_layer()                 { return layer; }
         pair<int, int> get_coord()      { return coord; }
         Steiner_pts* get_fanin()        { return fanin; }
-        vector<Steiner_pts*> get_fanout() { return fanout; }
+        vector<Steiner_pts*>& get_fanout() { return fanout; }
         char checkDirection(Steiner_pts*);
         int getDistance(Steiner_pts*, char);
-        int addDemand();
-        pair<int, int> get_coord()      { return coord; }
-        int get_layer()                 { return layer; }
         bool operator== (Steiner_pts&);
-
+        void hi()  {cout << coord.first << " " << coord.second << " " << layer <<endl;}
+        bool is_fanout(Steiner_pts* s);
+        void del_fanout(Steiner_pts* s);
+        int addDemand();
     private:
         // data member
         pair<int, int>          coord;
@@ -79,6 +79,7 @@ class Pin{
         string& get_name()  {return name;}
         int& get_layer()  {return layer;}
         Cell*& get_cell()  {return cell;}
+        Steiner_pts* get_steiner_pts() { return steiner_pts; }
     private:
         // data member
         int          layer;
@@ -149,14 +150,14 @@ class MasterCell{
             pins.reserve(p);
             blockages.reserve(b);
         }
+        string& get_name()  {return name;}
         void set_pin(string n, string l, Cell* c)    { pins.push_back(Pin(n, l, c)); }
         void set_blockage(string n, string l, int d) 
                                             { blockages.push_back(Blockage(n, l, d)); }
         // void add_sGGrid(SameGGrid* s)       { sGGrid.push_back(s); }
         // void add_aGGrid(AdjHGGrid* a)       { aGGrid.push_back(a); }
-        string get_name()                   { return name; }
-        vector<Pin> get_pins()              { return pins; }
-        vector<Blockage> get_blockage()     { return blockages; }
+        vector<Pin>& get_pins()             { return pins; }
+        vector<Blockage>& get_blkgs()       { return blockages;}
     private:    
         // data member
         string                      name;

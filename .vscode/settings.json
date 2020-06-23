@@ -5,6 +5,10 @@
         "typeinfo": "cpp",
         "iostream": "cpp",
         "*.tcc": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "array": "cpp",
+        "initializer_list": "cpp",
+        "utility": "cpp",
+        "ostream": "cpp"
     }
 }
