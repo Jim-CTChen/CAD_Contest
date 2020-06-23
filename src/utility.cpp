@@ -14,8 +14,30 @@ size_t myStrGetTok(const string& str, string& tok, size_t pos = 0,
    return end;
 }
 
+<<<<<<< HEAD
 // int getmin(int i, int j)
 // {
 //    if (i >= j) return j;
 //    else return i;
 // }
+=======
+bool
+myStr2Int(const string& str, int& num)
+{
+   num = 0;
+   size_t i = 0;
+   int sign = 1;
+   if (str[0] == '-') { sign = -1; i = 1; }
+   bool valid = false;
+   for (; i < str.size(); ++i) {
+      if (isdigit(str[i])) {
+         num *= 10;
+         num += int(str[i] - '0');
+         valid = true;
+      }
+      else return false;
+   }
+   num *= sign;
+   return valid;
+}
+>>>>>>> readin2

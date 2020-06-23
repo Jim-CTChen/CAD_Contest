@@ -16,12 +16,16 @@ class Netlist{
         Netlist(){}
         ~Netlist(){}
         void add_root( Steiner_pts* s) { root = s; }
-        void add_pin(Pin* p)    { pins.push_back(p); }
-        Steiner_pts* get_root() { return root; }
-        vector<Pin*> get_pins() { return pins; }
+        void add_pin(Pin* p) { pins.push_back(p); }
+        Steiner_pts*& get_root()  {return root;}
+        vector<Pin*>& get_pins() {return pins;} 
+        vector<Steiner_pts*>& get_st_pts() {return steiner_pts;} 
+        void add_st_pts( Steiner_pts* s) {steiner_pts.push_back(s);}
+        void erase_st_pts(vector<Steiner_pts*>::iterator it) {steiner_pts.erase(it);}
     private:
         Steiner_pts*    root;
         vector<Pin*>    pins;
+        vector<Steiner_pts*>    steiner_pts;
 };                                                              
 
 

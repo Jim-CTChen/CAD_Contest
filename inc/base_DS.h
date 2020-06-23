@@ -53,6 +53,10 @@ class Steiner_pts{
         char checkDirection(Steiner_pts*);
         int getDistance(Steiner_pts*, char);
         int addDemand();
+        pair<int, int> get_coord()      { return coord; }
+        int get_layer()                 { return layer; }
+        bool operator== (Steiner_pts&);
+
     private:
         // data member
         pair<int, int>          coord;
@@ -65,14 +69,16 @@ class Steiner_pts{
 };
 
 class Pin{
-    friend class cell;
+    friend class Cell;
     public:
         Pin(string n, string l, Cell* c):name(n), cell(c){ layer = layers[l]->get_index(); }
         ~Pin() { delete steiner_pts; }
         void set_steiner_pts(int x, int y) {
             steiner_pts = new Steiner_pts(x, y, layer);
         }
-        Steiner_pts* get_steiner_pts() { return steiner_pts; }
+        string& get_name()  {return name;}
+        int& get_layer()  {return layer;}
+        Cell*& get_cell()  {return cell;}
     private:
         // data member
         int          layer;
@@ -162,15 +168,12 @@ class MasterCell{
 
 class Cell{
     public: 
-        Cell(string, MasterCell*n, int a, int b, string):mc(n){
-            pins = mc->get_pins();
-            coord =pair<int, int>(a, b);
-        }
+        Cell(string, string, int, int , string);
         ~Cell(){}
         void moveTo(int, int); // cell movement
-        MasterCell* get_mc()  { return mc; }
+        MasterCell*& get_mc()  { return mc; }
+        pair<int, int>& get_coord()  {return coord;}
         vector<Pin>& get_pins()  { return pins; }
-        pair<int, int> get_coord() { return coord; }
     private:
         // data member
         MasterCell*                 mc = 0;

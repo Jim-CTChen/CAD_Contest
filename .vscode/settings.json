@@ -4,6 +4,7 @@
         "iosfwd": "cpp",
         "typeinfo": "cpp",
         "iostream": "cpp",
-        "*.tcc": "cpp"
+        "*.tcc": "cpp",
+        "vector": "cpp"
     }
 }
