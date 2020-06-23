@@ -47,19 +47,24 @@ class Grid{
 
 class Demand{
     public:
-        Demand(){}
+        Demand(){  }
         ~Demand(){}
         // public member function
         void addDemand(int i)   { demand += i; }
         void resetDemand()      { demand = 0; }
         int  getDemand()        { return demand; }
+        int  getSupply()        { return supply; }
+        void setSupply(int s)   { supply = s;}
         void setFlag()          { flag = DEMANDFLAG; }
         bool checkFlag()        { return (flag == DEMANDFLAG); }
+        bool checkValidity()    { return supply >= demand; }
+        friend ostream& operator<<(ostream& os, const Demand& dt) { os << dt.demand; }
         // public member variable
 
     private:
-        int demand;
-        int8_t flag;
+        int demand = 0;
+        int supply = 0;
+        int8_t flag = 0;
 };
 
 #endif // ADVANCE_DS_H

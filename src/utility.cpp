@@ -21,6 +21,7 @@ myStr2Int(const string& str, int& num)
    size_t i = 0;
    int sign = 1;
    if (str[0] == '-') { sign = -1; i = 1; }
+   if (str[0] == '+') { sign =  1; i = 1; }
    bool valid = false;
    for (; i < str.size(); ++i) {
       if (isdigit(str[i])) {

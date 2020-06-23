@@ -26,6 +26,7 @@ char Steiner_pts::checkDirection(Steiner_pts* s)
     if      (coord.first != s->coord.first) return 'x';
     else if (coord.second != s->coord.second) return 'y';
     else if (layer != s->layer)  return 'z';
+    else { cerr << "Not in same line!!!" << endl; return '0'; }
 }
 
 int Steiner_pts::getDistance(Steiner_pts* s, char d = '0')
@@ -34,6 +35,7 @@ int Steiner_pts::getDistance(Steiner_pts* s, char d = '0')
         if      (coord.first != s->coord.first) d = 'x';
         else if (coord.second != s->coord.second) d = 'y';
         else if (layer != s->layer)  d = 'z';
+        else { cerr << "Not in same line!!!" << endl; return 0; }
     }
 
     switch (d) {
@@ -52,32 +54,39 @@ int Steiner_pts::getDistance(Steiner_pts* s, char d = '0')
     }
 }
 
-int Steiner_pts::addDemand()
+void Steiner_pts::addDemand()
 {
     char d; // direction
     int s;  // distance
     bool p; // positivity of distance
+    if(fanout.empty())  return; // leaf case
     for(auto it : fanout)
     {
         d = checkDirection(it);
         s = getDistance(it, d);
         if (s < 0) p = false;
         else p = true;
+        
+        // debug
+        // cerr << *this << " " << *it << " " << d << " " << s << endl;
+
         for(int i = 0; i < abs(s)+1; ++i) // +1 for head and end both need to add demand
         {
             switch (d)
             {
             case 'x':
                 if(p) {
-                    Demand& tmp = all_demand[coord.first+i][coord.second][layer];
+                    Demand& tmp = all_demand[coord.first+i-1][coord.second-1][layer-1];
                     if( !tmp.checkFlag() ){ // haven't addDemand in this netlist
+                        // cerr << '\t' << coord.first+i << " " << coord.second << " " << layer << " +1" << endl;
                         tmp.addDemand(1);
                         tmp.setFlag();
                     }
-                }   
+                }
                 else  {
-                    Demand& tmp = all_demand[coord.first-i][coord.second][layer];
+                    Demand& tmp = all_demand[coord.first-i-1][coord.second-1][layer-1];
                     if( !tmp.checkFlag() ){
+                        // cerr << '\t' << coord.first-i << " " << coord.second << " " << layer << " +1" << endl;
                         tmp.addDemand(1);
                         tmp.setFlag();
                     }
@@ -86,15 +95,17 @@ int Steiner_pts::addDemand()
             
             case 'y':
                 if(p) {
-                    Demand& tmp = all_demand[coord.first][coord.second+i][layer];
+                    Demand& tmp = all_demand[coord.first-1][coord.second+i-1][layer-1];
                     if( !tmp.checkFlag() ){
+                        // cerr << '\t' << coord.first << " " << coord.second+i << " " << layer << " +1" << endl;
                         tmp.addDemand(1);
                         tmp.setFlag();
                     }
                 }   
                 else  {
-                    Demand& tmp = all_demand[coord.first][coord.second-i][layer];
+                    Demand& tmp = all_demand[coord.first-1][coord.second-i-1][layer-1];
                     if( !tmp.checkFlag() ){
+                        // cerr << '\t' << coord.first << " " << coord.second-i << " " << layer << " +1" << endl;
                         tmp.addDemand(1);
                         tmp.setFlag();
                     }
@@ -103,16 +114,19 @@ int Steiner_pts::addDemand()
 
             case 'z':
                 if(p) {
-                    Demand& tmp = all_demand[coord.first][coord.second][layer+i];
+                    Demand& tmp = all_demand[coord.first-1][coord.second-1][layer+i-1];
                     if( !tmp.checkFlag() ){
+                        // cerr << '\t' << coord.first << " " << coord.second << " " << layer+i << " +1" << endl;
                         tmp.addDemand(1);
                         tmp.setFlag();
                     }
                 }   
                 else  {
-                    Demand& tmp = all_demand[coord.first][coord.second][layer-i];
+                    Demand& tmp = all_demand[coord.first-1][coord.second-1][layer-i-1];
                     if( !tmp.checkFlag() ){
-                         tmp.setFlag();
+                        // cerr << '\t' << coord.first << " " << coord.second << " " << layer-i << " +1" << endl;
+                        tmp.addDemand(1);
+                        tmp.setFlag();
                     }
                 }
                 break;
@@ -130,7 +144,7 @@ Cell::Cell(string n, string m, int x, int y, string move){
     coord = pair<int, int>(x, y);
     if(move == "Fixed") movable = false;
     else movable = true;
-    pins = mc->pins; 
+    pins = mc->pins;
     for(auto it = pins.begin(); it != pins.end(); it++){
         it->set_steiner_pts(x, y);
         it->cell = this;

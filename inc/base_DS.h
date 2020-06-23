@@ -40,7 +40,7 @@ class Steiner_pts{
         Steiner_pts(int x, int y, int z):layer(z){
             coord = pair<int, int> (x, y);
         }
-        ~Steiner_pts(){}
+        ~Steiner_pts() {}
         void set_fanin(Steiner_pts* s)  { fanin = s; }
         void set_fanout(Steiner_pts* s) { fanout.push_back(s); }
         void set_netlist(Netlist* n)    { nlist = n; }
@@ -53,10 +53,13 @@ class Steiner_pts{
         char checkDirection(Steiner_pts*);
         int getDistance(Steiner_pts*, char);
         bool operator== (Steiner_pts&);
+        friend ostream& operator<<(ostream& os, const Steiner_pts& pt) {
+            os << "(" << pt.coord.first << ", " << pt.coord.second << ", " << pt.layer << ")";
+        }
         void hi()  {cout << coord.first << " " << coord.second << " " << layer <<endl;}
         bool is_fanout(Steiner_pts* s);
         void del_fanout(Steiner_pts* s);
-        int addDemand();
+        void addDemand();
     private:
         // data member
         pair<int, int>          coord;
@@ -154,12 +157,8 @@ class MasterCell{
         void set_pin(string n, string l, Cell* c)    { pins.push_back(Pin(n, l, c)); }
         void set_blockage(string n, string l, int d) 
                                             { blockages.push_back(Blockage(n, l, d)); }
-        // void add_sGGrid(SameGGrid* s)       { sGGrid.push_back(s); }
-        // void add_aGGrid(AdjHGGrid* a)       { aGGrid.push_back(a); }
-        vector<Pin>& get_pins()             { return pins; }
-        vector<Blockage>& get_blkgs()       { return blockages;}
-    private:    
-        // data member
+        vector<Blockage>& get_blkgs() { return blockages; }
+        // void add_sGGreturn
         string                      name;
         vector<Pin>                 pins;
         vector<Blockage>            blockages;

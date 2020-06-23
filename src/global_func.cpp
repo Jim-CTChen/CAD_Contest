@@ -8,6 +8,7 @@
 #include <utility.h>
 #include <definition.h>
 #include <queue>
+#include <stack>
 #include <algorithm>
 using namespace std;
 
@@ -28,7 +29,7 @@ extern Grid** model;
 extern Demand*** all_demand;
 
 
-void init()
+void init() // init 2-D model, 3-D all_demand, extra_supply
 {
     // form a 2-D model for Grids
     model = new Grid* [row_of_gGrid];
@@ -36,6 +37,9 @@ void init()
     {
         model[i] = new Grid [column_of_gGrid];
     }
+    
+    int* supply = new int[layer_of_gGrid];
+    for(auto &it : layers)  supply[it.second->get_index()-1] = it.second->get_supply();
 
     // form a 3-D model for demands
     all_demand = new Demand** [row_of_gGrid];
@@ -44,6 +48,9 @@ void init()
         all_demand[i] = new Demand* [column_of_gGrid];
         for(int j = 0; j < column_of_gGrid; ++j){
             all_demand[i][j] = new Demand [layer_of_gGrid];
+            for(int k = 0; k < layer_of_gGrid; ++k){
+                all_demand[i][j][k].setSupply(supply[k]);
+            }
         }
     }
 }
@@ -118,13 +125,14 @@ void readLayer(){
     file.open(file_path);
     string line;
     string tok;
-    string temp[5];
+    string temp[5]; // Lay M1 1 H 10
     int pos = 0 ,num = 0;
     while(getline(file,line)){
         pos = myStrGetTok(line,tok,0,' ');
         if(tok == "NumLayer"){
             myStrGetTok(line,tok,pos,' ');
             num = stoi(tok); 
+            layer_of_gGrid = num;
             for(int i=0 ;i<num ;i++){
                 getline(file,line);
                 pos = myStrGetTok(line,tok,0,' ');
@@ -144,21 +152,22 @@ void readNumNonDefaultSupplyGGrid(){
     file.open(file_path);
     string line;
     string tok;
-    int temp[4];
-    int pos = 0 ,num = 0;
+    int temp[4]; // 2 2 1 +3
+    int pos = 0 ,num = 0, extra = 0;
     while(getline(file,line)){
         pos = myStrGetTok(line,tok,0,' ');
         if(tok == "NumNonDefaultSupplyGGrid"){
             myStrGetTok(line,tok,pos,' ');
-            num = stoi(tok); 
+            num = stoi(tok);
             for(int i=0 ;i<num ;i++){
                 getline(file,line);
                 pos = myStrGetTok(line,tok,0,' ');
-                for(int i=0 ;i<4 ;i++){
+                for(int i=0 ;i<3 ;i++){
                     temp[i] = stoi(tok);
                     pos = myStrGetTok(line,tok,pos,' ');      
                 }
-                //model[tmep[2]][temp[0]][temp[1]].demand+=[temp[3]];
+                myStr2Int(tok, extra);
+                all_demand[temp[0]-1][temp[1]-1][temp[2]-1].setSupply(all_demand[temp[0]-1][temp[1]-1][temp[2]-1].getSupply() + extra);
             }
             break;
         }
@@ -170,7 +179,7 @@ void readMasterCell(){
     file.open(file_path);
     string line;
     string tok;
-    string temp[4],tempPin[2],tempBlkg[3];
+    string temp[4],tempPin[2],tempBlkg[3]; // MasterCell MC3 3 0
     int pos = 0 ,num = 0;
     int str2Int_1 ,str2Int_2 ,str2Int_3;
     while(getline(file,line)){
@@ -232,7 +241,7 @@ void readNeighborCellExtraDemand(){
     file.open(file_path);
     string line;
     string tok;
-    string temp[5];
+    string temp[5]; // adjHGGrid MC1 MC2 M1 1
     int pos = 0 ,num = 0;
     int str2Int_1 ,str2Int_2;
     while(getline(file,line)){
@@ -247,7 +256,9 @@ void readNeighborCellExtraDemand(){
                     temp[i] = tok;
                     pos = myStrGetTok(line,tok,pos,' ');      
                 }
-                myStr2Int(temp[3], str2Int_1);
+                for(auto &it : layers){
+                    if(it.first == temp[3]) str2Int_1 = it.second->get_index();
+                }
                 myStr2Int(temp[4], str2Int_2);
                 if(temp[0] == "sameGGrid"){
                     sameGGrids.push_back(SameGGrid(temp[1],temp[2],str2Int_1,str2Int_2));
@@ -267,7 +278,7 @@ void readCellInst(){
     file.open(file_path);
     string line;
     string tok;
-    string temp[6];
+    string temp[6]; // CellInst C1 MC1 1 1 Movable
     int pos = 0 ,num = 0, layernum = 0;
     int str2Int_1 ,str2Int_2;
     while(getline(file,line)){
@@ -284,7 +295,9 @@ void readCellInst(){
                 }
                 myStr2Int(temp[3], str2Int_1);
                 myStr2Int(temp[4], str2Int_2);
-                cells.insert(pair<string,Cell*>(temp[1],new Cell(temp[1],temp[2],str2Int_1,str2Int_2,temp[5])));
+                Cell* new_cell = new Cell(temp[1],temp[2],str2Int_1,str2Int_2,temp[5]);
+                cells.insert(pair<string,Cell*>(temp[1], new_cell));
+                model[str2Int_1-1][str2Int_2-1].add_cell(new_cell);
             }
             break;
         }
@@ -359,7 +372,7 @@ bool between_two_st_pts(Steiner_pts* a, Steiner_pts* b, Steiner_pts* x){
     }
     else{
         if(x->get_coord().first == a->get_coord().first  && x->get_coord() == b->get_coord()){
-            cout << "s";
+            // cout << "s";
             if(x->get_layer() < a->get_layer()  && x->get_layer()  > b->get_layer() ){
                 return true;
             }
@@ -499,11 +512,11 @@ void find_root(vector<pair<Steiner_pts*,Steiner_pts*>> pts_to_pts , string temp_
         netlists[temp_net]->add_root(*(netlists[temp_net]->get_st_pts().begin()));
         it2 = find (netlists[temp_net]->get_st_pts().begin(), netlists[temp_net]->get_st_pts().end(),(netlists[temp_net]->get_root()));
         netlists[temp_net]->erase_st_pts(it2);
-        for(auto it3 = netlists[temp_net]->get_st_pts().begin(); it3 != netlists[temp_net]->get_st_pts().end(); it3++){
-            (*it3)->hi();
-        }
-        netlists[temp_net]->get_root()->hi();   
-        cout << "=====================" << endl;
+        // for(auto it3 = netlists[temp_net]->get_st_pts().begin(); it3 != netlists[temp_net]->get_st_pts().end(); it3++){
+        //     (*it3)->hi();
+        // }
+        // netlists[temp_net]->get_root()->hi();   
+        // cout << "=====================" << endl;
     }
     else if(pts_to_pts.size() == 0){
         k = 0;
@@ -516,11 +529,11 @@ void find_root(vector<pair<Steiner_pts*,Steiner_pts*>> pts_to_pts , string temp_
                         netlists[temp_net]->add_root(*it);
                         it2 = find (netlists[temp_net]->get_st_pts().begin(), netlists[temp_net]->get_st_pts().end(),(netlists[temp_net]->get_root())); //cancel root in st_pts
                         netlists[temp_net]->erase_st_pts(it2);
-                        for(auto it3 = netlists[temp_net]->get_st_pts().begin(); it3 != netlists[temp_net]->get_st_pts().end(); it3++){
-                            (*it3)->hi();
-                        }
-                        netlists[temp_net]->get_root()->hi();   
-                        cout << "=====================" << endl;
+                        // for(auto it3 = netlists[temp_net]->get_st_pts().begin(); it3 != netlists[temp_net]->get_st_pts().end(); it3++){
+                        //     (*it3)->hi();
+                        // }
+                        // netlists[temp_net]->get_root()->hi();   
+                        // cout << "=====================" << endl;
                         return ;
                     } 
                 }   
@@ -580,7 +593,7 @@ void readRoutes(){
                 myStr2Int(temp[4], str2Int_5);
                 myStr2Int(temp[5], str2Int_6);
                 pts_to_pts.push_back(pair<Steiner_pts*,Steiner_pts*>(new Steiner_pts(str2Int_1,str2Int_2,str2Int_3),new Steiner_pts(str2Int_4,str2Int_5,str2Int_6)));
-                cout << temp_net <<  " " << n << endl;
+                // cout << temp_net <<  " " << n << endl;
                 
                 if(netlists[temp_net]->get_st_pts().size() == 0){      //put pts_pts elements in st_pts
                     netlists[temp_net]->add_st_pts(pts_to_pts[n].first);
@@ -630,12 +643,13 @@ void countDemand() // routing + blockage + extra demand
     // counting routing by iteration for netlist
     for(auto &it : netlists) // for every netlist, count demand of routing
     {
+        // cerr << "netlist " << it.first << endl;
         DEMANDFLAG++;
         queue<Steiner_pts*> q; // for BFS
         Steiner_pts* tmp = 0;
         if(it.second->get_root() == 0) { // in case all pins in the netlist are in the same grid
             tmp = it.second->get_pins()[0]->get_steiner_pts();
-            all_demand[tmp->get_coord().first][tmp->get_coord().second][tmp->get_layer()].addDemand(1);
+            all_demand[tmp->get_coord().first-1][tmp->get_coord().second-1][tmp->get_layer()-1].addDemand(1);
             break;
         }
         q.push(it.second->get_root());
@@ -656,7 +670,7 @@ void countDemand() // routing + blockage + extra demand
     {
         Cell* tmp = it.second;
         for(auto &iit : tmp->get_mc()->get_blkgs()){ // for every blockage in one cell
-            all_demand[tmp->get_coord().first][tmp->get_coord().second][iit.get_layer()].addDemand(iit.get_extra_demand());
+            all_demand[tmp->get_coord().first-1][tmp->get_coord().second-1][iit.get_layer()-1].addDemand(iit.get_extra_demand());
         }
     }
 
@@ -686,11 +700,7 @@ void countDemand() // routing + blockage + extra demand
             // calculating sameGGrids
             for(auto& it : sameGGrids){
                 int minimum = min(countCurMC[it.get_mc1()], countCurMC[it.get_mc2()]);
-                all_demand[i][j][it.get_layer()].addDemand(it.get_extra_demand()*minimum);
-                // if(countCurMC[it.get_mc1()] >= countCurMC[it.get_mc2()]){
-                //     all_demand[i][j][it.get_layer()].addDemand(it.get_extra_demand()*countCurMC[it.get_mc2()]);
-                // }
-                // else all_demand[i][j][it.get_layer()].addDemand(it.get_extra_demand()*countCurMC[it.get_mc1()]);
+                all_demand[i][j][it.get_layer()-1].addDemand(it.get_extra_demand()*minimum);
             }
 
             // calculating adjGGrids
@@ -706,8 +716,57 @@ void countDemand() // routing + blockage + extra demand
                     pairCurPre = min(countPreMC[it.get_mc1()], countCurMC[it.get_mc2()]) + min(countPreMC[it.get_mc2()], countCurMC[it.get_mc1()]);
                     pairCurNxt = min(countCurMC[it.get_mc1()], countNxtMC[it.get_mc2()]) + min(countCurMC[it.get_mc2()], countNxtMC[it.get_mc1()]);
                 }
-                all_demand[i][j][it.get_layer()].addDemand(it.get_extra_demand()*(pairCurPre+pairCurNxt));
+                all_demand[i][j][it.get_layer()-1].addDemand(it.get_extra_demand()*(pairCurPre+pairCurNxt));
             }
         }
     }
 }
+
+void printDemand()
+{
+    cout << "======================" << endl;
+    for(int k = 0; k < layer_of_gGrid; ++k) {
+        cout << "Layer " << k << endl;
+        for(int j = 0; j < row_of_gGrid; ++j) {
+            for(int i = 0; i < column_of_gGrid; ++i) {
+                cout << all_demand[j][i][k] << " ";
+            }
+            cout << endl;
+        }
+        cout << "======================" << endl;
+    }
+}
+
+void printSupply()
+{
+    cout << "======================" << endl;
+    for(int k = 0; k < layer_of_gGrid; ++k) {
+        cout << "Layer " << k << endl;
+        for(int j = 0; j < row_of_gGrid; ++j) {
+            for(int i = 0; i < column_of_gGrid; ++i) {
+                cout << all_demand[j][i][k].getSupply() << " ";
+            }
+            cout << endl;
+        }
+        cout << "======================" << endl;
+    }
+}
+
+void netlistBFS()
+{
+    for(auto &it : netlists) {
+        queue<Steiner_pts*> bfs;
+        cout << "Netlist \"" << it.first << "\"" << endl;
+        if(it.second->get_root() == 0)  continue;
+        bfs.push(it.second->get_root());
+        while(!bfs.empty()) {
+            cout << *bfs.front() << endl;
+            for(auto &it : bfs.front()->get_fanout()){
+                bfs.push(it);
+            }
+            bfs.pop();
+        }
+        cout << "=============" << endl;
+    }
+}
+
