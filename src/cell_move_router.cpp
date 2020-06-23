@@ -10,7 +10,7 @@
 #include <definition.h>
 
 // Global variables
-// const string file_path = "../test/case3.txt";
+const string file_path = "../test/case3.txt";
 int maxCellMove = 0;
 int row_of_gGrid = 0;
 int column_of_gGrid = 0;
@@ -34,7 +34,7 @@ vector<AdjHGGrid> adjGGrids;
 using namespace std;
 int main()
 {
-    // cout << "hello world!" << endl;
+    cout << "hello world!" << endl;
     ifstream file;
     file.open(file_path);
     char line[100];
@@ -58,4 +58,5 @@ int main()
             break;
         }
     }
+
 }

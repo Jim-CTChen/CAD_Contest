@@ -22,7 +22,7 @@ class Layer{
     public:
         Layer(string n, int i, string d, int s):name(n), index(i), direction(d), supply(s){}
         string get_name()       { return name;}
-        string   get_direction()  { return direction; }
+        string get_direction()  { return direction; }
         int    get_index()      { return index; }
         int    get_supply()     { return supply; }
 

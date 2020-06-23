@@ -377,7 +377,7 @@ void countDemand() // routing + blockage + extra demand
     {
         Cell* tmp = it.second;
         for(auto &iit : tmp->get_mc()->get_blockage()){ // for every blockage in one cell
-            all_demand[tmp->get_coord.first][tmp->get_coord.second][iit.get_layer].addDemand(iit.get_extra_demand);
+            all_demand[tmp->get_coord().first][tmp->get_coord().second][iit.get_layer()].addDemand(iit.get_extra_demand());
         }
     }
 

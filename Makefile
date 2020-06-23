@@ -1,13 +1,15 @@
 CXX = g++
 CFLAGS = -Wall -std=c++11 -Wno-psabi
 OPTFLAGS = -g
+LDFLAGS = -L/usr/local/lib -Llib/
 # OPTFLAGS = -O3
 
 SRC_DIR = src/
-INC_DIR = inc/
+INC_DIR = inc/ 
 BIN_DIR = bin/
 LIB_DIR = lib/
 
+LIBS = 
 EXEC = cell_move_router
 BIN	= $(addprefix $(BIN_DIR), $(EXEC))
 INC = -I$(INC_DIR)
@@ -19,11 +21,12 @@ OBJ = $(SRC:%.cpp=%.o)
 all: $(BIN)
 
 $(BIN): $(OBJ)
-	$(CXX) $(CFLAGS) $(OPTFLAGS) $(LDFLAGS) $^ $(LIB) -o $(BIN)
+	@echo $(FASTROUTE_SRC)
+	$(CXX) $(CFLAGS) $(OPTFLAGS) $(LDFLAGS) $(LIBS) $^  $(BIN)
 	@echo "FINISH"
 
 %.o : %.cpp
 	@echo ">> compiling: $<"
-	$(CXX) $(CFLAGS) $(INC) $(LIB) -c $< -o $@
+	$(CXX) $(CFLAGS) $(INC) $(LDFLAGS) $(LIBS) -c $< -o $@
 clean:
-	rm -f $(BIN) $(OBJ)
+	rm -f $(BIN) $(OBJ) $(OBJ_FASTROUTE) $(OBJ_FLUTE)
