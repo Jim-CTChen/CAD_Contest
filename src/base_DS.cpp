@@ -67,8 +67,7 @@ void Steiner_pts::addDemand()
         if (s < 0) p = false;
         else p = true;
         
-        // debug
-        // cerr << *this << " " << *it << " " << d << " " << s << endl;
+        // cerr << '\t' << *this << " " << *it << " " << d << " " << s << endl;// debug
 
         for(int i = 0; i < abs(s)+1; ++i) // +1 for head and end both need to add demand
         {
@@ -78,7 +77,7 @@ void Steiner_pts::addDemand()
                 if(p) {
                     Demand& tmp = all_demand[coord.first+i-1][coord.second-1][layer-1];
                     if( !tmp.checkFlag() ){ // haven't addDemand in this netlist
-                        // cerr << '\t' << coord.first+i << " " << coord.second << " " << layer << " +1" << endl;
+                        // cerr << '\t' << '\t' << "(" << coord.first+i << ", " << coord.second << ", " << layer << ") +1" << endl; // debug
                         tmp.addDemand(1);
                         tmp.setFlag();
                     }
@@ -86,7 +85,7 @@ void Steiner_pts::addDemand()
                 else  {
                     Demand& tmp = all_demand[coord.first-i-1][coord.second-1][layer-1];
                     if( !tmp.checkFlag() ){
-                        // cerr << '\t' << coord.first-i << " " << coord.second << " " << layer << " +1" << endl;
+                        // cerr << '\t' << '\t' << "("<< coord.first-i << ", " << coord.second << ", " << layer << ") +1" << endl; // debug
                         tmp.addDemand(1);
                         tmp.setFlag();
                     }
@@ -97,7 +96,7 @@ void Steiner_pts::addDemand()
                 if(p) {
                     Demand& tmp = all_demand[coord.first-1][coord.second+i-1][layer-1];
                     if( !tmp.checkFlag() ){
-                        // cerr << '\t' << coord.first << " " << coord.second+i << " " << layer << " +1" << endl;
+                        // cerr << '\t' << '\t' << "(" << coord.first << ", " << coord.second+i << ", " << layer << ") +1" << endl; // debug
                         tmp.addDemand(1);
                         tmp.setFlag();
                     }
@@ -105,7 +104,7 @@ void Steiner_pts::addDemand()
                 else  {
                     Demand& tmp = all_demand[coord.first-1][coord.second-i-1][layer-1];
                     if( !tmp.checkFlag() ){
-                        // cerr << '\t' << coord.first << " " << coord.second-i << " " << layer << " +1" << endl;
+                        // cerr << '\t' << '\t' << "(" <<  coord.first << ", " << coord.second-i << ", " << layer << ") +1" << endl; // debug
                         tmp.addDemand(1);
                         tmp.setFlag();
                     }
@@ -116,7 +115,7 @@ void Steiner_pts::addDemand()
                 if(p) {
                     Demand& tmp = all_demand[coord.first-1][coord.second-1][layer+i-1];
                     if( !tmp.checkFlag() ){
-                        // cerr << '\t' << coord.first << " " << coord.second << " " << layer+i << " +1" << endl;
+                        // cerr << '\t' << '\t' << "(" << coord.first << ", " << coord.second << ", " << layer+i << ") +1" << endl; // debug
                         tmp.addDemand(1);
                         tmp.setFlag();
                     }
@@ -124,7 +123,7 @@ void Steiner_pts::addDemand()
                 else  {
                     Demand& tmp = all_demand[coord.first-1][coord.second-1][layer-i-1];
                     if( !tmp.checkFlag() ){
-                        // cerr << '\t' << coord.first << " " << coord.second << " " << layer-i << " +1" << endl;
+                        // cerr << '\t' << '\t'<< "(" << coord.first << ", " << coord.second << ", " << layer-i << ") +1" << endl; // debug
                         tmp.addDemand(1);
                         tmp.setFlag();
                     }

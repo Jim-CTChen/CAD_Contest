@@ -19,6 +19,7 @@ extern int layer_of_gGrid;
 extern int maxCellMove;
 extern int row_of_gGrid;
 extern int column_of_gGrid;
+extern string file_path;
 extern unordered_map <string, Layer*> layers;  
 extern unordered_map <string, MasterCell*> mastercells;
 extern unordered_map <string, Netlist*> netlists;
@@ -643,14 +644,16 @@ void countDemand() // routing + blockage + extra demand
     // counting routing by iteration for netlist
     for(auto &it : netlists) // for every netlist, count demand of routing
     {
-        // cerr << "netlist " << it.first << endl;
+        // cerr << "===========================================" << endl; // debug
+        // cerr << "netlist " << it.first << endl; // debug
         DEMANDFLAG++;
         queue<Steiner_pts*> q; // for BFS
         Steiner_pts* tmp = 0;
         if(it.second->get_root() == 0) { // in case all pins in the netlist are in the same grid
             tmp = it.second->get_pins()[0]->get_steiner_pts();
             all_demand[tmp->get_coord().first-1][tmp->get_coord().second-1][tmp->get_layer()-1].addDemand(1);
-            break;
+            // cerr << '\t' << '\t' << *tmp << " +1" << endl; // debug
+            continue;
         }
         q.push(it.second->get_root());
         while(!q.empty())
@@ -757,7 +760,11 @@ void netlistBFS()
     for(auto &it : netlists) {
         queue<Steiner_pts*> bfs;
         cout << "Netlist \"" << it.first << "\"" << endl;
-        if(it.second->get_root() == 0)  continue;
+        if(it.second->get_root() == 0) {
+            cout << *it.second->get_pins()[0]->get_steiner_pts() << endl;
+            cout << "=============" << endl; 
+            continue; 
+        } 
         bfs.push(it.second->get_root());
         while(!bfs.empty()) {
             cout << *bfs.front() << endl;

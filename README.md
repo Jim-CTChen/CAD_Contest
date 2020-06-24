@@ -1,7 +1,7 @@
 # CAD contest 2020 problem B
 
 ## Files
-CAD_Contest
+- CAD_Contest
     - inc
         - base_DS.h : data structure except netlist & grid
         - advance_DS.h : netlist & grid
@@ -14,3 +14,8 @@ CAD_Contest
         - global_func.cpp
         - utility.cpp
         - cell_move_router.cpp: main function
+
+## Usage
+` 
+    >> ./bin/cell_move_router <file_path>
+`

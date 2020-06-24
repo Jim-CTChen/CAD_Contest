@@ -17,6 +17,7 @@ int row_of_gGrid = 0;
 int column_of_gGrid = 0;
 int layer_of_gGrid = 3;
 int8_t DEMANDFLAG = 0;
+string file_path = "test/case3.txt";
 
 unordered_map <string, Layer*> layers;  
 
@@ -33,8 +34,9 @@ vector<SameGGrid> sameGGrids;
 vector<AdjHGGrid> adjGGrids;
 
 using namespace std;
-int main()
+int main(int argc, char** argv)
 {
+    if(argc == 2) file_path = argv[1];
     readMaxCellMove();
     readGGridBoundaryIdx();
     readLayer();
@@ -47,15 +49,10 @@ int main()
     readCellInst();
     readNets();
     readRoutes();
-    // cout << (netlists["N1"]->get_root()->get_fanout()).size();
 
-    // for(auto it : mastercells["MC1"]->get_blkgs())  {
-    //     cerr << it.get_layer() << " " << it.get_extra_demand() << endl;
-    // }
-    // cerr << mastercells["MC1"]->get_blkgs()[0].get_layer << " "
-    // if(netlists["N1536"]->get_root() != 0) cerr << *netlists["N1536"]->get_root() << endl;
+
     // netlistBFS();
-    // countDemand();
-    // printDemand();
+    countDemand();
+    printDemand();
     // printSupply();
 }
