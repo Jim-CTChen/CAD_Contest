@@ -54,6 +54,7 @@ class Steiner_pts{
         int getDistance(Steiner_pts*, char);
         bool operator== (Steiner_pts&);
         void hi()  {cout << coord.first << " " << coord.second << " " << layer <<endl;}
+        string print_inf() {return to_string(coord.first)+" "+to_string(coord.second)+" "+to_string(layer);}
         bool is_fanout(Steiner_pts* s);
         void del_fanout(Steiner_pts* s);
         int addDemand();

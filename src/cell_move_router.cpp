@@ -15,6 +15,11 @@ int maxCellMove = 0;
 int row_of_gGrid = 0;
 int column_of_gGrid = 0;
 int layer_of_gGrid = 0;
+int route_len = 0;
+int num_routes = 0; 
+string output = "";
+vector<string> net;
+
 int8_t DEMANDFLAG = 0;
 
 unordered_map <string, Layer*> layers;  
@@ -44,5 +49,8 @@ int main()
     readCellInst();
     readNets();
     readRoutes();
-    cout << (netlists["N1"]->get_root()->get_fanout()).size();
+    routing_len();
+    // netlists["N1536"]->get_root();
+    // cout << (netlists["N5"]->get_root()->get_fanout()).size();
+    store_output(output_path);
 }

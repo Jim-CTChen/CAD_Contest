@@ -2,12 +2,11 @@
 #include <vector>
 #include <algorithm>
 using namespace std;
-int macvbsin(){
-    vector<int> a = {2,3,4,5,7,8};
-    vector<int>::iterator it;
-    it =find (a.begin(), a.end() ,5);
-    a.erase(it);
-    cout << a[6];
+int maisdfn(){
+    int a = 3;
+    string b = "sgdg";
+    b = b +to_string(a);
+    cout << b;
 }
     // vector<Steiner_pts*>::iterator it1, it3;
     // Steiner_pts* temp = root ;

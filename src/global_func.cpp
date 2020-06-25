@@ -18,6 +18,10 @@ extern int layer_of_gGrid;
 extern int maxCellMove;
 extern int row_of_gGrid;
 extern int column_of_gGrid;
+extern int route_len;
+extern int num_routes;
+extern string output;
+extern vector<string> net;
 extern unordered_map <string, Layer*> layers;  
 extern unordered_map <string, MasterCell*> mastercells;
 extern unordered_map <string, Netlist*> netlists;
@@ -182,7 +186,7 @@ void readMasterCell(){
                 getline(file,line);
                 pos = 0;
                 for(int j=0 ;j<4 ;j++){
-                    pos = myStrGetTok(line,tok,pos,' ');
+                    pos = myStrGetTok(line,tok,pos,' '); 
                     temp[j] = tok;     
                 }
                 myStr2Int(temp[2] , str2Int_1);
@@ -315,6 +319,7 @@ void readNets(){
                     pos = myStrGetTok(line,tok,pos,' ');     
                 }
                 netlists.insert(pair<string, Netlist*>(temp[1],new Netlist()));
+                net.push_back(temp[1]);
                 myStr2Int(temp[2], str2Int_1); 
                 for(int j=0 ;j<str2Int_1 ;j++){
                     getline(file,line);
@@ -359,7 +364,6 @@ bool between_two_st_pts(Steiner_pts* a, Steiner_pts* b, Steiner_pts* x){
     }
     else{
         if(x->get_coord().first == a->get_coord().first  && x->get_coord() == b->get_coord()){
-            cout << "s";
             if(x->get_layer() < a->get_layer()  && x->get_layer()  > b->get_layer() ){
                 return true;
             }
@@ -622,6 +626,42 @@ void readRoutes(){
 };
  
 
+int two_pts_distance(Steiner_pts* a, Steiner_pts* b){
+    if(a->get_layer() == b->get_layer()){
+        return abs(a->get_coord().first - b->get_coord().first) + abs(a->get_coord().second - b->get_coord().second);
+    }
+    else{
+        return abs(a->get_layer() - b->get_layer());
+    }
+    return 0;
+}
+
+void cal_len(Steiner_pts* s){
+    while(true){
+        if((s->get_fanout()).size() == 0){  
+            return ;
+        }
+        else{
+            for(auto it2 = s->get_fanout().begin(); it2 != s->get_fanout().end(); it2++){
+                route_len += two_pts_distance(s,*it2);
+                cal_len(*it2);
+            }
+        }  
+        return;
+    }
+}
+
+void routing_len(){
+    Steiner_pts* temp;
+    for(auto it = netlists.begin(); it !=netlists.end(); it++){
+        if(it->second->get_root() != 0){
+            temp = it->second->get_root();
+            cal_len(temp);
+            cout << route_len << endl;
+        }  
+    }
+}
+
 
 
 
@@ -710,4 +750,39 @@ void countDemand() // routing + blockage + extra demand
             }
         }
     }
+}
+
+void write_output(Steiner_pts* s, string path, string net_name){
+    ofstream fout(path.c_str(), ios::out );
+    while(true){
+        if((s->get_fanout()).size() == 0){  
+            return ;
+        }
+        else{
+            for(auto it2 = s->get_fanout().begin(); it2 != s->get_fanout().end(); it2++){
+                num_routes += 1;
+                output = output + ((s)->print_inf() + " " + (*it2)->print_inf() + " " + net_name + "\n");
+                write_output(*it2, path, net_name);
+            }
+        }  
+        return;
+    }
+}
+
+bool store_output(string path){
+    ofstream fout(path.c_str(), ios::out);
+    Steiner_pts* temp;
+    for(auto it = net.begin(); it != net.end(); it++){
+        for(auto it2 = netlists.begin(); it2 != netlists.end(); it2++){
+            if(it2->second->get_root() != 0 && *it == it2->first){
+                temp = it2->second->get_root();
+                write_output(temp, path, it2->first);
+            }
+        }
+    }
+    output = "NumRoutes " + to_string(num_routes) + "\n" + output;
+    output = "NumMovedCellInst " + to_string(maxCellMove) + "\n" + output; 
+    fout << output;
+    fout.close();
+    return 0;
 }
