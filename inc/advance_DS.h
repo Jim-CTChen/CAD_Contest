@@ -15,7 +15,7 @@ class Netlist{
     public:
         Netlist(){}
         ~Netlist(){}
-        void add_root( Steiner_pts* s) { root = s; }
+        void add_root(Steiner_pts* s) { root = s; }
         void add_pin(Pin* p) { pins.push_back(p); }
         Steiner_pts*& get_root()  {return root;}
         vector<Pin*>& get_pins() {return pins;} 

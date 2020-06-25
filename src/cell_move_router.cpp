@@ -15,7 +15,12 @@
 int maxCellMove = 0;
 int row_of_gGrid = 0;
 int column_of_gGrid = 0;
-int layer_of_gGrid = 3;
+int layer_of_gGrid = 0;
+int route_len = 0;
+int num_routes = 0; 
+string output = "";
+vector<string> net;
+
 int8_t DEMANDFLAG = 0;
 string file_path = "test/case3.txt";
 
@@ -52,7 +57,9 @@ int main(int argc, char** argv)
 
 
     // netlistBFS();
-    countDemand();
-    printDemand();
+    // countDemand();
+    // printDemand();
     // printSupply();
+    routing_len();
+    store_output(output_path);
 }
