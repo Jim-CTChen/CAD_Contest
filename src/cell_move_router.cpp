@@ -51,8 +51,8 @@ int main(int argc, char** argv)
     readRoutes();
 
 
-    // netlistBFS();
-    countDemand();
-    printDemand();
+    netlistBFS();
+    // countDemand();
+    // printDemand();
     // printSupply();
 }
