@@ -22,6 +22,7 @@ class Netlist{
         vector<Steiner_pts*>& get_st_pts() {return steiner_pts;} 
         void add_st_pts( Steiner_pts* s) {steiner_pts.push_back(s);}
         void erase_st_pts(vector<Steiner_pts*>::iterator it) {steiner_pts.erase(it);}
+        void count_Cvalue();
     private:
         Steiner_pts*    root = 0;
         vector<Pin*>    pins;
