@@ -16,10 +16,12 @@ class Router{
     public:
         Router(unordered_map <string, Netlist*> n): netlists_r(n){}
         ~Router() {}
+        void netConnection(string);
         
     private:
         vector<Pin*> pins;
         unordered_map <string, Netlist*> netlists_r;
+
 };
 
 
