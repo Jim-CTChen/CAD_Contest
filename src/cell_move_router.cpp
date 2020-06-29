@@ -32,6 +32,8 @@ unordered_map <string, Netlist*> netlists;
 
 unordered_map <string, Cell*> cells;
 
+vector<Cell* > moved_cells;
+
 Grid** model = 0;
 Demand*** all_demand = 0; // [row][column][layer]
 

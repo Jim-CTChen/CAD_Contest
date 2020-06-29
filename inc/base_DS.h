@@ -175,6 +175,7 @@ class Cell{
         MasterCell*& get_mc()  { return mc; }
         pair<int, int>& get_coord()  {return coord;}
         vector<Pin>& get_pins()  { return pins; }
+        string& get_name()  {return name;}
     private:
         // data member
         MasterCell*                 mc = 0;
