@@ -26,6 +26,7 @@ extern unordered_map <string, Layer*> layers;
 extern unordered_map <string, MasterCell*> mastercells;
 extern unordered_map <string, Netlist*> netlists;
 extern unordered_map <string, Cell*> cells;
+extern vector<Cell* > moved_cells;
 extern vector<SameGGrid> sameGGrids;
 extern vector<AdjHGGrid> adjGGrids;
 extern Grid** model;
@@ -772,6 +773,9 @@ void write_output(Steiner_pts* s, string path, string net_name){
 bool store_output(string path){
     ofstream fout(path.c_str(), ios::out);
     Steiner_pts* temp;
+
+    
+    
     for(auto it = net.begin(); it != net.end(); it++){
         for(auto it2 = netlists.begin(); it2 != netlists.end(); it2++){
             if(it2->second->get_root() != 0 && *it == it2->first){
@@ -781,7 +785,14 @@ bool store_output(string path){
         }
     }
     output = "NumRoutes " + to_string(num_routes) + "\n" + output;
-    output = "NumMovedCellInst " + to_string(maxCellMove) + "\n" + output; 
+
+    moved_cells.push_back(cells["C1"]);
+    moved_cells.push_back(cells["C2"]);
+    for(int i = 0; i < moved_cells.size(); i++){
+        output = "CellInst "+moved_cells[moved_cells.size()-1-i]->get_name() + " " + to_string(moved_cells[moved_cells.size()-1-i]->get_coord().first) + " " + to_string(moved_cells[moved_cells.size()-1-i]->get_coord().first) + "\n" +output;
+    }
+    output = "NumMovedCellInst " + to_string(maxCellMove) + "\n" +output; 
+    
     fout << output;
     fout.close();
     return 0;
