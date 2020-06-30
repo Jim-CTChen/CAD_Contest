@@ -175,7 +175,9 @@ class Cell{
         MasterCell*& get_mc()  { return mc; }
         pair<int, int>& get_coord()  {return coord;}
         vector<Pin>& get_pins()  { return pins; }
-        string& get_name()  {return name;}
+        string& get_name()  { return name;}
+        void set_index(int a)  {index = a;}
+
     private:
         // data member
         MasterCell*                 mc = 0;
@@ -183,6 +185,7 @@ class Cell{
         pair<int, int>              coord;
         bool                        movable;
         string                      name;
+        int                         index = 0;
 };
 
 

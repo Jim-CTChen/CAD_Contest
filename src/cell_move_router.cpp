@@ -38,6 +38,8 @@ vector<int> c0value;
 
 vector<Cell* > moved_cells;
 
+vector<Cell* > all_cells;
+
 Grid** model = 0;
 Demand*** all_demand = 0; // [row][column][layer]
 

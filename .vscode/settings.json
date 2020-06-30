@@ -10,6 +10,7 @@
         "initializer_list": "cpp",
         "utility": "cpp",
         "ostream": "cpp",
+<<<<<<< HEAD
         "atomic": "cpp",
         "cctype": "cpp",
         "chrono": "cpp",
@@ -48,5 +49,8 @@
         "sstream": "cpp",
         "stdexcept": "cpp",
         "streambuf": "cpp"
+=======
+        "queue": "cpp"
+>>>>>>> placement
     }
 }

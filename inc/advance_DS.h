@@ -2,7 +2,7 @@
 #define ADVANCE_DS_H
 
 #include <string>
-#include <vector>
+#include <vector>pin
 
 using namespace std;
 class Cell;
@@ -18,9 +18,11 @@ class Netlist{
         void add_root(Steiner_pts* s) { root = s; }
         void add_pin(Pin* p) { pins.push_back(p); }
         Steiner_pts*& get_root()  {return root;}
-        vector<Pin*>& get_pins() {return pins;} 
+        vector<Pin*>& get_pins()  {return pins;} 
+        int get_pins_size()  {return pins.size();}
         vector<Steiner_pts*>& get_st_pts() {return steiner_pts;} 
         void add_st_pts( Steiner_pts* s) {steiner_pts.push_back(s);}
+        short B2B_weight( Pin*, Pin*); 
         void erase_st_pts(vector<Steiner_pts*>::iterator it) {steiner_pts.erase(it);}
         void count_Cvalue();
     private:
