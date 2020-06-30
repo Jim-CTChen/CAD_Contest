@@ -302,15 +302,11 @@ void readCellInst(){
                 }
                 myStr2Int(temp[3], str2Int_1);
                 myStr2Int(temp[4], str2Int_2);
-<<<<<<< HEAD
                 Cell* new_cell = new Cell(temp[1],temp[2],str2Int_1,str2Int_2,temp[5]);
                 cells.insert(pair<string,Cell*>(temp[1], new_cell));
                 model[str2Int_1-1][str2Int_2-1].add_cell(new_cell);
-=======
-                cells.insert(pair<string,Cell*>(temp[1],new Cell(temp[1],temp[2],str2Int_1,str2Int_2,temp[5])));
                 all_cells.push_back(cells[temp[1]]);
                 cells[temp[1]]->set_index(all_cells.size()-1);
->>>>>>> placement
             }
             break;
         }
