@@ -26,6 +26,7 @@ extern unordered_map <string, Layer*> layers;
 extern unordered_map <string, MasterCell*> mastercells;
 extern unordered_map <string, Netlist*> netlists;
 extern unordered_map <string, Cell*> cells;
+extern vector<Cell* > all_cells;
 extern vector<Cell* > moved_cells;
 extern vector<SameGGrid> sameGGrids;
 extern vector<AdjHGGrid> adjGGrids;
@@ -290,6 +291,8 @@ void readCellInst(){
                 myStr2Int(temp[3], str2Int_1);
                 myStr2Int(temp[4], str2Int_2);
                 cells.insert(pair<string,Cell*>(temp[1],new Cell(temp[1],temp[2],str2Int_1,str2Int_2,temp[5])));
+                all_cells.push_back(cells[temp[1]]);
+                cells[temp[1]]->set_index(all_cells.size()-1);
             }
             break;
         }
