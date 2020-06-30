@@ -176,9 +176,6 @@ class Cell{
         pair<int, int>& get_coord()  {return coord;}
         vector<Pin>& get_pins()  { return pins; }
         string& get_name()  {return name;}
-        void addCvalues(Cell* c, int v) {
-            Cvalues[c] = v;
-        }
     private:
         // data member
         MasterCell*                 mc = 0;
@@ -186,7 +183,6 @@ class Cell{
         pair<int, int>              coord;
         bool                        movable;
         string                      name;
-        unordered_map<Cell*, int>   Cvalues;
 };
 
 

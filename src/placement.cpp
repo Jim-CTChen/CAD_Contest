@@ -1,12 +1,12 @@
 #include <iostream>
 #include <unordered_map>
 #include <string>
-#include <fstream>
-#include <global_func.h>
-#include <base_DS.h>
-#include <advance_DS.h>
-#include <utility.h>
-#include <definition.h>
+#include "global_func.h"
+#include "base_DS.h"
+#include "advance_DS.h"
+#include "utility.h"
+#include "definition.h"
+#include "placement.h"
 #include <queue>
 #include <algorithm>
 using namespace std;
@@ -31,3 +31,22 @@ extern vector<SameGGrid> sameGGrids;
 extern vector<AdjHGGrid> adjGGrids;
 extern Grid** model;
 extern Demand*** all_demand;
+extern vector< vector<int> > cvalues;
+extern vector<int> c0values;
+
+void init() {
+    for(size_t i = 0; i < cells.size(); ++i) {
+        vector<int> tmp;
+        for(size_t j = 0; j < cells.size(); ++j) {
+            tmp.push_back(0);
+        }
+        cvalues.push_back(tmp);
+    }
+}
+
+void countC0() {
+    // int avg_pin;
+    // int numOfcells = 
+
+}
+

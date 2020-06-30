@@ -32,6 +32,10 @@ unordered_map <string, Netlist*> netlists;
 
 unordered_map <string, Cell*> cells;
 
+vector< vector<int> > cvalues;
+
+vector<int> c0value;
+
 vector<Cell* > moved_cells;
 
 Grid** model = 0;
@@ -56,6 +60,7 @@ int main(int argc, char** argv)
     readCellInst();
     readNets();
     readRoutes();
+
 
 
     // netlistBFS();

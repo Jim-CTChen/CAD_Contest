@@ -8,7 +8,8 @@
 
 using namespace std;
 
-
+void init();
+void countC0();
 
 
 #endif
