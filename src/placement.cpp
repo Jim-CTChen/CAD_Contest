@@ -34,7 +34,7 @@ extern Demand*** all_demand;
 extern vector< vector<int> > cvalues;
 extern vector<int> c0values;
 
-void init() {
+void inizxczct() {
     for(size_t i = 0; i < cells.size(); ++i) {
         vector<int> tmp;
         for(size_t j = 0; j < cells.size(); ++j) {

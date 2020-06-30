@@ -32,9 +32,11 @@ unordered_map <string, Netlist*> netlists;
 
 unordered_map <string, Cell*> cells;
 
-vector< vector<int> > cvalues;
+vector< vector<float> > cvalues;
 
-vector<int> c0value;
+vector<float> c0values;
+
+vector<float> d_x; 
 
 vector<Cell* > moved_cells;
 
