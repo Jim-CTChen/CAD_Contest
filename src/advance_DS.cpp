@@ -22,11 +22,11 @@ short Netlist::B2B_weight( Pin* a, Pin* b){
             min = (*it)->get_cell()->get_coord().first;
         }
     }
-    if(a != p_r && b != p_l){
+    if(a != p_r && b != p_l && a != p_l && b != p_r){
         return 0;
     }
     else{
-        return 2/((this)->get_pins_size()*(a->get_cell()->get_coord().first-b->get_cell()->get_coord().first));
+        return 2/(pins.size()*(a->get_cell()->get_coord().first-b->get_cell()->get_coord().first));
     }
 }
 
