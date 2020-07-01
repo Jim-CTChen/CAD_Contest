@@ -42,15 +42,15 @@ extern vector<float> d_x;
 extern vector<float> d_y;
 
 void init_cvalues() {
-    for(size_t i = 0; i < cells.size(); ++i) {
+    for(size_t i = 0; i < moved_cells.size(); ++i) {
         vector<float> tmp;
-        for(size_t j = 0; j < cells.size(); ++j) {
+        for(size_t j = 0; j < moved_cells.size(); ++j) {
             tmp.push_back(0);
         }
         cvalues.push_back(tmp);
     }
 
-    for(size_t j = 0; j < cells.size(); ++j) {
+    for(size_t j = 0; j < moved_cells.size(); ++j) {
             d_x.push_back(0);
         }
 }

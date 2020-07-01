@@ -25,9 +25,9 @@ extern vector<string> net;
 extern unordered_map <string, Layer*> layers;  
 extern unordered_map <string, MasterCell*> mastercells;
 extern unordered_map <string, Netlist*> netlists;
-extern unordered_map <string, Cell*> cells;
-extern vector<Cell* > all_cells;
+extern unordered_map <string, Cell*> cells;;
 extern vector<Cell* > moved_cells;
+extern vector<Cell* > movable_cells;
 extern vector<SameGGrid> sameGGrids;
 extern vector<AdjHGGrid> adjGGrids;
 extern Grid** model;
@@ -284,8 +284,6 @@ void readCellInst(){
                 Cell* new_cell = new Cell(temp[1],temp[2],str2Int_1,str2Int_2,temp[5]);
                 cells.insert(pair<string,Cell*>(temp[1], new_cell));
                 model[str2Int_1-1][str2Int_2-1].add_cell(new_cell);
-                all_cells.push_back(cells[temp[1]]);
-                cells[temp[1]]->set_index(all_cells.size()-1);
             }
             break;
         }
