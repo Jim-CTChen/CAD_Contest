@@ -22,7 +22,7 @@ string output = "";
 vector<string> net;
 
 int8_t DEMANDFLAG = 0;
-string file_path = "test/case3.txt";
+string file_path = "test/case2.txt";
 
 unordered_map <string, Layer*> layers;  
 
@@ -32,23 +32,30 @@ unordered_map <string, Netlist*> netlists;
 
 unordered_map <string, Cell*> cells;
 
-vector< vector<int> > cvalues;
+vector< vector<float> > cvalues;
 
-vector<int> c0value;
+vector<float> c0values;
 
-vector<Cell* > moved_cells;
+vector<float> d_x;
 
-vector<Cell* > all_cells;
+vector<float> d_y;
+
+vector<Cell* > moved_cells; // cell of movable
+
+vector<Cell* > all_cells; // all cells with index
 
 Grid** model = 0;
-Demand*** all_demand = 0; // [row][column][layer]
+D_Manager demand_manager; // [row][column][layer]
 
 vector<SameGGrid> sameGGrids;
 vector<AdjHGGrid> adjGGrids;
 
 using namespace std;
+// using Eigen::MatrixXd;
+
 int main(int argc, char** argv)
 {
+    // MatrixXd t(2, 2);
     if(argc == 2) file_path = argv[1];
     readMaxCellMove();
     readGGridBoundaryIdx();
@@ -66,9 +73,10 @@ int main(int argc, char** argv)
 
 
     // netlistBFS();
-    // countDemand();
-    // printDemand();
-    // printSupply();
-    routing_len();
+    demand_manager.countDemand(false);
+    // demand_manager.printDemand();
+    // demand_manager.printSupply();
+    demand_manager.printResult();
+    // routing_len();
     store_output(output_path);
 }

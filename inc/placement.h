@@ -8,8 +8,11 @@
 
 using namespace std;
 
-void init();
+void init_cvalues();
 void countC0();
+void solveInitialMatrix_x();
+void solveInitialMatrix_y();
 
 
-#endif
+
+#endif // PLACEMENT_H

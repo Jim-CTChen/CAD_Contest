@@ -76,19 +76,14 @@ class Pin{
     friend class Cell;
     public:
         Pin(string n, string l, Cell* c):name(n), cell(c){ layer = layers[l]->get_index(); }
-        ~Pin() { delete steiner_pts; }
-        void set_steiner_pts(int x, int y) {
-            steiner_pts = new Steiner_pts(x, y, layer);
-        }
+        void get_coord(int&, int& , int&);
         string& get_name()  {return name;}
         int& get_layer()    {return layer;}
         Cell*& get_cell()   {return cell;}
-        Steiner_pts* get_steiner_pts() { return steiner_pts; }
     private:
         // data member
         int          layer;
         string       name;
-        Steiner_pts* steiner_pts = 0;
         Cell*        cell;
 };
 

@@ -7,7 +7,8 @@
 #include <algorithm>
 using namespace std;
 extern unordered_map <string, MasterCell*> mastercells;
-extern Demand*** all_demand;
+extern D_Manager demand_manager;
+// extern Demand*** all_demand;
 
 
 
@@ -65,7 +66,7 @@ void Steiner_pts::addDemand()
             {
             case 'x':
                 if(p) {
-                    Demand& tmp = all_demand[coord.first+i-1][coord.second-1][layer-1];
+                    Demand& tmp = demand_manager.demands[coord.first+i-1][coord.second-1][layer-1];
                     if( !tmp.checkFlag() ){ // haven't addDemand in this netlist
                         // cerr << '\t' << '\t' << "(" << coord.first+i << ", " << coord.second << ", " << layer << ") +1" << endl; // debug
                         tmp.addDemand(1);
@@ -73,7 +74,7 @@ void Steiner_pts::addDemand()
                     }
                 }
                 else  {
-                    Demand& tmp = all_demand[coord.first-i-1][coord.second-1][layer-1];
+                    Demand& tmp = demand_manager.demands[coord.first-i-1][coord.second-1][layer-1];
                     if( !tmp.checkFlag() ){
                         // cerr << '\t' << '\t' << "("<< coord.first-i << ", " << coord.second << ", " << layer << ") +1" << endl; // debug
                         tmp.addDemand(1);
@@ -84,7 +85,7 @@ void Steiner_pts::addDemand()
             
             case 'y':
                 if(p) {
-                    Demand& tmp = all_demand[coord.first-1][coord.second+i-1][layer-1];
+                    Demand& tmp = demand_manager.demands[coord.first-1][coord.second+i-1][layer-1];
                     if( !tmp.checkFlag() ){
                         // cerr << '\t' << '\t' << "(" << coord.first << ", " << coord.second+i << ", " << layer << ") +1" << endl; // debug
                         tmp.addDemand(1);
@@ -92,7 +93,7 @@ void Steiner_pts::addDemand()
                     }
                 }   
                 else  {
-                    Demand& tmp = all_demand[coord.first-1][coord.second-i-1][layer-1];
+                    Demand& tmp = demand_manager.demands[coord.first-1][coord.second-i-1][layer-1];
                     if( !tmp.checkFlag() ){
                         // cerr << '\t' << '\t' << "(" <<  coord.first << ", " << coord.second-i << ", " << layer << ") +1" << endl; // debug
                         tmp.addDemand(1);
@@ -103,7 +104,7 @@ void Steiner_pts::addDemand()
 
             case 'z':
                 if(p) {
-                    Demand& tmp = all_demand[coord.first-1][coord.second-1][layer+i-1];
+                    Demand& tmp = demand_manager.demands[coord.first-1][coord.second-1][layer+i-1];
                     if( !tmp.checkFlag() ){
                         // cerr << '\t' << '\t' << "(" << coord.first << ", " << coord.second << ", " << layer+i << ") +1" << endl; // debug
                         tmp.addDemand(1);
@@ -111,7 +112,7 @@ void Steiner_pts::addDemand()
                     }
                 }   
                 else  {
-                    Demand& tmp = all_demand[coord.first-1][coord.second-1][layer-i-1];
+                    Demand& tmp = demand_manager.demands[coord.first-1][coord.second-1][layer-i-1];
                     if( !tmp.checkFlag() ){
                         // cerr << '\t' << '\t'<< "(" << coord.first << ", " << coord.second << ", " << layer-i << ") +1" << endl; // debug
                         tmp.addDemand(1);
@@ -135,7 +136,6 @@ Cell::Cell(string n, string m, int x, int y, string move){
     else movable = true;
     pins = mc->pins;
     for(auto it = pins.begin(); it != pins.end(); it++){
-        it->set_steiner_pts(x, y);
         it->cell = this;
     }
 }
@@ -157,4 +157,10 @@ void Steiner_pts:: del_fanout(Steiner_pts* s){
     vector<Steiner_pts*>::iterator it;
     it = find (fanout.begin(), fanout.end(), s);
     fanout.erase(it);
+}
+
+void Pin::get_coord(int& x, int& y, int& z) {
+    x = cell->get_coord().first;
+    y = cell->get_coord().second;
+    z = layer;
 }

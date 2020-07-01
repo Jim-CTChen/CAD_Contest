@@ -28,9 +28,6 @@ void find_root(vector<pair<Steiner_pts*,Steiner_pts*>>  , string );
 void routing_len();
 bool store_output(string);
 
-void countDemand();
-void printDemand();
-void printSupply();
 
 void netlistBFS();
 
