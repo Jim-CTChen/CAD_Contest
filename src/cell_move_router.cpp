@@ -13,7 +13,7 @@
 
 
 // Global variables
-// const string file_path = "../test/case3.txt";
+// const string file_path = "../test/case1.txt";
 int maxCellMove = 0;
 int row_of_gGrid = 0;
 int column_of_gGrid = 0;
