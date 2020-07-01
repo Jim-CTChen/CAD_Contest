@@ -29,47 +29,48 @@ extern unordered_map <string, Layer*> layers;
 extern unordered_map <string, MasterCell*> mastercells;
 extern unordered_map <string, Netlist*> netlists;
 extern unordered_map <string, Cell*> cells;
-extern vector<Cell*> moved_cells;
-extern vector<Cell*> all_cells;
+extern vector<Cell*> movable_cells;
 extern vector<SameGGrid> sameGGrids;
 extern vector<AdjHGGrid> adjGGrids;
 extern Grid** model;
 extern D_Manager demand_manager;
-// extern Demand*** all_demand;
 extern vector< vector<float> > cvalues;
 extern vector<float> c0values;
 extern vector<float> d_x;
 extern vector<float> d_y;
 
-void init_cvalues() {
-    for(size_t i = 0; i < cells.size(); ++i) {
+void countC0() {  // P_i/P_avg*(1/numOfCells)
+    float numOfPins, avgPins;
+    float numOfCells = movable_cells.size();
+    for(auto &it : movable_cells) {
+        numOfPins += it->get_pins().size();
+    }
+    avgPins = numOfPins/numOfCells;
+    for(auto &it : movable_cells) {
+        c0values.push_back(float(it->get_pins().size()) / avgPins * (1/numOfCells));
+    }
+}
+
+void placement_init() {
+    for(size_t i = 0; i < movable_cells.size(); ++i) {
         vector<float> tmp;
-        for(size_t j = 0; j < cells.size(); ++j) {
+        for(size_t j = 0; j < movable_cells.size(); ++j) {
             tmp.push_back(0);
         }
         cvalues.push_back(tmp);
     }
 
-    for(size_t j = 0; j < cells.size(); ++j) {
-            d_x.push_back(0);
-        }
+    for(size_t i = 0; i < cells.size(); ++i) {
+        d_x.push_back(0);
+        d_y.push_back(0);
+    }
+    countC0();
 }
 
 // Only Call countC0 for one time!!
-void countC0() {  // P_i/P_avg*(1/numOfCells)
-    float numOfPins, avgPins;
-    float numOfCells = all_cells.size();
-    for(auto &it : all_cells) {
-        numOfPins += it->get_pins().size();
-    }
-    avgPins = numOfPins/numOfCells;
-    for(auto &it : all_cells) {
-        c0values.push_back(float(it->get_pins().size()) / avgPins * (1/numOfCells));
-    }
-}
 
 void solveInitialMatrix_x() {
-    int numOfCells = all_cells.size();
+    int numOfCells = movable_cells.size();
     MatrixXf C_x(numOfCells, numOfCells);
     VectorXf D_x(numOfCells), result(numOfCells);
     for(int i = 0; i < numOfCells; ++i) {
@@ -80,14 +81,14 @@ void solveInitialMatrix_x() {
     }
     result = C_x.colPivHouseholderQr().solve(D_x); // new x position for every cell
     for(int i = 0; i < numOfCells; ++i) {
-        cout << all_cells[i]->get_name() << ": " << endl;
-        cout << "(" << all_cells[i]->get_coord().first << ", " << all_cells[i]->get_coord().second << ")"
-             << " >> " << "(" << result[i] << ", " << all_cells[i]->get_coord().second << ")" << endl;
+        cout << movable_cells[i]->get_name() << ": " << endl;
+        cout << "(" << movable_cells[i]->get_coord().first << ", " << movable_cells[i]->get_coord().second << ")"
+             << " >> " << "(" << result[i] << ", " << movable_cells[i]->get_coord().second << ")" << endl;
     }
 }
 
 void solveInitialMatrix_y() {
-    int numOfCells = all_cells.size();
+    int numOfCells = movable_cells.size();
     MatrixXf C_y(numOfCells, numOfCells);
     VectorXf D_y(numOfCells), result(numOfCells);
     for(int i = 0; i < numOfCells; ++i) {
@@ -98,8 +99,8 @@ void solveInitialMatrix_y() {
     }
     result = C_y.colPivHouseholderQr().solve(D_y); // new y position for every cell
     for(int i = 0; i < numOfCells; ++i) {
-        cout << all_cells[i]->get_name() << ": "<< endl;
-        cout << "(" << all_cells[i]->get_coord().first << ", " << all_cells[i]->get_coord().second << ")"
-             << " >> " << "(" << all_cells[i]->get_coord().second << ", " << result[i] << ")" << endl;
+        cout << movable_cells[i]->get_name() << ": "<< endl;
+        cout << "(" << movable_cells[i]->get_coord().first << ", " << movable_cells[i]->get_coord().second << ")"
+             << " >> " << "(" << movable_cells[i]->get_coord().second << ", " << result[i] << ")" << endl;
     }
 }

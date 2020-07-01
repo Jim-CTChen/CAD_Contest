@@ -181,7 +181,7 @@ class Cell{
         pair<int, int>              coord;
         bool                        movable;
         string                      name;
-        int                         index = 0;
+        int                         index = -1;
 };
 
 

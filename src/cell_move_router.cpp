@@ -42,9 +42,9 @@ vector<float> d_x;
 
 vector<float> d_y;
 
-vector<Cell* > moved_cells; // cell of movable
+vector<Cell*> movable_cells;
 
-vector<Cell* > all_cells; // all cells with index
+vector<Cell*> moved_cells; 
 
 Grid** model = 0;
 D_Manager demand_manager; // [row][column][layer]
@@ -73,13 +73,17 @@ int main(int argc, char** argv)
     readNets();
     readRoutes();
 
-
+    placement_init();
+    for(auto& it : netlists) {
+        it.second->B2B_weight_x();
+    }
+    solveInitialMatrix_x();
 
     // netlistBFS();
-    demand_manager.countDemand(false);
+    // demand_manager.countDemand(false);
     // demand_manager.printDemand();
     // demand_manager.printSupply();
-    demand_manager.printResult();
+    // demand_manager.printResult();
     // routing_len();
-    store_output(output_path);
+    // store_output(output_path);
 }

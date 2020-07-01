@@ -8,7 +8,7 @@
 
 using namespace std;
 
-void init_cvalues();
+void placement_init();
 void countC0();
 void solveInitialMatrix_x();
 void solveInitialMatrix_y();
