@@ -30,6 +30,7 @@ extern unordered_map <string, Netlist*> netlists;
 extern unordered_map <string, Cell*> cells;
 extern vector<Cell* > all_cells;
 extern vector<Cell* > moved_cells;
+extern vector<Cell* > movable_cells;
 extern vector<SameGGrid> sameGGrids;
 extern vector<AdjHGGrid> adjGGrids;
 extern Grid** model;

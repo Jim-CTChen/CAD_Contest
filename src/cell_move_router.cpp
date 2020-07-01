@@ -42,7 +42,7 @@ vector<float> d_x;
 
 vector<Cell* > moved_cells;
 
-vector<Cell* > all_cells;
+vector<Cell* > movable_cells;
 
 Grid** model = 0;
 Demand*** all_demand = 0; // [row][column][layer]
@@ -81,11 +81,11 @@ int main(int argc, char** argv)
         (*it).second->B2B_weight_y();
 
     }
-    // for(auto it = cvalues.begin(); it != cvalues.end(); it++){
-    //     for(auto it2 = (*it).begin(); it2 != (*it).end(); it2++){
-    //         cout <<  (*it2) << "            ";
-    //     }
-    //     cout << endl;
-    // }
+    for(auto it = cvalues.begin(); it != cvalues.end(); it++){
+        for(auto it2 = (*it).begin(); it2 != (*it).end(); it2++){
+            cout <<  (*it2) << "            ";
+        }
+        cout << endl;
+    }
     store_output(output_path);
 }
