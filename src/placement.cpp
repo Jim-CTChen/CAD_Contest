@@ -5,7 +5,6 @@
 #include "global_func.h"
 #include "base_DS.h"
 #include "advance_DS.h"
-#include "utility.h"
 #include "definition.h"
 #include "placement.h"
 #include <queue>
@@ -19,10 +18,6 @@ extern int row_of_gGrid;
 extern int column_of_gGrid;
 extern int layer_of_gGrid;
 extern int maxCellMove;
-extern int row_of_gGrid;
-extern int column_of_gGrid;
-extern int route_len;
-extern int num_routes;
 extern string output;
 extern vector<string> net;
 extern unordered_map <string, Layer*> layers;  
@@ -60,11 +55,16 @@ void placement_init() {
         cvalues.push_back(tmp);
     }
 
-    for(size_t i = 0; i < cells.size(); ++i) {
+    for(size_t i = 0; i < movable_cells.size(); ++i) {
         d_x.push_back(0);
         d_y.push_back(0);
     }
     countC0();
+    cout << "C0: " << endl;
+    for(size_t i = 0; i < movable_cells.size(); ++i) {
+        cout << c0values[i] << " " << endl;
+    }
+    cout << "==============" << endl;
 }
 
 // Only Call countC0 for one time!!
@@ -74,7 +74,7 @@ void solveInitialMatrix_x() {
     MatrixXf C_x(numOfCells, numOfCells);
     VectorXf D_x(numOfCells), result(numOfCells);
     for(int i = 0; i < numOfCells; ++i) {
-        D_x(i, 0) = d_x[i];
+        D_x(i, 0) = -d_x[i];
         for(int j = 0; j < numOfCells; ++j) {
             C_x(i, j) = cvalues[i][j];
         }

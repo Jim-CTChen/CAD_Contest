@@ -75,8 +75,22 @@ int main(int argc, char** argv)
 
     placement_init();
     for(auto& it : netlists) {
-        it.second->B2B_weight_x();
+        cout << "Netlist: " << it.first << endl;
+        it.second->B2B_weight_y();
+        cout << "==================" << endl;
     }
+    cout << "C value: " << endl;
+    for(size_t i = 0; i < cvalues.size(); ++i) {
+        for(size_t j = 0; j < cvalues.size(); ++j) {
+            cout << cvalues[i][j] << " ";
+        }
+        cout << endl;
+    }
+    cout << endl;
+    for(size_t i = 0; i < d_x.size(); i++) {
+        cout << d_x[i] << " ";
+    }
+    cout << endl;
     solveInitialMatrix_x();
 
     // netlistBFS();

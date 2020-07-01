@@ -19,6 +19,8 @@ extern vector<float> c0values;
 extern vector<float> d_x;
 extern vector<float> d_y;
 
+const int BIG_CONST = 2000000;
+
 using namespace std;
 
 void Netlist::B2B_weight_x(){
@@ -39,10 +41,12 @@ void Netlist::B2B_weight_x(){
     for(auto it = pins.begin(); it != pins.end(); it++){
         if((*it) != p_r){
             if(p_r->get_cell()->get_coord().first == (*it)->get_cell()->get_coord().first){
-                w = 1000;
+                w = BIG_CONST;
+                cout <<  p_r->get_cell()->get_name() << " & " << (*it)->get_cell()->get_name() << ": " << w << endl; // DEBUG
             }
             else{
                 w = 2.0/((pins.size()-1)*abs(p_r->get_cell()->get_coord().first-(*it)->get_cell()->get_coord().first));
+                cout <<  p_r->get_cell()->get_name() << " & " << (*it)->get_cell()->get_name() << ": " << w << endl; // DEBUG
             }
             if((p_r->get_cell()->is_movable()) && ((*it)->get_cell()->is_movable())){
                 cvalues[p_r->get_cell()->get_index()][p_r->get_cell()->get_index()] += w;
@@ -62,10 +66,12 @@ void Netlist::B2B_weight_x(){
 
         if((*it) != p_l && (*it) != p_r){
             if(p_l->get_cell()->get_coord().first == (*it)->get_cell()->get_coord().first){
-                w = 1000;
+                w = BIG_CONST;
+                cout <<  p_r->get_cell()->get_name() << " & " << (*it)->get_cell()->get_name() << ": " << w << endl; // DEBUG
             }
             else{
                 w = 2.0/((pins.size()-1)*abs(p_l->get_cell()->get_coord().first-(*it)->get_cell()->get_coord().first));
+                cout <<  p_r->get_cell()->get_name() << " & " << (*it)->get_cell()->get_name() << ": " << w << endl; // DEBUG
             }
             if((p_l->get_cell()->is_movable()) && ((*it)->get_cell()->is_movable())){
                 cvalues[p_l->get_cell()->get_index()][p_l->get_cell()->get_index()] += w;
@@ -81,7 +87,7 @@ void Netlist::B2B_weight_x(){
                 cvalues[p_l->get_cell()->get_index()][p_l->get_cell()->get_index()] += w;
                 d_x[p_l->get_cell()->get_index()] -= w*(*it)->get_cell()->get_coord().first;
             } 
-        }     
+        }
     }
 }
 
@@ -103,7 +109,7 @@ void Netlist::B2B_weight_y(){
     for(auto it = pins.begin(); it != pins.end(); it++){
         if((*it) != p_r){
             if(p_r->get_cell()->get_coord().second == (*it)->get_cell()->get_coord().second){
-                w = 1000;
+                w = BIG_CONST;
             }
             else{
                 w = 2.0/((pins.size()-1)*abs(p_r->get_cell()->get_coord().second-(*it)->get_cell()->get_coord().second));
@@ -126,7 +132,7 @@ void Netlist::B2B_weight_y(){
 
         if((*it) != p_l && (*it) != p_r){
             if(p_l->get_cell()->get_coord().second == (*it)->get_cell()->get_coord().second){
-                w = 1000;
+                w = BIG_CONST;
             }
             else{
                 w = 2.0/((pins.size()-1)*abs(p_l->get_cell()->get_coord().second-(*it)->get_cell()->get_coord().second));
