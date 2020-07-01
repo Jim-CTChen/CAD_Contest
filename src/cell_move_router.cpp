@@ -8,7 +8,9 @@
 #include <advance_DS.h>
 #include <global_func.h>
 #include <definition.h>
+#include <placement.h>
 #include <queue>
+
 
 // Global variables
 // const string file_path = "../test/case3.txt";
@@ -57,6 +59,7 @@ int main(int argc, char** argv)
     readLayer();
 
     init(); // after reading in row, column, layer, init first
+    
 
     readNumNonDefaultSupplyGGrid();
     readMasterCell();
@@ -72,5 +75,17 @@ int main(int argc, char** argv)
     // printDemand();
     // printSupply();
     routing_len();
+    placement_init();
+    for(auto it = netlists.begin(); it != netlists.end(); it++){
+        (*it).second->B2B_weight_x();
+        (*it).second->B2B_weight_y();
+
+    }
+    // for(auto it = cvalues.begin(); it != cvalues.end(); it++){
+    //     for(auto it2 = (*it).begin(); it2 != (*it).end(); it2++){
+    //         cout <<  (*it2) << "            ";
+    //     }
+    //     cout << endl;
+    // }
     store_output(output_path);
 }

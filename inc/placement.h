@@ -8,7 +8,7 @@
 
 using namespace std;
 
-void init();
+void placement_init();
 void countC0();
 
 

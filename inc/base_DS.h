@@ -179,7 +179,6 @@ class Cell{
         void set_index(int a)  { index = a;}
         bool is_movable()   { return movable;}
         int& get_index()    { return index;}
-
     private:
         // data member
         MasterCell*                 mc = 0;

@@ -31,18 +31,24 @@ extern vector<SameGGrid> sameGGrids;
 extern vector<AdjHGGrid> adjGGrids;
 extern Grid** model;
 extern Demand*** all_demand;
-extern vector< vector<int> > cvalues;
-extern vector<int> c0values;
+extern vector< vector<float> > cvalues;
+extern vector<float> c0values;
+extern vector<float> d_x;
 
-void inizxczct() {
+void placement_init() {
     for(size_t i = 0; i < cells.size(); ++i) {
-        vector<int> tmp;
+        vector<float> tmp;
         for(size_t j = 0; j < cells.size(); ++j) {
             tmp.push_back(0);
         }
         cvalues.push_back(tmp);
     }
+
+    for(size_t j = 0; j < cells.size(); ++j) {
+            d_x.push_back(0);
+        }
 }
+
 
 void countC0() {
     // int avg_pin;
