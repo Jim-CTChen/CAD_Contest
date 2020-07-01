@@ -75,11 +75,12 @@ int main(int argc, char** argv)
     readNets();
     readRoutes();
 
+    cout << movable_cells.size();
     placement_init();
     for(auto& it : netlists) {
-        cout << "Netlist: " << it.first << endl;
+        // cout << "Netlist: " << it.first << endl;
         it.second->B2B_weight_x();
-        cout << "==================" << endl;
+        // cout << "==================" << endl;
     }
     cout << "C value: " << endl;
     for(size_t i = 0; i < cvalues_x.size(); ++i) {
@@ -88,18 +89,20 @@ int main(int argc, char** argv)
         }
         cout << endl;
     }
-    cout << endl;
-    for(size_t i = 0; i < d_x.size(); i++) {
-        cout << d_x[i] << " ";
-    }
-    cout << endl; 
+    // cout << endl;
+    // for(size_t i = 0; i < d_x.size(); i++) {
+    //     cout << d_x[i] << " ";
+    // }
+    // cout << endl; 
     solveInitialMatrix_x();
+    
+
 
     // netlistBFS();
-    // demand_manager.countDemand(false);
-    // demand_manager.printDemand();
+    demand_manager.countDemand(true);
+    demand_manager.printDemand();
     // demand_manager.printSupply();
-    // demand_manager.printResult();
+    demand_manager.printResult();
     // routing_len();
     // store_output(output_path);
 }

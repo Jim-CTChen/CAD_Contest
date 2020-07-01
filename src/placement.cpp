@@ -62,11 +62,11 @@ void placement_init() {
         d_y.push_back(0);
     }
     countC0();
-    cout << "C0: " << endl;
-    for(size_t i = 0; i < movable_cells.size(); ++i) {
-        cout << c0values[i] << " " << endl;
-    }
-    cout << "==============" << endl;
+    // cout << "C0: " << endl;
+    // for(size_t i = 0; i < movable_cells.size(); ++i) {
+    //     cout << c0values[i] << " " << endl;
+    // }
+    // cout << "==============" << endl;
 }
 
 // Only Call countC0 for one time!!
@@ -81,7 +81,14 @@ void solveInitialMatrix_x() {
             C_x(i, j) = cvalues_x[i][j];
         }
     }
+    cout << "calculating" << endl;
     result = C_x.colPivHouseholderQr().solve(D_x); // new x position for every cell
+
+    for(int i = 0; i < numOfCells; ++i) { // change position
+        movable_cells[i]->set_X(int(result[i]));
+    }
+
+    cout << "finish" << endl;
     for(int i = 0; i < numOfCells; ++i) {
         cout << movable_cells[i]->get_name() << ": " << endl;
         cout << "(" << movable_cells[i]->get_coord().first << ", " << movable_cells[i]->get_coord().second << ")"
@@ -94,7 +101,7 @@ void solveInitialMatrix_y() {
     MatrixXf C_y(numOfCells, numOfCells);
     VectorXf D_y(numOfCells), result(numOfCells);
     for(int i = 0; i < numOfCells; ++i) {
-        D_y(i, 0) = d_y[i];
+        D_y(i, 0) = -d_y[i];
         for(int j = 0; j < numOfCells; ++j) {
             C_y(i, j) = cvalues_y[i][j];
         }

@@ -58,11 +58,12 @@ class Demand{
         void resetDemand()      { demand = 0; }
         int  getDemand()        { return demand; }
         int  getSupply()        { return supply; }
+        void setDemand(int i)   { demand = i; }
         void setSupply(int s)   { supply = s;}
         void setFlag()          { flag = DEMANDFLAG; }
         bool checkFlag()        { return (flag == DEMANDFLAG); }
         bool checkValidity()    { return supply >= demand; }
-        friend ostream& operator<<(ostream& os, const Demand& dt) { os << dt.demand; }
+        friend ostream& operator << (ostream& os, const Demand& dt) { os << dt.demand; }
         // public member variable
 
     private:
@@ -81,6 +82,7 @@ class D_Manager {
         void printDemand();
         void printSupply();
         void printResult();
+        void clearDemand();
 };
 
 #endif // ADVANCE_DS_H

@@ -82,11 +82,11 @@ void Netlist::B2B_weight_x(){
             }
             else if(!(p_l->get_cell()->is_movable()) && ((*it)->get_cell()->is_movable())){
                 cvalues_x[(*it)->get_cell()->get_index()][(*it)->get_cell()->get_index()] += w;
-                d_y[(*it)->get_cell()->get_index()] -= w*p_l->get_cell()->get_coord().first;
+                d_x[(*it)->get_cell()->get_index()] -= w*p_l->get_cell()->get_coord().first;
             }
             else if((p_l->get_cell()->is_movable()) && !((*it)->get_cell()->is_movable())){
                 cvalues_x[p_l->get_cell()->get_index()][p_l->get_cell()->get_index()] += w;
-                d_y[p_l->get_cell()->get_index()] -= w*(*it)->get_cell()->get_coord().first;
+                d_x[p_l->get_cell()->get_index()] -= w*(*it)->get_cell()->get_coord().first;
             } 
         }
     }
@@ -177,6 +177,18 @@ void D_Manager::init() {
             demands[i][j] = new Demand [layer_of_gGrid];
             for(int k = 0; k < layer_of_gGrid; ++k){
                 demands[i][j][k].setSupply(supply[k]);
+            }
+        }
+    }
+}
+
+void D_Manager::clearDemand()
+{
+    for(int k = 0; k < layer_of_gGrid; ++k) {
+        cout << "Layer " << k << endl;
+        for(int j = 0; j < row_of_gGrid; ++j) {
+            for(int i = 0; i < column_of_gGrid; ++i) {
+                demands[j][i][k].setDemand(0);
             }
         }
     }
