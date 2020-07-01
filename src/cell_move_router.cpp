@@ -34,7 +34,9 @@ unordered_map <string, Netlist*> netlists;
 
 unordered_map <string, Cell*> cells;
 
-vector< vector<float> > cvalues;
+vector< vector<float> > cvalues_x;
+
+vector< vector<float> > cvalues_y;
 
 vector<float> c0values;
 
@@ -80,9 +82,9 @@ int main(int argc, char** argv)
         cout << "==================" << endl;
     }
     cout << "C value: " << endl;
-    for(size_t i = 0; i < cvalues.size(); ++i) {
-        for(size_t j = 0; j < cvalues.size(); ++j) {
-            cout << cvalues[i][j] << " ";
+    for(size_t i = 0; i < cvalues_x.size(); ++i) {
+        for(size_t j = 0; j < cvalues_x.size(); ++j) {
+            cout << cvalues_x[i][j] << " ";
         }
         cout << endl;
     }

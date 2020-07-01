@@ -25,7 +25,11 @@ extern vector<string> net;
 extern unordered_map <string, Layer*> layers;  
 extern unordered_map <string, MasterCell*> mastercells;
 extern unordered_map <string, Netlist*> netlists;
+<<<<<<< HEAD
+extern unordered_map <string, Cell*> cells;;
+=======
 extern unordered_map <string, Cell*> cells;
+>>>>>>> 59bc69a1fd0f9e91745b89e7d55964e9e6715966
 extern vector<Cell* > moved_cells;
 extern vector<Cell* > movable_cells;
 extern vector<SameGGrid> sameGGrids;

@@ -14,7 +14,8 @@ extern unordered_map <string, Cell*> cells;
 extern vector<SameGGrid> sameGGrids;
 extern vector<AdjHGGrid> adjGGrids;
 extern Grid** model;
-extern vector< vector<float> > cvalues;
+extern vector< vector<float> > cvalues_x;
+extern vector< vector<float> > cvalues_y;
 extern vector<float> c0values;
 extern vector<float> d_x;
 extern vector<float> d_y;
@@ -49,17 +50,17 @@ void Netlist::B2B_weight_x(){
                 cout <<  p_r->get_cell()->get_name() << " & " << (*it)->get_cell()->get_name() << ": " << w << endl; // DEBUG
             }
             if((p_r->get_cell()->is_movable()) && ((*it)->get_cell()->is_movable())){
-                cvalues[p_r->get_cell()->get_index()][p_r->get_cell()->get_index()] += w;
-                cvalues[(*it)->get_cell()->get_index()][(*it)->get_cell()->get_index()] += w;
-                cvalues[p_r->get_cell()->get_index()][(*it)->get_cell()->get_index()] -= w;
-                cvalues[(*it)->get_cell()->get_index()][p_r->get_cell()->get_index()] -= w;
+                cvalues_x[p_r->get_cell()->get_index()][p_r->get_cell()->get_index()] += w;
+                cvalues_x[(*it)->get_cell()->get_index()][(*it)->get_cell()->get_index()] += w;
+                cvalues_x[p_r->get_cell()->get_index()][(*it)->get_cell()->get_index()] -= w;
+                cvalues_x[(*it)->get_cell()->get_index()][p_r->get_cell()->get_index()] -= w;
             }
             else if(!(p_r->get_cell()->is_movable()) && ((*it)->get_cell()->is_movable())){
-                cvalues[(*it)->get_cell()->get_index()][(*it)->get_cell()->get_index()] += w;
+                cvalues_x[(*it)->get_cell()->get_index()][(*it)->get_cell()->get_index()] += w;
                 d_x[(*it)->get_cell()->get_index()] -= w*p_r->get_cell()->get_coord().first;
             }
             else if((p_r->get_cell()->is_movable()) && !((*it)->get_cell()->is_movable())){
-                cvalues[p_r->get_cell()->get_index()][p_r->get_cell()->get_index()] += w;
+                cvalues_x[p_r->get_cell()->get_index()][p_r->get_cell()->get_index()] += w;
                 d_x[p_r->get_cell()->get_index()] -= w*(*it)->get_cell()->get_coord().first;
             }
         }
@@ -74,18 +75,18 @@ void Netlist::B2B_weight_x(){
                 cout <<  p_r->get_cell()->get_name() << " & " << (*it)->get_cell()->get_name() << ": " << w << endl; // DEBUG
             }
             if((p_l->get_cell()->is_movable()) && ((*it)->get_cell()->is_movable())){
-                cvalues[p_l->get_cell()->get_index()][p_l->get_cell()->get_index()] += w;
-                cvalues[(*it)->get_cell()->get_index()][(*it)->get_cell()->get_index()] += w;
-                cvalues[p_l->get_cell()->get_index()][(*it)->get_cell()->get_index()] -= w;
-                cvalues[(*it)->get_cell()->get_index()][p_l->get_cell()->get_index()] -= w;
+                cvalues_x[p_l->get_cell()->get_index()][p_l->get_cell()->get_index()] += w;
+                cvalues_x[(*it)->get_cell()->get_index()][(*it)->get_cell()->get_index()] += w;
+                cvalues_x[p_l->get_cell()->get_index()][(*it)->get_cell()->get_index()] -= w;
+                cvalues_x[(*it)->get_cell()->get_index()][p_l->get_cell()->get_index()] -= w;
             }
             else if(!(p_l->get_cell()->is_movable()) && ((*it)->get_cell()->is_movable())){
-                cvalues[(*it)->get_cell()->get_index()][(*it)->get_cell()->get_index()] += w;
-                d_x[(*it)->get_cell()->get_index()] -= w*p_l->get_cell()->get_coord().first;
+                cvalues_x[(*it)->get_cell()->get_index()][(*it)->get_cell()->get_index()] += w;
+                d_y[(*it)->get_cell()->get_index()] -= w*p_l->get_cell()->get_coord().first;
             }
             else if((p_l->get_cell()->is_movable()) && !((*it)->get_cell()->is_movable())){
-                cvalues[p_l->get_cell()->get_index()][p_l->get_cell()->get_index()] += w;
-                d_x[p_l->get_cell()->get_index()] -= w*(*it)->get_cell()->get_coord().first;
+                cvalues_x[p_l->get_cell()->get_index()][p_l->get_cell()->get_index()] += w;
+                d_y[p_l->get_cell()->get_index()] -= w*(*it)->get_cell()->get_coord().first;
             } 
         }
     }
@@ -115,17 +116,17 @@ void Netlist::B2B_weight_y(){
                 w = 2.0/((pins.size()-1)*abs(p_r->get_cell()->get_coord().second-(*it)->get_cell()->get_coord().second));
             }
             if((p_r->get_cell()->is_movable()) && ((*it)->get_cell()->is_movable())){
-                cvalues[p_r->get_cell()->get_index()][p_r->get_cell()->get_index()] += w;
-                cvalues[(*it)->get_cell()->get_index()][(*it)->get_cell()->get_index()] += w;
-                cvalues[p_r->get_cell()->get_index()][(*it)->get_cell()->get_index()] -= w;
-                cvalues[(*it)->get_cell()->get_index()][p_r->get_cell()->get_index()] -= w;
+                cvalues_y[p_r->get_cell()->get_index()][p_r->get_cell()->get_index()] += w;
+                cvalues_y[(*it)->get_cell()->get_index()][(*it)->get_cell()->get_index()] += w;
+                cvalues_y[p_r->get_cell()->get_index()][(*it)->get_cell()->get_index()] -= w;
+                cvalues_y[(*it)->get_cell()->get_index()][p_r->get_cell()->get_index()] -= w;
             }
             else if(!(p_r->get_cell()->is_movable()) && ((*it)->get_cell()->is_movable())){
-                cvalues[(*it)->get_cell()->get_index()][(*it)->get_cell()->get_index()] += w;
+                cvalues_y[(*it)->get_cell()->get_index()][(*it)->get_cell()->get_index()] += w;
                 d_y[(*it)->get_cell()->get_index()] -= w*p_r->get_cell()->get_coord().second;
             }
             else if((p_r->get_cell()->is_movable()) && !((*it)->get_cell()->is_movable())){
-                cvalues[p_r->get_cell()->get_index()][p_r->get_cell()->get_index()] += w;
+                cvalues_y[p_r->get_cell()->get_index()][p_r->get_cell()->get_index()] += w;
                 d_y[p_r->get_cell()->get_index()] -= w*(*it)->get_cell()->get_coord().second;
             }
         }
@@ -138,17 +139,17 @@ void Netlist::B2B_weight_y(){
                 w = 2.0/((pins.size()-1)*abs(p_l->get_cell()->get_coord().second-(*it)->get_cell()->get_coord().second));
             }
             if((p_l->get_cell()->is_movable()) && ((*it)->get_cell()->is_movable())){
-                cvalues[p_l->get_cell()->get_index()][p_l->get_cell()->get_index()] += w;
-                cvalues[(*it)->get_cell()->get_index()][(*it)->get_cell()->get_index()] += w;
-                cvalues[p_l->get_cell()->get_index()][(*it)->get_cell()->get_index()] -= w;
-                cvalues[(*it)->get_cell()->get_index()][p_l->get_cell()->get_index()] -= w;
+                cvalues_y[p_l->get_cell()->get_index()][p_l->get_cell()->get_index()] += w;
+                cvalues_y[(*it)->get_cell()->get_index()][(*it)->get_cell()->get_index()] += w;
+                cvalues_y[p_l->get_cell()->get_index()][(*it)->get_cell()->get_index()] -= w;
+                cvalues_y[(*it)->get_cell()->get_index()][p_l->get_cell()->get_index()] -= w;
             }
             else if(!(p_l->get_cell()->is_movable()) && ((*it)->get_cell()->is_movable())){
-                cvalues[(*it)->get_cell()->get_index()][(*it)->get_cell()->get_index()] += w;
+                cvalues_y[(*it)->get_cell()->get_index()][(*it)->get_cell()->get_index()] += w;
                 d_y[(*it)->get_cell()->get_index()] -= w*p_l->get_cell()->get_coord().second;
             }
             else if((p_l->get_cell()->is_movable()) && !((*it)->get_cell()->is_movable())){
-                cvalues[p_l->get_cell()->get_index()][p_l->get_cell()->get_index()] += w;
+                cvalues_y[p_l->get_cell()->get_index()][p_l->get_cell()->get_index()] += w;
                 d_y[p_l->get_cell()->get_index()] -= w*(*it)->get_cell()->get_coord().second;
             } 
         }     

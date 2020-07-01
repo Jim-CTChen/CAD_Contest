@@ -29,7 +29,8 @@ extern vector<SameGGrid> sameGGrids;
 extern vector<AdjHGGrid> adjGGrids;
 extern Grid** model;
 extern D_Manager demand_manager;
-extern vector< vector<float> > cvalues;
+extern vector< vector<float> > cvalues_x;
+extern vector< vector<float> > cvalues_y;
 extern vector<float> c0values;
 extern vector<float> d_x;
 extern vector<float> d_y;
@@ -52,7 +53,8 @@ void placement_init() {
         for(size_t j = 0; j < movable_cells.size(); ++j) {
             tmp.push_back(0);
         }
-        cvalues.push_back(tmp);
+        cvalues_x.push_back(tmp);
+        cvalues_y.push_back(tmp);
     }
 
     for(size_t i = 0; i < movable_cells.size(); ++i) {
@@ -76,7 +78,7 @@ void solveInitialMatrix_x() {
     for(int i = 0; i < numOfCells; ++i) {
         D_x(i, 0) = -d_x[i];
         for(int j = 0; j < numOfCells; ++j) {
-            C_x(i, j) = cvalues[i][j];
+            C_x(i, j) = cvalues_x[i][j];
         }
     }
     result = C_x.colPivHouseholderQr().solve(D_x); // new x position for every cell
@@ -94,7 +96,7 @@ void solveInitialMatrix_y() {
     for(int i = 0; i < numOfCells; ++i) {
         D_y(i, 0) = d_y[i];
         for(int j = 0; j < numOfCells; ++j) {
-            C_y(i, j) = cvalues[i][j];
+            C_y(i, j) = cvalues_y[i][j];
         }
     }
     result = C_y.colPivHouseholderQr().solve(D_y); // new y position for every cell
