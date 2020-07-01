@@ -34,7 +34,9 @@ unordered_map <string, Netlist*> netlists;
 
 unordered_map <string, Cell*> cells;
 
-vector< vector<float> > cvalues;
+vector< vector<float> > cvalues_x;
+
+vector< vector<float> > cvalues_y;
 
 vector<float> c0values;
 
@@ -42,9 +44,9 @@ vector<float> d_x;
 
 vector<float> d_y;
 
-vector<Cell* > moved_cells; // cell of movable
+vector<Cell*> movable_cells;
 
-vector<Cell* > all_cells; // all cells with index
+vector<Cell*> moved_cells; 
 
 Grid** model = 0;
 D_Manager demand_manager; // [row][column][layer]
@@ -73,13 +75,31 @@ int main(int argc, char** argv)
     readNets();
     readRoutes();
 
-
+    placement_init();
+    for(auto& it : netlists) {
+        cout << "Netlist: " << it.first << endl;
+        it.second->B2B_weight_y();
+        cout << "==================" << endl;
+    }
+    cout << "C value: " << endl;
+    for(size_t i = 0; i < cvalues_x.size(); ++i) {
+        for(size_t j = 0; j < cvalues_x.size(); ++j) {
+            cout << cvalues_x[i][j] << " ";
+        }
+        cout << endl;
+    }
+    cout << endl;
+    for(size_t i = 0; i < d_x.size(); i++) {
+        cout << d_x[i] << " ";
+    }
+    cout << endl;
+    solveInitialMatrix_x();
 
     // netlistBFS();
-    demand_manager.countDemand(false);
+    // demand_manager.countDemand(false);
     // demand_manager.printDemand();
     // demand_manager.printSupply();
-    demand_manager.printResult();
+    // demand_manager.printResult();
     // routing_len();
-    store_output(output_path);
+    // store_output(output_path);
 }
