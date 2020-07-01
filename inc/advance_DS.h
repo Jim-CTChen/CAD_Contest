@@ -22,8 +22,8 @@ class Netlist{
         int get_pins_size()  {return pins.size();}
         vector<Steiner_pts*>& get_st_pts() {return steiner_pts;} 
         void add_st_pts( Steiner_pts* s) {steiner_pts.push_back(s);}
-        float B2B_weight_x( Pin*, Pin*); 
-        float B2B_weight_y( Pin*, Pin*);
+        void B2B_weight_x();
+        void B2B_weight_y();
         void erase_st_pts(vector<Steiner_pts*>::iterator it) {steiner_pts.erase(it);}
         void count_Cvalue();
     private:

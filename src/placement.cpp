@@ -49,6 +49,10 @@ void init_cvalues() {
         }
         cvalues.push_back(tmp);
     }
+
+    for(size_t j = 0; j < cells.size(); ++j) {
+            d_x.push_back(0);
+        }
 }
 
 // Only Call countC0 for one time!!
