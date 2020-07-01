@@ -19,7 +19,7 @@ extern vector<float> c0values;
 extern vector<float> d_x;
 extern vector<float> d_y;
 
-const int BIG_CONST = 2000000;
+const int BIG_CONST = 2000;
 
 using namespace std;
 
