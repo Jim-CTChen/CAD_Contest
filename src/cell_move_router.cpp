@@ -138,5 +138,6 @@ int main(int argc, char** argv)
     demand_manager.printResult();
     // routing_len();
     // store_output(output_path);
+    store_demand_pic(output_path, 1);
     return;
 }
