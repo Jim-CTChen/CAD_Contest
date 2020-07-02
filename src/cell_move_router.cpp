@@ -126,14 +126,14 @@ int main(int argc, char** argv)
     calculateCvalue_x();
     solveInitialMatrix_x();
 
-    countC0();
-    cerr << "counting phi_x" << endl;
-    calculate_phi_x();
-    solveGlobalMatrix_x();
+    // countC0();
+    // cerr << "counting phi_x" << endl;
+    // calculate_phi_x();
+    // solveGlobalMatrix_x();
 
-    demand_manager.countDemand(true);
+    // demand_manager.countDemand(true);
     cerr << "exporting...." << endl;
-    store_demand_pic(output_path, 1);
+    store_cell_pic(cell_output_path);
     cerr << "finish!!!!!!!!!!" << endl;
     
     // cout << "first movement: " << endl; 

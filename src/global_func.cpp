@@ -752,4 +752,23 @@ void store_demand_pic(string path ,int layer){
     fout.close();
 }
 
+void store_cell_pic(string path){
+    ofstream fout(path.c_str(), ios::out);
+    string demand = "y\tx\tvalue\n";
+    int x = 0;
+    for(int i = 0; i < row_of_gGrid; i++){
+        for(int j = 0; j != column_of_gGrid; j++){
+            for(auto it = cells.begin(); it != cells.end(); it++){
+                if((*it).second->get_coord() == pair<int,int>(i,j)){
+                    x += 1;
+                }    
+            }
+            demand = demand + to_string(j+1) + "\t" + to_string(i+1) + "\t" + to_string(x) + "\n";
+            x = 0;
+        }
+    }
+    fout << demand;
+    fout.close();
+}
+
 

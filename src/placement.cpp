@@ -152,7 +152,8 @@ void solveInitialMatrix_x() {
 
     cerr << "moving cells..." << endl;
     for(int i = 0; i < numOfCells; ++i) { // change position
-        movable_cells[i]->set_X((int(result[i]) + movable_cells[i]->get_coord().first)/INITIAL_DISTANCE_RATE);
+        movable_cells[i]->set_X(movable_cells[i]->get_coord().first + 
+                        ((int(result[i]) - movable_cells[i]->get_coord().first)/INITIAL_DISTANCE_RATE));
     }
  
     for(int i = 0; i < numOfCells; ++i) {
