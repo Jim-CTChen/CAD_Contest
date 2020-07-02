@@ -737,3 +737,19 @@ bool store_output(string path){
     fout.close();
     return 0;
 }
+
+
+void store_demand_pic(string path ,int layer){
+    ofstream fout(path.c_str(), ios::out);
+    string demand = "y	   x	 value\n";
+
+    for(int i = 0; i < row_of_gGrid; i++){
+        for(int j = 0; j != column_of_gGrid; j++){
+            demand = demand + to_string(j) + "    " + to_string(i) + "    " + to_string(demand_manager.demands[i][j][layer].getDemand()) + "\n";
+        }
+    }
+    fout << demand;
+    fout.close();
+}
+
+
