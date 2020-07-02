@@ -40,10 +40,6 @@ void Netlist::B2B_weight_x(){
         }
     }
     for(auto it = pins.begin(); it != pins.end(); it++){
-        if((*it)->get_cell()->get_index == -1) {
-            cerr << "cvalues is wrong!";
-            return;
-        }
         if((*it) != p_r){
             if(p_r->get_cell()->get_coord().first == (*it)->get_cell()->get_coord().first){
                 w = BIG_CONST;
@@ -232,6 +228,7 @@ void D_Manager::countDemand(bool initial = false)
 
 
     // counting blockage demand
+    cout << "blk" << endl;
     for(auto &it : cells) // for every cell
     {
         Cell* tmp = it.second;
@@ -240,6 +237,7 @@ void D_Manager::countDemand(bool initial = false)
         }
     }
 
+    cout << "extra" << endl;
     // counting extra_demand by iteration for grids
     for (int i = 0; i < row_of_gGrid; ++i)
     {
@@ -286,6 +284,7 @@ void D_Manager::countDemand(bool initial = false)
             }
         }
     }
+    cout << "finish calculating demand" << endl;
 }
 
 void D_Manager::printDemand()

@@ -44,6 +44,10 @@ vector<float> d_x;
 
 vector<float> d_y;
 
+vector<float> phi_x;
+
+vector<float> phi_y;
+
 // vector<pair<Cell*, float>> displacement;
 
 vector<Cell*> movable_cells;
@@ -69,13 +73,17 @@ int main(int argc, char** argv)
 
     init(); // after reading in row, column, layer, init first
     
-
+    // cout << "1" << endl;
     readNumNonDefaultSupplyGGrid();
+    // cout << "2" << endl;
     readMasterCell();
+    // cout << "3" << endl;
     readNeighborCellExtraDemand();
+    // cout << "4" << endl;
     readCellInst();
+    // cout << "5" << endl;
     readNets();
-    readRoutes();
+    // readRoutes();
 
     // cout << movable_cells.size();
     // placement_init();
@@ -105,7 +113,7 @@ int main(int argc, char** argv)
     // demand_manager.printDemand();
     // demand_manager.printSupply();
 
-
+    
     cout << "intial result: " << endl;
     demand_manager.countDemand(true);
     demand_manager.printDemand();
@@ -113,9 +121,7 @@ int main(int argc, char** argv)
     cout << "==============================================" << endl;
 
     placement_init();
-    for(auto& it : netlists) {
-        it.second->B2B_weight_x();
-    }
+    calculateCvalue_x();
     solveInitialMatrix_x();
     
     cout << "first movement: " << endl; 
@@ -124,16 +130,20 @@ int main(int argc, char** argv)
     demand_manager.printResult();
     cout << "==============================================" << endl;
 
-    cout << "second movement: " << endl; 
-    for(auto& it : netlists) {
-        it.second->B2B_weight_x();
-    }
+    calculateCvalue_x();
     solveInitialMatrix_x();
+    cout << "second movement: " << endl;
     demand_manager.countDemand(true);
     demand_manager.printDemand();
     demand_manager.printResult();
     // routing_len();
     // store_output(output_path);
+    cout << "counting C0" << endl;
     countC0();
-    return;
+
+    cout << "counting phi_x" << endl;
+    calculate_phi_x();
+    cout << "solveGlobalMatrix_x" << endl;
+    solveGlobalMatrix_x();
+    return 0;
 }

@@ -16,6 +16,8 @@ void calculateCvalue_y();
 
 void solveInitialMatrix_x();
 void solveInitialMatrix_y();
+void calculate_phi_x();
+void calculate_phi_y();
 
 void solveGlobalMatrix_x();
 void solveGlobalMatrix_y();
