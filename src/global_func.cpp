@@ -34,7 +34,7 @@ extern vector<Cell* > movable_cells;
 extern vector<SameGGrid> sameGGrids;
 extern vector<AdjHGGrid> adjGGrids;
 extern Grid** model;
-extern Demand*** all_demand;
+extern D_Manager demand_manager;
 
 
 void init() // init 2-D model, 3-D all_demand, extra_supply
@@ -50,17 +50,7 @@ void init() // init 2-D model, 3-D all_demand, extra_supply
     for(auto &it : layers)  supply[it.second->get_index()-1] = it.second->get_supply();
 
     // form a 3-D model for demands & set supply
-    all_demand = new Demand** [row_of_gGrid];
-    for(int i = 0; i < row_of_gGrid; ++i)
-    {
-        all_demand[i] = new Demand* [column_of_gGrid];
-        for(int j = 0; j < column_of_gGrid; ++j){
-            all_demand[i][j] = new Demand [layer_of_gGrid];
-            for(int k = 0; k < layer_of_gGrid; ++k){
-                all_demand[i][j][k].setSupply(supply[k]);
-            }
-        }
-    }
+    demand_manager.init()
 }
 
 
@@ -78,13 +68,6 @@ void clear()
     }
     delete[] model;
 
-    // delete all_demand
-    for(int i = 0; i < row_of_gGrid;){
-        for(int j = 0; j < column_of_gGrid; ++j){
-            delete[] all_demand[i][j];
-        }
-    }
-    delete[] all_demand;
 }
 
 
@@ -175,7 +158,7 @@ void readNumNonDefaultSupplyGGrid(){
                     pos = myStrGetTok(line,tok,pos,' ');      
                 }
                 myStr2Int(tok, extra);
-                all_demand[temp[0]-1][temp[1]-1][temp[2]-1].setSupply(all_demand[temp[0]-1][temp[1]-1][temp[2]-1].getSupply() + extra);
+                demand_manager.demands[temp[0]-1][temp[1]-1][temp[2]-1].setSupply(demand_manager.demands[temp[0]-1][temp[1]-1][temp[2]-1].getSupply() + extra);
             }
             break;
         }
