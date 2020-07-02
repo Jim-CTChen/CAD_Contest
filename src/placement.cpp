@@ -34,7 +34,8 @@ extern vector< vector<float> > cvalues_y;
 extern vector<float> c0values;
 extern vector<float> d_x;
 extern vector<float> d_y;
-// extern vector<pair<Cell*, float>> displacement;
+extern vector<float> phi_x;
+extern vector<float> phi_y;
 
 void countC0() {  // P_i/P_avg*(1/numOfCells)
     float numOfPins, avgPins;
@@ -60,7 +61,6 @@ void placement_init() {
         d_y.push_back(0);
     }
 
-    countC0();
     // cout << "C0: " << endl;
     // for(size_t i = 0; i < movable_cells.size(); ++i) {
     //     cout << c0values[i] << " " << endl;
@@ -72,6 +72,20 @@ void placement_init() {
 
 bool cmp_value(pair<Cell*, float> a, pair<Cell*, float> b){ //use for displacement sorting
     return a.second >b.second;
+}
+
+void calculateCvalue_x()
+{
+    for(auto& it : netlists) {
+        it.second->B2B_weight_x();
+    }
+}
+
+void calculateCvalue_y()
+{
+    for(auto& it : netlists) {
+        it.second->B2B_weight_y();
+    }
 }
 
 void solveInitialMatrix_x() {
@@ -93,7 +107,7 @@ void solveInitialMatrix_x() {
             C_x(i, j) = cvalues_x[i][j];
         }
     }
-    cout << "end of building." << endl << "calculating" << endl;
+    cout << "end of building." << endl << "calculating initial x..." << endl;
     result = C_x.colPivHouseholderQr().solve(D_x); // new x position for every cell
     cout << "finish" << endl;
 
@@ -209,4 +223,64 @@ void solveInitialMatrix_y() {
         cout << "(" << movable_cells[i]->get_coord().first << ", " << movable_cells[i]->get_coord().second << ")"
              << " >> " << "(" << movable_cells[i]->get_coord().second << ", " << result[i] << ")" << endl;
     }
+}
+
+void solveGlobalMatrix_x() {
+    int numOfCells = movable_cells.size();
+    if(phi_x.size() != numOfCells) {
+        cout << "size of phi_x does not match!!" << endl;
+        return;
+    }
+    if(c0values.size() != numOfCells) {
+        cout << "size of c0values does not match!!" << endl;
+        return;
+    }
+    if(cvalues_x.size() != numOfCells) {
+        cout << "size of C_x does not match!!" << endl;
+        return;
+    }
+
+    MatrixXf C(numOfCells, numOfCells);
+    VectorXf P(numOfCells), result(numOfCells);
+    for(int i = 0; i < numOfCells; ++i) {
+        for(int j = 0; j < numOfCells; ++j) {
+            C(i, j) = cvalues_x[i][j];
+            if(i == j) C(i, j) += c0values[i];
+        }
+        P(i) = -c0values[i]*phi_x[i];
+    }
+    cout << "calculating global x..." << endl;
+    result = C.colPivHouseholderQr().solve(P);
+    cout << "finish" << endl;
+
+    // moving...
+}
+
+void solveGlobalMatrix_y() {
+    int numOfCells = movable_cells.size();
+    if(phi_y.size() != numOfCells) {
+        cout << "size of phi_y does not match!!" << endl;
+        return;
+    }
+    if(c0values.size() != numOfCells) {
+        cout << "size of c0values does not match!!" << endl;
+        return;
+    }
+    if(cvalues_y.size() != numOfCells) {
+        cout << "size of C_y does not match!!" << endl;
+        return;
+    }
+
+    MatrixXf C(numOfCells, numOfCells);
+    VectorXf P(numOfCells), result(numOfCells);
+    for(int i = 0; i < numOfCells; ++i) {
+        for(int j = 0; j < numOfCells; ++j) {
+            C(i, j) = cvalues_y[i][j];
+            if(i == j) C(i, j) += c0values[i];
+        }
+        P(i) = -c0values[i]*phi_y[i];
+    }
+    cout << "calculating global y..." << endl;
+    result = C.colPivHouseholderQr().solve(P);
+    cout << "finish" << endl;
 }

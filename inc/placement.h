@@ -10,8 +10,15 @@ using namespace std;
 
 void placement_init();
 void countC0();
+
+void calculateCvalue_x();
+void calculateCvalue_y();
+
 void solveInitialMatrix_x();
 void solveInitialMatrix_y();
+
+void solveGlobalMatrix_x();
+void solveGlobalMatrix_y();
 
 
 

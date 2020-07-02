@@ -691,6 +691,8 @@ void netlistBFS()
     }
 }
 
+
+
 void write_output(Steiner_pts* s, string path, string net_name){
     ofstream fout(path.c_str(), ios::out );
     while(true){

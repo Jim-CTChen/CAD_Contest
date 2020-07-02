@@ -134,5 +134,6 @@ int main(int argc, char** argv)
     demand_manager.printResult();
     // routing_len();
     // store_output(output_path);
+    countC0();
     return;
 }
