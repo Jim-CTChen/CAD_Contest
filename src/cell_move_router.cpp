@@ -78,12 +78,12 @@ int main(int argc, char** argv)
     readRoutes();
 
     // cout << movable_cells.size();
-    placement_init();
-    for(auto& it : netlists) {
+    // placement_init();
+    // for(auto& it : netlists) {
     //     // cout << "Netlist: " << it.first << endl;
-        it.second->B2B_weight_x();
+        // it.second->B2B_weight_x();
     //     // cout << "==================" << endl;
-    }
+    // }
     // cout << "C value: " << endl;
     // for(size_t i = 0; i < cvalues_x.size(); ++i) {
     //     for(size_t j = 0; j < cvalues_x.size(); ++j) {
@@ -96,17 +96,35 @@ int main(int argc, char** argv)
     //     cout << d_x[i] << " ";
     // }
     // cout << endl; 
-    solveInitialMatrix_x();
+    // solveInitialMatrix_x();
     
 
 
     // netlistBFS();
-    demand_manager.countDemand(true);
-    demand_manager.printDemand();
+    // demand_manager.countDemand(true);
+    // demand_manager.printDemand();
     // demand_manager.printSupply();
 
+
+    cout << "intial result: " << endl;
+    demand_manager.countDemand(true);
+    demand_manager.printDemand();
     demand_manager.printResult();
-    cout << endl << endl << endl << "2====================" << endl;
+    cout << "==============================================" << endl;
+
+    placement_init();
+    for(auto& it : netlists) {
+        it.second->B2B_weight_x();
+    }
+    solveInitialMatrix_x();
+    
+    cout << "first movement: " << endl; 
+    demand_manager.countDemand(true);
+    demand_manager.printDemand();
+    demand_manager.printResult();
+    cout << "==============================================" << endl;
+
+    cout << "second movement: " << endl; 
     for(auto& it : netlists) {
         it.second->B2B_weight_x();
     }
@@ -116,4 +134,5 @@ int main(int argc, char** argv)
     demand_manager.printResult();
     // routing_len();
     // store_output(output_path);
+    return;
 }

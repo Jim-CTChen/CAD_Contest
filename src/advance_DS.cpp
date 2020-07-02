@@ -40,6 +40,10 @@ void Netlist::B2B_weight_x(){
         }
     }
     for(auto it = pins.begin(); it != pins.end(); it++){
+        if((*it)->get_cell()->get_index == -1) {
+            cerr << "cvalues is wrong!";
+            return;
+        }
         if((*it) != p_r){
             if(p_r->get_cell()->get_coord().first == (*it)->get_cell()->get_coord().first){
                 w = BIG_CONST;

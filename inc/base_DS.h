@@ -173,8 +173,10 @@ class Cell{
         string& get_name()  { return name;}
         void set_index(int a)  { index = a;}
         bool is_movable()   { return movable;}
+        void set_movable(bool b)   {movable = b;}
         int& get_index()    { return index;}
         void set_X(int x)   { coord.first = x; }
+        
     private:
         // data member
         MasterCell*                 mc = 0;

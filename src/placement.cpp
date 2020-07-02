@@ -56,12 +56,10 @@ void placement_init() {
         }
         cvalues_x.push_back(tmp);
         cvalues_y.push_back(tmp);
-    }
-
-    for(size_t i = 0; i < movable_cells.size(); ++i) {
         d_x.push_back(0);
         d_y.push_back(0);
     }
+
     countC0();
     // cout << "C0: " << endl;
     // for(size_t i = 0; i < movable_cells.size(); ++i) {
@@ -78,6 +76,15 @@ bool cmp_value(pair<Cell*, float> a, pair<Cell*, float> b){ //use for displaceme
 
 void solveInitialMatrix_x() {
     int numOfCells = movable_cells.size();
+    if(cvalues_x.size() != numOfCells) {
+        cerr << "cvalues_x size does not match!";
+        return;
+    } 
+    if(d_x.size() != numOfCells) {
+        cerr << "d_x size does not match!";
+        return;
+    }
+    cout << "building matrices..." << endl;
     MatrixXf C_x(numOfCells, numOfCells);
     VectorXf D_x(numOfCells), result(numOfCells);
     for(int i = 0; i < numOfCells; ++i) {
@@ -86,14 +93,15 @@ void solveInitialMatrix_x() {
             C_x(i, j) = cvalues_x[i][j];
         }
     }
-    cout << "calculating" << endl;
+    cout << "end of building." << endl << "calculating" << endl;
     result = C_x.colPivHouseholderQr().solve(D_x); // new x position for every cell
     cout << "finish" << endl;
 
 
     // select cell to move for first initial movement
-    vector<pair<Cell*, float>> displacement;
     if(movable_cells.size() > maxCellMove){
+        cout << "selecting cells..." << endl;
+        vector<pair<Cell*, float>> displacement;
         for(int i = 0; i < numOfCells; ++i) { // sort placement
             displacement.push_back(pair<Cell*, float>(movable_cells[i],abs(result[i]-movable_cells[i]->get_coord().first)));
             sort(displacement.begin(),displacement.end(),cmp_value);
@@ -104,6 +112,7 @@ void solveInitialMatrix_x() {
             }
             else{
                 displacement[i].first->set_index(-1);
+                displacement[i].first->set_movable(false);
             }
         }
         movable_cells.clear();
@@ -111,9 +120,21 @@ void solveInitialMatrix_x() {
             movable_cells.push_back(displacement[i].first);
         }
         displacement.clear();
-    }
-    
 
+        cvalues_x.clear();
+        d_x.clear();
+        for(size_t i = 0; i < movable_cells.size(); ++i) {
+            vector<float> tmp;
+            for(size_t j = 0; j < movable_cells.size(); ++j) {
+                tmp.push_back(0);
+            }
+            cvalues_x.push_back(tmp);
+            d_x.push_back(0);
+        }
+    cout << "end of selecting" << endl;
+    }
+
+    cout << "moving cells..." << endl;
     for(int i = 0; i < numOfCells; ++i) { // change position
         movable_cells[i]->set_X(int(result[i]));
     }
@@ -123,10 +144,19 @@ void solveInitialMatrix_x() {
         cout << "(" << movable_cells[i]->get_coord().first << ", " << movable_cells[i]->get_coord().second << ")"
              << " >> " << "(" << result[i] << ", " << movable_cells[i]->get_coord().second << ")" << endl;
     }
+    cout << "end of moving" << endl;
 }
 
 void solveInitialMatrix_y() {
     int numOfCells = movable_cells.size();
+    if(cvalues_y.size() != numOfCells) {
+        cerr << "cvalues_y size does not match!";
+        return;
+    } 
+    if(d_y.size() != numOfCells) {
+        cerr << "d_y size does not match!";
+        return;
+    } 
     MatrixXf C_y(numOfCells, numOfCells);
     VectorXf D_y(numOfCells), result(numOfCells);
     for(int i = 0; i < numOfCells; ++i) {
@@ -149,6 +179,7 @@ void solveInitialMatrix_y() {
             }
             else{
                 displacement[i].first->set_index(-1);
+                displacement[i].first->set_movable(false);
             }
         }
         movable_cells.clear();
@@ -156,6 +187,17 @@ void solveInitialMatrix_y() {
             movable_cells.push_back(displacement[i].first);
         }
         displacement.clear();
+
+        cvalues_x.clear();
+        d_y.clear();
+        for(size_t i = 0; i < movable_cells.size(); ++i) {
+            vector<float> tmp;
+            for(size_t j = 0; j < movable_cells.size(); ++j) {
+                tmp.push_back(0);
+            }
+            cvalues_y.push_back(tmp);
+            d_y.push_back(0);
+        }
     }
 
     
