@@ -130,6 +130,26 @@ void solveInitialMatrix_y() {
             C_y(i, j) = cvalues_y[i][j];
         }
     }
+
+    for(int i = 0; i < numOfCells; ++i) { // sort placement
+        displacement.push_back(pair<movable_cells[i],result[i]>);
+        sort(displacement.begin(),displacement.end(),cmp_value);
+    }
+    for(int i = 0; i < numOfCells; ++i){
+        if(i < maxCellMove){
+            displacement[i].first->set_index(i);
+        }
+        else{
+            displacement[i].first->set_index(-1);
+        }
+    }
+    movable_cells.clear();
+    for(int i = 0; i < maxCellMove; ++i){ //construct new movable_cells
+        movable_cells.push_back(displacement[i].first);
+    }
+    displacement.clear();
+
+    
     result = C_y.colPivHouseholderQr().solve(D_y); // new y position for every cell
     for(int i = 0; i < numOfCells; ++i) {
         cout << movable_cells[i]->get_name() << ": "<< endl;
