@@ -34,6 +34,8 @@ extern vector< vector<float> > cvalues_y;
 extern vector<float> c0values;
 extern vector<float> d_x;
 extern vector<float> d_y;
+extern vector<float> phi_x;
+extern vector<float> phi_y;
 // extern vector<pair<Cell*, float>> displacement;
 
 void countC0() {  // P_i/P_avg*(1/numOfCells)
@@ -209,4 +211,182 @@ void solveInitialMatrix_y() {
         cout << "(" << movable_cells[i]->get_coord().first << ", " << movable_cells[i]->get_coord().second << ")"
              << " >> " << "(" << movable_cells[i]->get_coord().second << ", " << result[i] << ")" << endl;
     }
+}
+
+
+void calculate_phi_x (int layer) {
+    int k = 0;
+    int phi[row_of_gGrid][column_of_gGrid];
+    int x_max, x_min, y_max, y_min;  
+    for(int i = 0; i < row_of_gGrid; i++){
+        for(int j = 0; j < column_of_gGrid; j++){
+            phi[i][j] = 0; 
+        }
+    }
+    for(auto it = movable_cells.begin(); it != movable_cells.end(); it++){
+        if((*it)->get_coord().first <= row_of_gGrid*RANGE_OF_PHI/100){
+            if((*it)->get_coord().second <= column_of_gGrid*RANGE_OF_PHI/100){
+                x_max = 2*row_of_gGrid*RANGE_OF_PHI/100;
+                x_min = 0;
+                y_max = 2*column_of_gGrid*RANGE_OF_PHI/100;
+                y_min = 0;
+            }
+            else if((*it)->get_coord().second >= column_of_gGrid*RANGE_OF_PHI/100 && (*it)->get_coord().second <= (column_of_gGrid - column_of_gGrid*RANGE_OF_PHI/100)){
+                x_max = 2*row_of_gGrid*RANGE_OF_PHI/100;
+                x_min = 0;
+                y_max = (*it)->get_coord().second + column_of_gGrid*RANGE_OF_PHI/100;
+                y_min = (*it)->get_coord().second - column_of_gGrid*RANGE_OF_PHI/100;
+            }
+            else if((*it)->get_coord().second >= (column_of_gGrid - column_of_gGrid*RANGE_OF_PHI/100)){
+                x_max = 2*row_of_gGrid*RANGE_OF_PHI/100;
+                x_min = 0;
+                y_max = column_of_gGrid;
+                y_min = column_of_gGrid - 2*column_of_gGrid*RANGE_OF_PHI/100;
+            }
+        }
+
+        else if((*it)->get_coord().first >= row_of_gGrid*RANGE_OF_PHI/100 && (*it)->get_coord().first <= (row_of_gGrid - row_of_gGrid*RANGE_OF_PHI/100)){
+            if((*it)->get_coord().second <= column_of_gGrid*RANGE_OF_PHI/100){
+                x_max = (*it)->get_coord().first + row_of_gGrid*RANGE_OF_PHI/100;
+                x_min = (*it)->get_coord().first - row_of_gGrid*RANGE_OF_PHI/100;
+                y_max = 2*column_of_gGrid*RANGE_OF_PHI/100;
+                y_min = 0;
+            }
+            else if((*it)->get_coord().second >= column_of_gGrid*RANGE_OF_PHI/100 && (*it)->get_coord().second <= (column_of_gGrid - column_of_gGrid*RANGE_OF_PHI/100)){
+                x_max = (*it)->get_coord().first + row_of_gGrid*RANGE_OF_PHI/100;
+                x_min = (*it)->get_coord().first - row_of_gGrid*RANGE_OF_PHI/100;
+                y_max = (*it)->get_coord().second + column_of_gGrid*RANGE_OF_PHI/100;
+                y_min = (*it)->get_coord().second - column_of_gGrid*RANGE_OF_PHI/100;
+            }
+            else if((*it)->get_coord().second >= (column_of_gGrid - column_of_gGrid*RANGE_OF_PHI/100)){
+                x_max = (*it)->get_coord().first + row_of_gGrid*RANGE_OF_PHI/100;
+                x_min = (*it)->get_coord().first - row_of_gGrid*RANGE_OF_PHI/100;
+                y_max = column_of_gGrid;
+                y_min = column_of_gGrid - 2*column_of_gGrid*RANGE_OF_PHI/100;
+            }
+        }
+
+        else if((*it)->get_coord().first >= (row_of_gGrid - row_of_gGrid*RANGE_OF_PHI/100)){
+            if((*it)->get_coord().second <= column_of_gGrid*RANGE_OF_PHI/100){
+                x_max = row_of_gGrid;
+                x_min = row_of_gGrid - 2*row_of_gGrid*RANGE_OF_PHI/100;
+                y_max = 2*column_of_gGrid*RANGE_OF_PHI/100;
+                y_min = 0;
+            }
+            else if((*it)->get_coord().second >= column_of_gGrid*RANGE_OF_PHI/100 && (*it)->get_coord().second <= (column_of_gGrid - column_of_gGrid*RANGE_OF_PHI/100)){
+                x_max = row_of_gGrid;
+                x_min = row_of_gGrid - 2*row_of_gGrid*RANGE_OF_PHI/100;
+                y_max = (*it)->get_coord().second + column_of_gGrid*RANGE_OF_PHI/100;
+                y_min = (*it)->get_coord().second - column_of_gGrid*RANGE_OF_PHI/100;
+            }
+            else if((*it)->get_coord().second >= (column_of_gGrid - column_of_gGrid*RANGE_OF_PHI/100)){
+                x_max = row_of_gGrid;
+                x_min = row_of_gGrid - 2*row_of_gGrid*RANGE_OF_PHI/100;
+                y_max = column_of_gGrid;
+                y_min = column_of_gGrid - 2*column_of_gGrid*RANGE_OF_PHI/100;
+            }
+        }
+
+        for(int i = x_min; i < x_max; i++){
+            for(int j = y_min; j < y_max; j++){
+                if((*it)->get_coord().first != i){
+                    phi[(*it)->get_coord().first][(*it)->get_coord().second] += 
+                    demand_manager.demands[i][j][layer].getDemand()*k*(-((*it)->get_coord().first-i)) / (((*it)->get_coord().first-i)^2+((*it)->get_coord().second-j)^2)^(3/2);
+                }
+            }
+        }
+    }
+	
+    for(auto it = movable_cells.begin(); it != movable_cells.end(); it++){
+        phi_x.push_back(phi[(*it)->get_coord.first][(*it)->get_coord().second]);	
+    }	
+	
+}
+
+void calculate_phi_y (int layer) {
+    int k = 0;
+    int phi[row_of_gGrid][column_of_gGrid];
+    int x_max, x_min, y_max, y_min;  
+    for(int i = 0; i < row_of_gGrid; i++){
+        for(int j = 0; j < column_of_gGrid; j++){
+            phi[i][j] = 0; 
+        }
+    }
+    for(auto it = movable_cells.begin(); it != movable_cells.end(); it++){
+        if((*it)->get_coord().first <= row_of_gGrid*RANGE_OF_PHI/100){
+            if((*it)->get_coord().second <= column_of_gGrid*RANGE_OF_PHI/100){
+                x_max = 2*row_of_gGrid*RANGE_OF_PHI/100;
+                x_min = 0;
+                y_max = 2*column_of_gGrid*RANGE_OF_PHI/100;
+                y_min = 0;
+            }
+            else if((*it)->get_coord().second >= column_of_gGrid*RANGE_OF_PHI/100 && (*it)->get_coord().second <= (column_of_gGrid - column_of_gGrid*RANGE_OF_PHI/100)){
+                x_max = 2*row_of_gGrid*RANGE_OF_PHI/100;
+                x_min = 0;
+                y_max = (*it)->get_coord().second + column_of_gGrid*RANGE_OF_PHI/100;
+                y_min = (*it)->get_coord().second - column_of_gGrid*RANGE_OF_PHI/100;
+            }
+            else if((*it)->get_coord().second >= (column_of_gGrid - column_of_gGrid*RANGE_OF_PHI/100)){
+                x_max = 2*row_of_gGrid*RANGE_OF_PHI/100;
+                x_min = 0;
+                y_max = column_of_gGrid;
+                y_min = column_of_gGrid - 2*column_of_gGrid*RANGE_OF_PHI/100;
+            }
+        }
+
+        else if((*it)->get_coord().first >= row_of_gGrid*RANGE_OF_PHI/100 && (*it)->get_coord().first <= (row_of_gGrid - row_of_gGrid*RANGE_OF_PHI/100)){
+            if((*it)->get_coord().second <= column_of_gGrid*RANGE_OF_PHI/100){
+                x_max = (*it)->get_coord().first + row_of_gGrid*RANGE_OF_PHI/100;
+                x_min = (*it)->get_coord().first - row_of_gGrid*RANGE_OF_PHI/100;
+                y_max = 2*column_of_gGrid*RANGE_OF_PHI/100;
+                y_min = 0;
+            }
+            else if((*it)->get_coord().second >= column_of_gGrid*RANGE_OF_PHI/100 && (*it)->get_coord().second <= (column_of_gGrid - column_of_gGrid*RANGE_OF_PHI/100)){
+                x_max = (*it)->get_coord().first + row_of_gGrid*RANGE_OF_PHI/100;
+                x_min = (*it)->get_coord().first - row_of_gGrid*RANGE_OF_PHI/100;
+                y_max = (*it)->get_coord().second + column_of_gGrid*RANGE_OF_PHI/100;
+                y_min = (*it)->get_coord().second - column_of_gGrid*RANGE_OF_PHI/100;
+            }
+            else if((*it)->get_coord().second >= (column_of_gGrid - column_of_gGrid*RANGE_OF_PHI/100)){
+                x_max = (*it)->get_coord().first + row_of_gGrid*RANGE_OF_PHI/100;
+                x_min = (*it)->get_coord().first - row_of_gGrid*RANGE_OF_PHI/100;
+                y_max = column_of_gGrid;
+                y_min = column_of_gGrid - 2*column_of_gGrid*RANGE_OF_PHI/100;
+            }
+        }
+
+        else if((*it)->get_coord().first >= (row_of_gGrid - row_of_gGrid*RANGE_OF_PHI/100)){
+            if((*it)->get_coord().second <= column_of_gGrid*RANGE_OF_PHI/100){
+                x_max = row_of_gGrid;
+                x_min = row_of_gGrid - 2*row_of_gGrid*RANGE_OF_PHI/100;
+                y_max = 2*column_of_gGrid*RANGE_OF_PHI/100;
+                y_min = 0;
+            }
+            else if((*it)->get_coord().second >= column_of_gGrid*RANGE_OF_PHI/100 && (*it)->get_coord().second <= (column_of_gGrid - column_of_gGrid*RANGE_OF_PHI/100)){
+                x_max = row_of_gGrid;
+                x_min = row_of_gGrid - 2*row_of_gGrid*RANGE_OF_PHI/100;
+                y_max = (*it)->get_coord().second + column_of_gGrid*RANGE_OF_PHI/100;
+                y_min = (*it)->get_coord().second - column_of_gGrid*RANGE_OF_PHI/100;
+            }
+            else if((*it)->get_coord().second >= (column_of_gGrid - column_of_gGrid*RANGE_OF_PHI/100)){
+                x_max = row_of_gGrid;
+                x_min = row_of_gGrid - 2*row_of_gGrid*RANGE_OF_PHI/100;
+                y_max = column_of_gGrid;
+                y_min = column_of_gGrid - 2*column_of_gGrid*RANGE_OF_PHI/100;
+            }
+        }
+
+        for(int i = x_min; i < x_max; i++){
+            for(int j = y_min; j < y_max; j++){
+                if((*it)->get_coord().second != j){
+                    phi[(*it)->get_coord().first][(*it)->get_coord().second] += 
+                    demand_manager.demands[i][j][layer].getDemand()*k*(-((*it)->get_coord().second-j)) / (((*it)->get_coord().first-i)^2+((*it)->get_coord().second-j)^2)^(3/2);
+                }
+            }
+        }
+    }
+	
+    for(auto it = movable_cells.begin(); it != movable_cells.end(); it++){
+        phi_x.push_back(phi[(*it)->get_coord.first][(*it)->get_coord().second]);	
+    }	
 }

@@ -12,6 +12,8 @@ void placement_init();
 void countC0();
 void solveInitialMatrix_x();
 void solveInitialMatrix_y();
+void calculate_phi_x(int layer);
+void calculate_phi_y(int layer);
 
 
 

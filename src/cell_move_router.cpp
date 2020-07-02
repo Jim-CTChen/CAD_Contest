@@ -44,6 +44,10 @@ vector<float> d_x;
 
 vector<float> d_y;
 
+vector<float> phi_x;
+
+vector<float> phi_y;
+
 // vector<pair<Cell*, float>> displacement;
 
 vector<Cell*> movable_cells;
