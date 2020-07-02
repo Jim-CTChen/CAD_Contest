@@ -34,6 +34,7 @@ extern vector< vector<float> > cvalues_y;
 extern vector<float> c0values;
 extern vector<float> d_x;
 extern vector<float> d_y;
+extern vector<pair<Cell*, float>> displacement;
 
 void countC0() {  // P_i/P_avg*(1/numOfCells)
     float numOfPins, avgPins;
@@ -71,6 +72,10 @@ void placement_init() {
 
 // Only Call countC0 for one time!!
 
+bool cmp_value(pair<Cell*, float> a, pair<Cell*, float> b){ //use for displacement sorting
+    return a.second >b.second;
+}
+
 void solveInitialMatrix_x() {
     int numOfCells = movable_cells.size();
     MatrixXf C_x(numOfCells, numOfCells);
@@ -83,12 +88,31 @@ void solveInitialMatrix_x() {
     }
     cout << "calculating" << endl;
     result = C_x.colPivHouseholderQr().solve(D_x); // new x position for every cell
+    cout << "finish" << endl;
+
+
+    for(int i = 0; i < numOfCells; ++i) { // sort placement
+        displacement.push_back(pair<movable_cells[i],result[i]>);
+        sort(displacement.begin(),displacement.end(),cmp_value);
+    }
+    for(int i = 0; i < numOfCells; ++i){
+        if(i < maxCellMove){
+            displacement[i].first->set_index(i);
+        }
+        else{
+            displacement[i].first->set_index(-1);
+        }
+    }
+    movable_cells.clear();
+    for(int i = 0; i < maxCellMove; ++i){ //construct new movable_cells
+        movable_cells.push_back(displacement[i].first);
+    }
+    displacement.clear();
 
     for(int i = 0; i < numOfCells; ++i) { // change position
         movable_cells[i]->set_X(int(result[i]));
     }
-
-    cout << "finish" << endl;
+ 
     for(int i = 0; i < numOfCells; ++i) {
         cout << movable_cells[i]->get_name() << ": " << endl;
         cout << "(" << movable_cells[i]->get_coord().first << ", " << movable_cells[i]->get_coord().second << ")"

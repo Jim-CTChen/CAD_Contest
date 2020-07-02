@@ -92,6 +92,7 @@ void Netlist::B2B_weight_x(){
     }
 }
 
+
 void Netlist::B2B_weight_y(){
     int max = pins[0]->get_cell()->get_coord().second , min = pins[0]->get_cell()->get_coord().second  ;
     float w = 0;
