@@ -739,11 +739,30 @@ bool store_output(string path){
 
 void store_demand_pic(string path ,int layer){
     ofstream fout(path.c_str(), ios::out);
-    string demand = "y	   x	 value\n";
+    string demand = "y\tx\tvalue\n";
 
     for(int i = 0; i < row_of_gGrid; i++){
         for(int j = 0; j != column_of_gGrid; j++){
-            demand = demand + to_string(j) + "    " + to_string(i) + "    " + to_string(demand_manager.demands[i][j][layer].getDemand()) + "\n";
+            demand = demand + to_string(j) + "\t" + to_string(i) + "\t" + to_string(demand_manager.demands[i][j][layer].getDemand()) + "\n";
+        }
+    }
+    fout << demand;
+    fout.close();
+}
+
+void store_demand_pic(string path ,int layer){
+    ofstream fout(path.c_str(), ios::out);
+    string demand = "y\tx\tvalue\n";
+    int x = 0;
+    for(int i = 0; i < row_of_gGrid; i++){
+        for(int j = 0; j != column_of_gGrid; j++){
+            for(auto it = cells.begin(); it != cells.end(); it++){
+                if((*it).second->get_coord() == pair<int,int>(i,j)){
+                    x += 1;
+                }    
+            }
+            demand = demand + to_string(j+1) + "\t" + to_string(i+1) + "\t" + to_string(x) + "\n";
+            x = 0;
         }
     }
     fout << demand;

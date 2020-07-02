@@ -28,6 +28,7 @@ void find_root(vector<pair<Steiner_pts*,Steiner_pts*>>  , string );
 void routing_len();
 bool store_output(string);
 void store_demand_pic(string, int);
+void store_cell_pic(string, int);
 
 
 void netlistBFS();
