@@ -90,24 +90,26 @@ void solveInitialMatrix_x() {
     result = C_x.colPivHouseholderQr().solve(D_x); // new x position for every cell
     cout << "finish" << endl;
 
-
-    for(int i = 0; i < numOfCells; ++i) { // sort placement
-        displacement.push_back(pair<movable_cells[i],result[i]>);
-        sort(displacement.begin(),displacement.end(),cmp_value);
-    }
-    for(int i = 0; i < numOfCells; ++i){
-        if(i < maxCellMove){
-            displacement[i].first->set_index(i);
+    if(movable_cells.size() != maxCellMove){
+        for(int i = 0; i < numOfCells; ++i) { // sort placement
+            displacement.push_back(pair<Cell*, float>(movable_cells[i],abs(result[i]-movable_cells[i]->get_coord().first)));
+            sort(displacement.begin(),displacement.end(),cmp_value);
         }
-        else{
-            displacement[i].first->set_index(-1);
+        for(int i = 0; i < numOfCells; ++i){
+            if(i < maxCellMove){
+                displacement[i].first->set_index(i);
+            }
+            else{
+                displacement[i].first->set_index(-1);
+            }
         }
+        movable_cells.clear();
+        for(int i = 0; i < maxCellMove; ++i){ //construct new movable_cells
+            movable_cells.push_back(displacement[i].first);
+        }
+        displacement.clear();
     }
-    movable_cells.clear();
-    for(int i = 0; i < maxCellMove; ++i){ //construct new movable_cells
-        movable_cells.push_back(displacement[i].first);
-    }
-    displacement.clear();
+    
 
     for(int i = 0; i < numOfCells; ++i) { // change position
         movable_cells[i]->set_X(int(result[i]));
@@ -130,24 +132,27 @@ void solveInitialMatrix_y() {
             C_y(i, j) = cvalues_y[i][j];
         }
     }
+    if(movable_cells.size() != maxCellMove){
+        for(int i = 0; i < numOfCells; ++i) { // sort placement
+            displacement.push_back(pair<Cell*, float>(movable_cells[i],abs(result[i]-movable_cells[i]->get_coord().second)));
+            sort(displacement.begin(),displacement.end(),cmp_value);
+        }
+        for(int i = 0; i < numOfCells; ++i){
+            if(i < maxCellMove){
+                displacement[i].first->set_index(i);
+            }
+            else{
+                displacement[i].first->set_index(-1);
+            }
+        }
+        movable_cells.clear();
+        for(int i = 0; i < maxCellMove; ++i){ //construct new movable_cells
+            movable_cells.push_back(displacement[i].first);
+        }
+        displacement.clear();
+    }
 
-    for(int i = 0; i < numOfCells; ++i) { // sort placement
-        displacement.push_back(pair<movable_cells[i],result[i]>);
-        sort(displacement.begin(),displacement.end(),cmp_value);
-    }
-    for(int i = 0; i < numOfCells; ++i){
-        if(i < maxCellMove){
-            displacement[i].first->set_index(i);
-        }
-        else{
-            displacement[i].first->set_index(-1);
-        }
-    }
-    movable_cells.clear();
-    for(int i = 0; i < maxCellMove; ++i){ //construct new movable_cells
-        movable_cells.push_back(displacement[i].first);
-    }
-    displacement.clear();
+    
 
     
     result = C_y.colPivHouseholderQr().solve(D_y); // new y position for every cell

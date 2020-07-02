@@ -687,130 +687,15 @@ void routing_len(){
 
 
 
-
-void countDemand() // routing + blockage + extra demand
-{
-    // counting routing by iteration for netlist
-    for(auto &it : netlists) // for every netlist, count demand of routing
-    {
-        // cerr << "===========================================" << endl; // debug
-        // cerr << "netlist " << it.first << endl; // debug
-        DEMANDFLAG++;
-        queue<Steiner_pts*> q; // for BFS
-        Steiner_pts* tmp = 0;
-        if(it.second->get_root() == 0) { // in case all pins in the netlist are in the same grid
-            tmp = it.second->get_pins()[0]->get_steiner_pts();
-            all_demand[tmp->get_coord().first-1][tmp->get_coord().second-1][tmp->get_layer()-1].addDemand(1);
-            // cerr << '\t' << '\t' << *tmp << " +1" << endl; // debug
-            continue;
-        }
-        q.push(it.second->get_root());
-        while(!q.empty())
-        {
-            tmp = q.front();
-            tmp->addDemand();
-            for(auto &iit : tmp->get_fanout()){
-                q.push(iit);
-            }
-            q.pop();
-        }
-    }
-
-
-    // counting blockage demand
-    for(auto &it : cells) // for every cell
-    {
-        Cell* tmp = it.second;
-        for(auto &iit : tmp->get_mc()->get_blkgs()){ // for every blockage in one cell
-            all_demand[tmp->get_coord().first-1][tmp->get_coord().second-1][iit.get_layer()-1].addDemand(iit.get_extra_demand());
-        }
-    }
-
-    // counting extra_demand by iteration for grids
-    for (int i = 0; i < row_of_gGrid; ++i)
-    {
-        for(int j = 0; j < column_of_gGrid; ++j)
-        {
-            // counting MCs in one grid
-            unordered_map<string, int> countPreMC;
-            unordered_map<string, int> countCurMC;
-            unordered_map<string, int> countNxtMC;
-            for(auto& it : model[i][j].get_cells()){
-                countCurMC[it->get_mc()->get_name()]++;
-            }
-            if(j != 0){
-                for(auto& it : model[i][j-1].get_cells()){
-                    countPreMC[it->get_mc()->get_name()]++;
-                }
-            }
-            if(j != column_of_gGrid-1){
-                for(auto& it : model[i][j+1].get_cells()){
-                    countNxtMC[it->get_mc()->get_name()]++;
-                }
-            }
-
-            // calculating sameGGrids
-            for(auto& it : sameGGrids){
-                int minimum = min(countCurMC[it.get_mc1()], countCurMC[it.get_mc2()]);
-                all_demand[i][j][it.get_layer()-1].addDemand(it.get_extra_demand()*minimum);
-            }
-
-            // calculating adjGGrids
-            for(auto& it : adjGGrids)
-            {
-                int pairCurPre = 0;
-                int pairCurNxt = 0;
-                if(it.get_mc1() == it.get_mc2()){
-                    pairCurPre = min(countPreMC[it.get_mc1()],countCurMC[it.get_mc1()]);
-                    pairCurNxt = min(countCurMC[it.get_mc1()],countNxtMC[it.get_mc1()]);
-                }
-                else{
-                    pairCurPre = min(countPreMC[it.get_mc1()], countCurMC[it.get_mc2()]) + min(countPreMC[it.get_mc2()], countCurMC[it.get_mc1()]);
-                    pairCurNxt = min(countCurMC[it.get_mc1()], countNxtMC[it.get_mc2()]) + min(countCurMC[it.get_mc2()], countNxtMC[it.get_mc1()]);
-                }
-                all_demand[i][j][it.get_layer()-1].addDemand(it.get_extra_demand()*(pairCurPre+pairCurNxt));
-            }
-        }
-    }
-}
-
-void printDemand()
-{
-    cout << "======================" << endl;
-    for(int k = 0; k < layer_of_gGrid; ++k) {
-        cout << "Layer " << k << endl;
-        for(int j = 0; j < row_of_gGrid; ++j) {
-            for(int i = 0; i < column_of_gGrid; ++i) {
-                cout << all_demand[j][i][k] << " ";
-            }
-            cout << endl;
-        }
-        cout << "======================" << endl;
-    }
-}
-
-void printSupply()
-{
-    cout << "======================" << endl;
-    for(int k = 0; k < layer_of_gGrid; ++k) {
-        cout << "Layer " << k << endl;
-        for(int j = 0; j < row_of_gGrid; ++j) {
-            for(int i = 0; i < column_of_gGrid; ++i) {
-                cout << all_demand[j][i][k].getSupply() << " ";
-            }
-            cout << endl;
-        }
-        cout << "======================" << endl;
-    }
-}
-
 void netlistBFS()
 {
     for(auto &it : netlists) {
         queue<Steiner_pts*> bfs;
         cout << "Netlist \"" << it.first << "\"" << endl;
         if(it.second->get_root() == 0) {
-            cout << *it.second->get_pins()[0]->get_steiner_pts() << endl;
+            int x, y, z;
+            it.second->get_pins()[0]->get_coord(x, y, z);
+            cout << "(" << x << ", " << y << ", " << z << ")"<< endl;
             cout << "=============" << endl; 
             continue; 
         } 
