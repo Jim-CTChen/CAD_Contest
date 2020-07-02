@@ -28,7 +28,6 @@ extern unordered_map <string, Layer*> layers;
 extern unordered_map <string, MasterCell*> mastercells;
 extern unordered_map <string, Netlist*> netlists;
 extern unordered_map <string, Cell*> cells;
-extern vector<Cell* > all_cells;
 extern vector<Cell* > moved_cells;
 extern vector<Cell* > movable_cells;
 extern vector<SameGGrid> sameGGrids;
@@ -50,7 +49,7 @@ void init() // init 2-D model, 3-D all_demand, extra_supply
     for(auto &it : layers)  supply[it.second->get_index()-1] = it.second->get_supply();
 
     // form a 3-D model for demands & set supply
-    demand_manager.init()
+    demand_manager.init();
 }
 
 
@@ -293,8 +292,6 @@ void readCellInst(){
                     cells[temp[1]]->set_index(movable_cells.size()-1);
                 }
                 model[str2Int_1-1][str2Int_2-1].add_cell(new_cell);
-                all_cells.push_back(cells[temp[1]]);
-                cells[temp[1]]->set_index(all_cells.size()-1);
             }
             break;
         }

@@ -34,7 +34,7 @@ extern vector< vector<float> > cvalues_y;
 extern vector<float> c0values;
 extern vector<float> d_x;
 extern vector<float> d_y;
-extern vector<pair<Cell*, float>> displacement;
+// extern vector<pair<Cell*, float>> displacement;
 
 void countC0() {  // P_i/P_avg*(1/numOfCells)
     float numOfPins, avgPins;
@@ -90,7 +90,10 @@ void solveInitialMatrix_x() {
     result = C_x.colPivHouseholderQr().solve(D_x); // new x position for every cell
     cout << "finish" << endl;
 
-    if(movable_cells.size() != maxCellMove){
+
+    // select cell to move for first initial movement
+    vector<pair<Cell*, float>> displacement;
+    if(movable_cells.size() > maxCellMove){
         for(int i = 0; i < numOfCells; ++i) { // sort placement
             displacement.push_back(pair<Cell*, float>(movable_cells[i],abs(result[i]-movable_cells[i]->get_coord().first)));
             sort(displacement.begin(),displacement.end(),cmp_value);
@@ -132,7 +135,10 @@ void solveInitialMatrix_y() {
             C_y(i, j) = cvalues_y[i][j];
         }
     }
-    if(movable_cells.size() != maxCellMove){
+
+    // select cell to move for first initial movement
+    vector<pair<Cell*, float>> displacement;
+    if(movable_cells.size() > maxCellMove){
         for(int i = 0; i < numOfCells; ++i) { // sort placement
             displacement.push_back(pair<Cell*, float>(movable_cells[i],abs(result[i]-movable_cells[i]->get_coord().second)));
             sort(displacement.begin(),displacement.end(),cmp_value);

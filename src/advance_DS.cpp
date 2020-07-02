@@ -43,11 +43,11 @@ void Netlist::B2B_weight_x(){
         if((*it) != p_r){
             if(p_r->get_cell()->get_coord().first == (*it)->get_cell()->get_coord().first){
                 w = BIG_CONST;
-                cout <<  p_r->get_cell()->get_name() << " & " << (*it)->get_cell()->get_name() << ": " << w << endl; // DEBUG
+                // cout <<  p_r->get_cell()->get_name() << " & " << (*it)->get_cell()->get_name() << ": " << w << endl; // DEBUG
             }
             else{
                 w = 2.0/((pins.size()-1)*abs(p_r->get_cell()->get_coord().first-(*it)->get_cell()->get_coord().first));
-                cout <<  p_r->get_cell()->get_name() << " & " << (*it)->get_cell()->get_name() << ": " << w << endl; // DEBUG
+                // cout <<  p_r->get_cell()->get_name() << " & " << (*it)->get_cell()->get_name() << ": " << w << endl; // DEBUG
             }
             if((p_r->get_cell()->is_movable()) && ((*it)->get_cell()->is_movable())){
                 cvalues_x[p_r->get_cell()->get_index()][p_r->get_cell()->get_index()] += w;
@@ -68,11 +68,11 @@ void Netlist::B2B_weight_x(){
         if((*it) != p_l && (*it) != p_r){
             if(p_l->get_cell()->get_coord().first == (*it)->get_cell()->get_coord().first){
                 w = BIG_CONST;
-                cout <<  p_r->get_cell()->get_name() << " & " << (*it)->get_cell()->get_name() << ": " << w << endl; // DEBUG
+                // cout <<  p_r->get_cell()->get_name() << " & " << (*it)->get_cell()->get_name() << ": " << w << endl; // DEBUG
             }
             else{
                 w = 2.0/((pins.size()-1)*abs(p_l->get_cell()->get_coord().first-(*it)->get_cell()->get_coord().first));
-                cout <<  p_r->get_cell()->get_name() << " & " << (*it)->get_cell()->get_name() << ": " << w << endl; // DEBUG
+                // cout <<  p_r->get_cell()->get_name() << " & " << (*it)->get_cell()->get_name() << ": " << w << endl; // DEBUG
             }
             if((p_l->get_cell()->is_movable()) && ((*it)->get_cell()->is_movable())){
                 cvalues_x[p_l->get_cell()->get_index()][p_l->get_cell()->get_index()] += w;
