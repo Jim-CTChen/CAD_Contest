@@ -114,36 +114,48 @@ int main(int argc, char** argv)
     // demand_manager.printSupply();
 
     
-    cout << "intial result: " << endl;
-    demand_manager.countDemand(true);
-    demand_manager.printDemand();
-    demand_manager.printResult();
-    cout << "==============================================" << endl;
+    // cout << "intial result: " << endl;
+    // demand_manager.countDemand(true);
+    // demand_manager.printDemand();
+    // demand_manager.printResult();
+    // cout << "==============================================" << endl;
 
     placement_init();
     calculateCvalue_x();
     solveInitialMatrix_x();
-    
-    cout << "first movement: " << endl; 
-    demand_manager.countDemand(true);
-    demand_manager.printDemand();
-    demand_manager.printResult();
-    cout << "==============================================" << endl;
-
     calculateCvalue_x();
     solveInitialMatrix_x();
-    cout << "second movement: " << endl;
-    demand_manager.countDemand(true);
-    demand_manager.printDemand();
-    demand_manager.printResult();
-    // routing_len();
-    // store_output(output_path);
-    cout << "counting C0" << endl;
-    countC0();
 
-    cout << "counting phi_x" << endl;
+    countC0();
+    cerr << "counting phi_x" << endl;
     calculate_phi_x();
-    cout << "solveGlobalMatrix_x" << endl;
     solveGlobalMatrix_x();
-    return 0;
+
+    demand_manager.countDemand(true);
+    cerr << "exporting...." << endl;
+    store_demand_pic(output_path, 1);
+    cerr << "finish!!!!!!!!!!" << endl;
+    
+    // cout << "first movement: " << endl; 
+    // demand_manager.countDemand(true);
+    // demand_manager.printDemand();
+    // demand_manager.printResult();
+    // cout << "==============================================" << endl;
+
+    // calculateCvalue_x();
+    // solveInitialMatrix_x();
+    // cout << "second movement: " << endl;
+    // demand_manager.countDemand(true);
+    // demand_manager.printDemand();
+    // demand_manager.printResult();
+    // // routing_len();
+    // // store_output(output_path);
+    // cout << "counting C0" << endl;
+    // countC0();
+
+    // cout << "counting phi_x" << endl;
+    // calculate_phi_x();
+    // cout << "solveGlobalMatrix_x" << endl;
+    // solveGlobalMatrix_x();
+    // return 0;
 }

@@ -100,7 +100,7 @@ void solveInitialMatrix_x() {
         cerr << "d_x size does not match!";
         return;
     }
-    cout << "building matrices..." << endl;
+    cerr << "building matrices..." << endl;
     MatrixXf C_x(numOfCells, numOfCells);
     VectorXf D_x(numOfCells), result(numOfCells);
     for(int i = 0; i < numOfCells; ++i) {
@@ -109,14 +109,14 @@ void solveInitialMatrix_x() {
             C_x(i, j) = cvalues_x[i][j];
         }
     }
-    cout << "end of building." << endl << "calculating initial x..." << endl;
+    cerr << "end of building." << endl << "calculating initial x..." << endl;
     result = C_x.colPivHouseholderQr().solve(D_x); // new x position for every cell
-    cout << "finish" << endl;
+    cerr << "finish" << endl;
 
 
     // select cell to move for first initial movement
     if(movable_cells.size() > maxCellMove){
-        cout << "selecting cells..." << endl;
+        cerr << "selecting cells..." << endl;
         vector<pair<Cell*, float>> displacement;
         for(int i = 0; i < numOfCells; ++i) { // sort placement
             displacement.push_back(pair<Cell*, float>(movable_cells[i],abs(result[i]-movable_cells[i]->get_coord().first)));
@@ -147,20 +147,20 @@ void solveInitialMatrix_x() {
             cvalues_x.push_back(tmp);
             d_x.push_back(0);
         }
-    cout << "end of selecting" << endl;
+    cerr << "end of selecting" << endl;
     }
 
-    cout << "moving cells..." << endl;
+    cerr << "moving cells..." << endl;
     for(int i = 0; i < numOfCells; ++i) { // change position
-        movable_cells[i]->set_X(int(result[i]));
+        movable_cells[i]->set_X((int(result[i]) + movable_cells[i]->get_coord().first)/INITIAL_DISTANCE_RATE);
     }
  
     for(int i = 0; i < numOfCells; ++i) {
-        cout << movable_cells[i]->get_name() << ": " << endl;
-        cout << "(" << movable_cells[i]->get_coord().first << ", " << movable_cells[i]->get_coord().second << ")"
+        cerr << movable_cells[i]->get_name() << ": " << endl;
+        cerr << "(" << movable_cells[i]->get_coord().first << ", " << movable_cells[i]->get_coord().second << ")"
              << " >> " << "(" << result[i] << ", " << movable_cells[i]->get_coord().second << ")" << endl;
     }
-    cout << "end of moving" << endl;
+    cerr << "end of moving" << endl;
 }
 
 void solveInitialMatrix_y() {
@@ -251,11 +251,24 @@ void solveGlobalMatrix_x() {
         }
         P(i) = -c0values[i]*phi_x[i];
     }
+
     cout << "calculating global x..." << endl;
     result = C.colPivHouseholderQr().solve(P);
     cout << "finish" << endl;
 
     // moving...
+    cerr << "moving cells..." << endl;
+    for(int i = 0; i < numOfCells; ++i) { // change position
+        movable_cells[i]->set_X((int(result[i]) + movable_cells[i]->get_coord().first));
+    }
+ 
+    for(int i = 0; i < numOfCells; ++i) {
+        cerr << movable_cells[i]->get_name() << ": " << endl;
+        cerr << "(" << movable_cells[i]->get_coord().first << ", " << movable_cells[i]->get_coord().second << ")"
+             << " >> " << "(" << result[i] << ", " << movable_cells[i]->get_coord().second << ")" << endl;
+    }
+    cerr << "end of moving" << endl;
+
 }
 
 void solveGlobalMatrix_y() {
