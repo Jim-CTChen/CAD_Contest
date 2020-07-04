@@ -125,11 +125,41 @@ int main(int argc, char** argv)
     solveInitialMatrix_x();
     calculateCvalue_x();
     solveInitialMatrix_x();
-
-    // countC0();
+    calculateCvalue_x();
+    solveInitialMatrix_x();
+    // cout << "C510 1" << endl;
+    countC0();
+    // cout << "C0" << endl;
+    // cout << cells["C510"]->get_coord().first << endl;
+    // for(int i = 0; i < c0values.size(); ++i) cout << c0values[i] << " ";
+    // cout << endl;
+    // cout << "C510 2" << endl;
+    // cout << cells["C510"]->get_coord().first << endl;
+    // cout << "count demand" << endl;
+    demand_manager.countDemand(true);
     // cerr << "counting phi_x" << endl;
-    // calculate_phi_x();
-    // solveGlobalMatrix_x();
+    // cout << "C510 3" << endl;
+    // cout << cells["C510"]->get_coord().first << endl;
+    calculateCvalue_x();
+    // cout << "Cvalue" << endl;
+    // for(int i = 0; i < cvalues_x.size(); ++i) {
+    //     for(int j = 0; j < cvalues_x.size(); ++j){
+    //         cout << cvalues_x[i][j] << " ";
+    //     }
+    //     cout << endl;
+    // }
+
+        
+    // cout << endl;
+
+    calculate_phi_x();
+    solveGlobalMatrix_x();
+    // cout << "count demand" << endl;
+    demand_manager.countDemand(true);
+    // cerr << "counting phi_x" << endl;
+    calculateCvalue_x();
+    calculate_phi_x();
+    solveGlobalMatrix_x();
 
     // demand_manager.countDemand(true);
     cerr << "exporting...." << endl;

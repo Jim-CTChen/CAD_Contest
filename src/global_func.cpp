@@ -761,6 +761,12 @@ void store_cell_pic(string path){
             for(auto it = cells.begin(); it != cells.end(); it++){
                 if((*it).second->get_coord() == pair<int,int>(i,j)){
                     x += 1;
+                    // if((*it).second->is_movable() == false){
+                    //     x -= 20;
+                    // }
+                    // else{
+                    //     x += 1;
+                    // }  
                 }    
             }
             demand = demand + to_string(j+1) + "\t" + to_string(i+1) + "\t" + to_string(x) + "\n";

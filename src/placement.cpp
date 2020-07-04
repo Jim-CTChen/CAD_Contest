@@ -1,7 +1,7 @@
 #include <iostream>
 #include <unordered_map>
 #include <string>
-#include <eigen3/Eigen/Dense>
+#include "eigen3/Eigen/Dense"
 #include "global_func.h"
 #include "base_DS.h"
 #include "advance_DS.h"
@@ -147,7 +147,14 @@ void solveInitialMatrix_x() {
             cvalues_x.push_back(tmp);
             d_x.push_back(0);
         }
+
     cerr << "end of selecting" << endl;
+    }
+
+    for(int i = 0; i < numOfCells; ++i) {
+        cerr << movable_cells[i]->get_name() << ": " << endl;
+        cerr << "(" << movable_cells[i]->get_coord().first << ", " << movable_cells[i]->get_coord().second << ")"
+             << " >> " << "(" << result[i] << ", " << movable_cells[i]->get_coord().second << ")" << endl;
     }
 
     cerr << "moving cells..." << endl;
@@ -156,11 +163,6 @@ void solveInitialMatrix_x() {
                         ((int(result[i]) - movable_cells[i]->get_coord().first)/INITIAL_DISTANCE_RATE));
     }
  
-    for(int i = 0; i < numOfCells; ++i) {
-        cerr << movable_cells[i]->get_name() << ": " << endl;
-        cerr << "(" << movable_cells[i]->get_coord().first << ", " << movable_cells[i]->get_coord().second << ")"
-             << " >> " << "(" << result[i] << ", " << movable_cells[i]->get_coord().second << ")" << endl;
-    }
     cerr << "end of moving" << endl;
 }
 
@@ -231,15 +233,15 @@ void solveInitialMatrix_y() {
 void solveGlobalMatrix_x() {
     int numOfCells = movable_cells.size();
     if(phi_x.size() != numOfCells) {
-        cout << "size of phi_x does not match!!" << endl;
+        cerr << "size of phi_x does not match!!" << endl;
         return;
     }
     if(c0values.size() != numOfCells) {
-        cout << "size of c0values does not match!!" << endl;
+        cerr << "size of c0values does not match!!" << endl;
         return;
     }
     if(cvalues_x.size() != numOfCells) {
-        cout << "size of C_x does not match!!" << endl;
+        cerr << "size of C_x does not match!!" << endl;
         return;
     }
 
@@ -252,38 +254,50 @@ void solveGlobalMatrix_x() {
         }
         P(i) = -c0values[i]*phi_x[i];
     }
-
+    // cout << "phi" << endl;
+    // cout << P << endl;
     cout << "calculating global x..." << endl;
     result = C.colPivHouseholderQr().solve(P);
     cout << "finish" << endl;
 
+
+    phi_x.clear();
+    vector <int> previous_pos;
+    for(int i = 0; i < numOfCells; ++i) {
+        previous_pos.push_back(movable_cells[i]->get_coord().first);
+    }
+
+    
+
     // moving...
     cerr << "moving cells..." << endl;
-    for(int i = 0; i < numOfCells; ++i) { // change position
-        movable_cells[i]->set_X((int(result[i]) + movable_cells[i]->get_coord().first));
+    for(int i = 0; i < numOfCells; ++i) { // change position if out of range then move to boundary
+        if((int(result[i])+movable_cells[i]->get_coord().first) > row_of_gGrid) movable_cells[i]->set_X(row_of_gGrid);
+        else if((int(result[i])+movable_cells[i]->get_coord().first) < 0 ) movable_cells[i]->set_X(0);
+        else   movable_cells[i]->set_X((int(result[i]) + movable_cells[i]->get_coord().first));
     }
- 
-    for(int i = 0; i < numOfCells; ++i) {
-        cerr << movable_cells[i]->get_name() << ": " << endl;
-        cerr << "(" << movable_cells[i]->get_coord().first << ", " << movable_cells[i]->get_coord().second << ")"
-             << " >> " << "(" << result[i] << ", " << movable_cells[i]->get_coord().second << ")" << endl;
-    }
-    cerr << "end of moving" << endl;
 
+    for(int i = 0; i < numOfCells; ++i) { // print movement
+        cerr << movable_cells[i]->get_name() << ": " << endl;
+        cerr << "(" << previous_pos[i] << ", " << movable_cells[i]->get_coord().second << ")"
+             << " >> " << "(" << movable_cells[i]->get_coord().first << ", " << movable_cells[i]->get_coord().second << ")" << endl;
+    }
+
+    cerr << "end of moving" << endl;
 }
 
 void solveGlobalMatrix_y() {
     int numOfCells = movable_cells.size();
     if(phi_y.size() != numOfCells) {
-        cout << "size of phi_y does not match!!" << endl;
+        cerr << "size of phi_y does not match!!" << endl;
         return;
     }
     if(c0values.size() != numOfCells) {
-        cout << "size of c0values does not match!!" << endl;
+        cerr << "size of c0values does not match!!" << endl;
         return;
     }
     if(cvalues_y.size() != numOfCells) {
-        cout << "size of C_y does not match!!" << endl;
+        cerr << "size of C_y does not match!!" << endl;
         return;
     }
 
@@ -297,21 +311,41 @@ void solveGlobalMatrix_y() {
         P(i) = -c0values[i]*phi_y[i];
     }
     cout << "calculating global y..." << endl;
-    result = C.colPivHouseholderQr().solve(P);
+    result = C.colPivHouseholderQr().solve(P); // solve pos y
     cout << "finish" << endl;
+
+    vector<int> previous_pos;
+    for(size_t i = 0; i < numOfCells; ++i) {
+        previous_pos.push_back(movable_cells[i]->get_coord().second);
+    }
+
+    cerr << "moving cells..." << endl;
+    for(int i = 0; i < numOfCells; ++i) { // cchange position if out of range then move to boundary
+        if((int(result[i]) + movable_cells[i]->get_coord().second) > column_of_gGrid)   movable_cells[i]->set_Y(column_of_gGrid);
+        else if((int(result[i]) + movable_cells[i]->get_coord().second) < 0) movable_cells[i]->set_Y(0);
+        else movable_cells[i]->set_Y((int(result[i]) + movable_cells[i]->get_coord().second));
+    }
+
+    phi_y.clear();
+ 
+    for(int i = 0; i < numOfCells; ++i) { // print movement
+        cerr << movable_cells[i]->get_name() << ": " << endl;
+        cerr << "(" << movable_cells[i]->get_coord().first << ", " << previous_pos[i] << ")"
+             << " >> " << "(" << movable_cells[i]->get_coord().first << ", " << movable_cells[i]->get_coord().second << ")" << endl;
+    }
+    cerr << "end of moving" << endl;
 }
 
 void calculate_phi_x () {
-    int k_constant = 1;
     int phi[row_of_gGrid][column_of_gGrid];
     int x_max, x_min, y_max, y_min;  
-    // cout << "1" << endl;
+    //  cerr << "1" << endl;
     for(int i = 0; i < row_of_gGrid; i++){
         for(int j = 0; j < column_of_gGrid; j++){
             phi[i][j] = 0; 
         }
     }
-    // cout << "2" << endl;
+    // cerr << "2" << endl;
     for(auto it = movable_cells.begin(); it != movable_cells.end(); it++){
         if((*it)->get_coord().first <= row_of_gGrid*RANGE_OF_PHI/100){
             if((*it)->get_coord().second <= column_of_gGrid*RANGE_OF_PHI/100){
@@ -375,31 +409,32 @@ void calculate_phi_x () {
                 y_min = column_of_gGrid - 2*column_of_gGrid*RANGE_OF_PHI/100;
             }
         }
-        // cout << "3" << endl;
+        // cerr << "3" << endl;
+
         for(int i = x_min; i < x_max; i++){
             for(int j = y_min; j < y_max; j++){
                 for(int k = 0; k < layer_of_gGrid; k++){
                     if((*it)->get_coord().first != i){
-                        phi[(*it)->get_coord().first][(*it)->get_coord().second] += 
-                        demand_manager.demands[i][j][k].getDemand()*k_constant*(-((*it)->get_coord().first-i)) /
+                        // cout << demand_manager.demands[i][j][k].getDemand() << endl;
+                        phi[(*it)->get_coord().first-1][(*it)->get_coord().second-1] += 
+                        demand_manager.demands[i][j][k].getDemand()*GLOBAL_K_CONST*(-((*it)->get_coord().first-i)) /
                          pow((pow(((*it)->get_coord().first-i),2)+pow(((*it)->get_coord().second-j),2)),(3/2));
                     }
                 }
                 
             }
         }
-        //  cout << "4" << endl;
+        // cerr << "4" << endl;
     }
 	
     for(auto it = movable_cells.begin(); it != movable_cells.end(); it++){
         phi_x.push_back(phi[(*it)->get_coord().first][(*it)->get_coord().second]);	
     }
-    // cout << "5" << endl;	
+    // cerr << "5" << endl;	
 	
 }
 
 void calculate_phi_y () {
-    int k_constant = 1;
     int phi[row_of_gGrid][column_of_gGrid];
     int x_max, x_min, y_max, y_min;  
     for(int i = 0; i < row_of_gGrid; i++){
@@ -475,8 +510,8 @@ void calculate_phi_y () {
             for(int j = y_min; j < y_max; j++){
                 for(int k = 0; k < layer_of_gGrid; k++){
                     if((*it)->get_coord().second != j){
-                        phi[(*it)->get_coord().first][(*it)->get_coord().second] += 
-                        demand_manager.demands[i][j][k].getDemand()*k_constant*(-((*it)->get_coord().second-j)) /
+                        phi[(*it)->get_coord().first-1][(*it)->get_coord().second-1] += 
+                        demand_manager.demands[i][j][k].getDemand()*GLOBAL_K_CONST*(-((*it)->get_coord().second-j)) /
                          pow((pow(((*it)->get_coord().first-i),2)+pow(((*it)->get_coord().second-j),2)),(3/2));
                     }
                 }

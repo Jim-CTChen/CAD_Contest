@@ -20,7 +20,7 @@ extern vector<float> c0values;
 extern vector<float> d_x;
 extern vector<float> d_y;
 
-const int BIG_CONST = 2000;
+const int BIG_CONST = 200;
 
 using namespace std;
 
@@ -226,7 +226,7 @@ void D_Manager::countDemand(bool initial = false)
         }
     }
 
-
+    cout << "blk" << endl;
     // counting blockage demand
     for(auto &it : cells) // for every cell
     {

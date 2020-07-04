@@ -176,6 +176,7 @@ class Cell{
         void set_movable(bool b)   {movable = b;}
         int& get_index()    { return index;}
         void set_X(int x)   { coord.first = x; }
+        void set_Y(int y)   { coord.second = y;}
         
     private:
         // data member
