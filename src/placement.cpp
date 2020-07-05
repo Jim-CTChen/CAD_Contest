@@ -79,6 +79,7 @@ void calculateCvalue_x()
     for(auto& it : netlists) {
         it.second->B2B_weight_x();
     }
+    cerr << "cvalues_x: " << cvalues_x.size();
 }
 
 void calculateCvalue_y()
@@ -86,6 +87,7 @@ void calculateCvalue_y()
     for(auto& it : netlists) {
         it.second->B2B_weight_y();
     }
+    cerr << "cvalues_y: " << cvalues_y.size();
 }
 
 void solveInitialMatrix_x() {
@@ -169,7 +171,7 @@ void solveInitialMatrix_y() {
     if(cvalues_y.size() != numOfCells) {
         cerr << "cvalues_y size does not match!";
         return;
-    } 
+    }
     if(d_y.size() != numOfCells) {
         cerr << "d_y size does not match!";
         return;
@@ -183,9 +185,11 @@ void solveInitialMatrix_y() {
         }
     }
 
+    result = C_y.colPivHouseholderQr().solve(D_y);
+
     // select cell to move for first initial movement
-    vector<pair<Cell*, float>> displacement;
     if(movable_cells.size() > maxCellMove){
+        vector<pair<Cell*, float>> displacement;
         for(int i = 0; i < numOfCells; ++i) { // sort placement
             displacement.push_back(pair<Cell*, float>(movable_cells[i],abs(result[i]-movable_cells[i]->get_coord().second)));
             sort(displacement.begin(),displacement.end(),cmp_value);
@@ -205,7 +209,7 @@ void solveInitialMatrix_y() {
         }
         displacement.clear();
 
-        cvalues_x.clear();
+        cvalues_y.clear();
         d_y.clear();
         for(size_t i = 0; i < movable_cells.size(); ++i) {
             vector<float> tmp;
@@ -220,12 +224,16 @@ void solveInitialMatrix_y() {
     
 
     
-    result = C_y.colPivHouseholderQr().solve(D_y); // new y position for every cell
+    
     // for(int i = 0; i < numOfCells; ++i) {
     //     cout << movable_cells[i]->get_name() << ": "<< endl;
     //     cout << "(" << movable_cells[i]->get_coord().first << ", " << movable_cells[i]->get_coord().second << ")"
     //          << " >> " << "(" << movable_cells[i]->get_coord().second << ", " << result[i] << ")" << endl;
     // }
+    for(int i = 0; i < numOfCells; ++i) { // change position
+        movable_cells[i]->set_Y(movable_cells[i]->get_coord().second + 
+                        ((int(result[i]) - movable_cells[i]->get_coord().second)/INITIAL_DISTANCE_RATE));
+    }
 }
 
 void solveGlobalMatrix_x() {
@@ -254,9 +262,9 @@ void solveGlobalMatrix_x() {
     }
     // cout << "phi" << endl;
     // cout << P << endl;
-    cout << "calculating global x..." << endl;
+    // cout << "calculating global x..." << endl;
     result = C.colPivHouseholderQr().solve(P);
-    cout << "finish" << endl;
+    // cout << "finish" << endl;
 
 
     phi_x.clear();
@@ -308,10 +316,11 @@ void solveGlobalMatrix_y() {
         }
         P(i) = -c0values[i]*phi_y[i];
     }
-    cout << "calculating global y..." << endl;
+    // cout << "calculating global y..." << endl;
     result = C.colPivHouseholderQr().solve(P); // solve pos y
-    cout << "finish" << endl;
+    // cout << "finish" << endl;
 
+    phi_y.clear();
     vector<int> previous_pos;
     for(size_t i = 0; i < numOfCells; ++i) {
         previous_pos.push_back(movable_cells[i]->get_coord().second);
@@ -324,7 +333,7 @@ void solveGlobalMatrix_y() {
         else movable_cells[i]->set_Y((int(result[i]) + movable_cells[i]->get_coord().second));
     }
 
-    phi_y.clear();
+    
  
     // for(int i = 0; i < numOfCells; ++i) { // print movement
     //     cerr << movable_cells[i]->get_name() << ": " << endl;
@@ -413,10 +422,9 @@ void calculate_phi_x () {
             for(int j = y_min; j < y_max; j++){
                 for(int k = 0; k < layer_of_gGrid; k++){
                     if((*it)->get_coord().first != i){
-                        // cout << demand_manager.demands[i][j][k].getDemand() << endl;
                         phi[(*it)->get_coord().first-1][(*it)->get_coord().second-1] += 
                         demand_manager.demands[i][j][k].getDemand()*GLOBAL_K_CONST*(-((*it)->get_coord().first-i)) /
-                         pow((pow(((*it)->get_coord().first-i),2)+pow(((*it)->get_coord().second-j),2)),(3/2));
+                            pow((pow(((*it)->get_coord().first-i),2)+pow(((*it)->get_coord().second-j),2)),(3/2));
                     }
                 }
                 
@@ -518,6 +526,6 @@ void calculate_phi_y () {
     }
 	
     for(auto it = movable_cells.begin(); it != movable_cells.end(); it++){
-        phi_x.push_back(phi[(*it)->get_coord().first][(*it)->get_coord().second]);	
+        phi_y.push_back(phi[(*it)->get_coord().first][(*it)->get_coord().second]);	
     }	
 }

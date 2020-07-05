@@ -52,7 +52,6 @@ void init() // init 2-D model, 3-D all_demand, extra_supply
     demand_manager.init();
 }
 
-
 void clear()
 {
     // delete layers & mastercells & netlists & cells
@@ -68,7 +67,6 @@ void clear()
     delete[] model;
 
 }
-
 
 void readMaxCellMove(){
     ifstream file;
@@ -632,7 +630,6 @@ void readRoutes(){
     file.close();
 };
  
-
 int two_pts_distance(Steiner_pts* a, Steiner_pts* b){
     if(a->get_layer() == b->get_layer()){
         return abs(a->get_coord().first - b->get_coord().first) + abs(a->get_coord().second - b->get_coord().second);
@@ -669,8 +666,6 @@ void routing_len(){
     }
 }
 
-
-
 void netlistBFS()
 {
     for(auto &it : netlists) {
@@ -694,8 +689,6 @@ void netlistBFS()
         cout << "=============" << endl;
     }
 }
-
-
 
 void write_output(Steiner_pts* s, string path, string net_name){
     ofstream fout(path.c_str(), ios::out );

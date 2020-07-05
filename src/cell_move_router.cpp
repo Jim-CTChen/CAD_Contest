@@ -52,7 +52,7 @@ vector<float> phi_y;
 
 vector<Cell*> movable_cells;
 
-vector<Cell*> moved_cells; 
+vector<Cell*> moved_cells;
 
 Grid** model = 0;
 D_Manager demand_manager; // [row][column][layer]
@@ -122,8 +122,8 @@ int main(int argc, char** argv)
         cerr << "Doing initial placement..." << endl;
         for(int i = 0; i < numOfInitial; ++i) {
             calculateCvalue_x();
-            calculateCvalue_y();
             solveInitialMatrix_x();
+            calculateCvalue_y();
             solveInitialMatrix_y();
         }
         cerr << "Done initial placement!" << endl;
