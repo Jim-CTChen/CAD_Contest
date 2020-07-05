@@ -54,4 +54,4 @@
 ```
 
 ## Result 
-- We generate cell.txt & demand.txt in specific format for online heatmap to visualize the result for re-placement. [online heatmap](http://www.heatmapper.ca/image/)
+- We generate cell.txt & demand_Lx.txt in specific format for online heatmap to visualize the result for re-placement. [online heatmap](http://www.heatmapper.ca/image/)

@@ -7,6 +7,6 @@
 
 
 const string cell_output_path = "test/cell.txt";
-const string demand_output_path = "test/demand"; // demand_L1.txt
+const string demand_output_path = "test/demand_L"; // demand_L1.txt
 
 #endif // DEFINITION_H
