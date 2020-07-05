@@ -102,6 +102,7 @@ int main(int argc, char** argv)
         cerr << "Must do initial placement before global placement!" << endl;
         return 0;
     }
+    // cerr << "path: " << file_path << " -i: " << numOfInitial << " -g: " << numOfGlobal << endl;
     cerr << "Reading input file..." << endl;
     readMaxCellMove();
     readGGridBoundaryIdx();
@@ -120,7 +121,13 @@ int main(int argc, char** argv)
     if(numOfInitial) {
         placement_init();
         cerr << "Doing initial placement..." << endl;
-        for(int i = 0; i < numOfInitial; ++i) {
+        calculateCvalue_x();
+        //cerr << "1" << endl;
+        calculateCvalue_y();
+        //cerr << "2" << endl;
+        choose_movable();
+        cerr << "3" << endl;
+        for(int i = 0; i < (numOfInitial-1); ++i) {
             calculateCvalue_x();
             solveInitialMatrix_x();
             calculateCvalue_y();
@@ -128,8 +135,8 @@ int main(int argc, char** argv)
         }
         cerr << "Done initial placement!" << endl;
         if(numOfGlobal) {
-            countC0();
             cerr << "Doing global placement..." << endl;
+            countC0();
             for(int i = 0; i < numOfGlobal; ++i) {
                 demand_manager.countDemand(true);
                 calculateCvalue_x();
@@ -154,105 +161,6 @@ int main(int argc, char** argv)
     }
     cerr << "Done exporting!" << endl;
 
-    // cout << movable_cells.size();
-    // for(auto& it : netlists) {
-    //     // cout << "Netlist: " << it.first << endl;
-        // it.second->B2B_weight_x();
-    //     // cout << "==================" << endl;
-    // }
-    // cout << "C value: " << endl;
-    // for(size_t i = 0; i < cvalues_x.size(); ++i) {
-    //     for(size_t j = 0; j < cvalues_x.size(); ++j) {
-    //         cout << cvalues_x[i][j] << " ";
-    //     }
-    //     cout << endl;
-    // }alculate_Cvalued_x.size(); i++) {
-    //     cout << d_x[i] << " ";
-    // }
-    // cout << endl; 
-    // solveInitialMatrix_x();
     
-
-
-    // netlistBFS();
-    // demand_manager.countDemand(true);
-    // demand_manager.printDemand();
-    // demand_manager.printSupply();
-
-    
-    // cout << "intial result: " << endl;
-    // demand_manager.countDemand(true);
-    // demand_manager.printDemand();
-    // demand_manager.printResult();
-    // cout << "==============================================" << endl;
-
-    // placement_init();
-    // calculateCvalue_x();
-    // solveInitialMatrix_x();
-    // calculateCvalue_x();
-    // solveInitialMatrix_x();
-    // calculateCvalue_x();
-    // solveInitialMatrix_x();
-    // cout << "C510 1" << endl;
-    // countC0();
-    // cout << "C0" << endl;
-    // cout << cells["C510"]->get_coord().first << endl;
-    // for(int i = 0; i < c0values.size(); ++i) cout << c0values[i] << " ";
-    // cout << endl;
-    // cout << "C510 2" << endl;
-    // cout << cells["C510"]->get_coord().first << endl;
-    // cout << "count demand" << endl;
-    // demand_manager.countDemand(true);
-    // cerr << "counting phi_x" << endl;
-    // cout << "C510 3" << endl;
-    // cout << cells["C510"]->get_coord().first << endl;
-    // calculateCvalue_x();
-    // cout << "Cvalue" << endl;
-    // for(int i = 0; i < cvalues_x.size(); ++i) {
-    //     for(int j = 0; j < cvalues_x.size(); ++j){
-    //         cout << cvalues_x[i][j] << " ";
-    //     }
-    //     cout << endl;
-    // }
-
-        
-    // cout << endl;
-
-    // calculate_phi_x();
-    // solveGlobalMatrix_x();
-    // cout << "count demand" << endl;
-    // demand_manager.countDemand(true);
-    // cerr << "counting phi_x" << endl;
-    // calculateCvalue_x();
-    // calculate_phi_x();
-    // solveGlobalMatrix_x();
-
-    // demand_manager.countDemand(true);
-    // cerr << "exporting...." << endl;
-    // store_cell_pic(cell_output_path);
-    // cerr << "finish!!!!!!!!!!" << endl;
-    
-    // cout << "first movement: " << endl; 
-    // demand_manager.countDemand(true);
-    // demand_manager.printDemand();
-    // demand_manager.printResult();
-    // cout << "==============================================" << endl;
-
-    // calculateCvalue_x();
-    // solveInitialMatrix_x();
-    // cout << "second movement: " << endl;
-    // demand_manager.countDemand(true);
-    // demand_manager.printDemand();
-    // demand_manager.printResult();
-    // // routing_len();
-    // // store_output(output_path);
-    // cout << "counting C0" << endl;
-    // countC0();
-
-    // cout << "counting phi_x" << endl;
-    // calculate_phi_x();
-    // cout << "solveGlobalMatrix_x" << endl;
-    // solveGlobalMatrix_x();
-    // return 0;
     // clear();
 }

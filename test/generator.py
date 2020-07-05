@@ -1,15 +1,15 @@
 import random
 
-MAX_X = 20 # limit: 2000
-MAX_Y = 20 # limit: 2000
-MAX_Z = 3   # limit: 32
-MIN_PIN = 2
+MAX_X = 15 # limit: 2000
+MAX_Y = 18 # limit: 2000
+MAX_Z = 4  # limit: 32
+MIN_PIN = 3
 MAX_PIN = 5  # # of pin per mc
-MIN_BLK = 0
-MAX_BLK = 0  # # of blk per mc
+MIN_BLK = 1
+MAX_BLK = 3  # # of blk per mc
 CELL_DENSITY = 3 # cell per grid
-CELL_MOVE_RATIO = 0.8 # ratio of # movable cells
-FIXED_RATIO = 0.2
+CELL_MOVE_RATIO = 0.3 # ratio of # movable cells
+FIXED_RATIO = 0.4
 MASTERCELL_RATIO = 10 # num of cells per mc
 SAME_EXTRA_DEMAND = 2
 ADJH_EXTRA_DEMAND = 1
@@ -17,9 +17,9 @@ SUPPLY_RATIO = 2
 BLK_DEMAND = 1
 TOTAL_EXTRA_DEMAND_RATIO = 4 # must be even
 SET_OF_EXTRA_DEMAND = 2 # num of extra demand per set
+PIN_PER_NET = 5 
 TOTAL_CELL = MAX_X*MAX_Y*CELL_DENSITY
 TOTAL_NET = TOTAL_CELL
-PIN_PER_NET = 5 
 MAX_CELL_MOVE = TOTAL_CELL*CELL_MOVE_RATIO
 TOTAL_MASTERCELL = TOTAL_CELL/MASTERCELL_RATIO
 SUPPLY = CELL_DENSITY*ADJH_EXTRA_DEMAND*SAME_EXTRA_DEMAND*SUPPLY_RATIO
