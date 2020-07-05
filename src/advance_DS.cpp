@@ -190,7 +190,6 @@ void D_Manager::init() {
 void D_Manager::clearDemand()
 {
     for(int k = 0; k < layer_of_gGrid; ++k) {
-        cout << "Layer " << k << endl;
         for(int j = 0; j < row_of_gGrid; ++j) {
             for(int i = 0; i < column_of_gGrid; ++i) {
                 demands[j][i][k].setDemand(0);
@@ -205,8 +204,8 @@ void D_Manager::countDemand(bool initial = false)
     if(!initial) {
         for(auto &it : netlists) // for every netlist, count demand of routing
         {
-            cerr << "===========================================" << endl; // debug
-            cerr << "Netlist " << it.first << endl; // debug
+            // cerr << "===========================================" << endl; // debug
+            // cerr << "Netlist " << it.first << endl; // debug
             DEMANDFLAG++;
             queue<Steiner_pts*> q; // for BFS
             Steiner_pts* tmp = 0;

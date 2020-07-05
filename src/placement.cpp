@@ -322,7 +322,6 @@ void solveGlobalMatrix_y() {
         return;
     }
     if(cvalues_y.size() != numOfCells) {
-        cout << cvalues_y.size() << numOfCells;
         cerr << "size of C_y does not match!!" << endl;
         return;
     }
