@@ -2,8 +2,9 @@
 #define DEFINITION_H
 
 #define RANGE_OF_PHI 20 // 20%
-#define INITIAL_DISTANCE_RATE 1 
-#define GLOBAL_K_CONST 500
+#define INITIAL_DISTANCE_RATE 6
+#define GLOBAL_K_CONST 20
+#define BASE_MOVABLE_RATIO 60
 
 
 const string cell_output_path = "test/cell.txt";

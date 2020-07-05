@@ -1,15 +1,15 @@
 import random
 
-MAX_X = 15 # limit: 2000
-MAX_Y = 18 # limit: 2000
+MAX_X = 20# limit: 2000
+MAX_Y = 20 # limit: 2000
 MAX_Z = 4  # limit: 32
 MIN_PIN = 3
 MAX_PIN = 5  # # of pin per mc
 MIN_BLK = 1
 MAX_BLK = 3  # # of blk per mc
 CELL_DENSITY = 3 # cell per grid
-CELL_MOVE_RATIO = 0.3 # ratio of # movable cells
-FIXED_RATIO = 0.4
+CELL_MOVE_RATIO = 0.6 # ratio of # movable cells
+FIXED_RATIO = 0.2
 MASTERCELL_RATIO = 10 # num of cells per mc
 SAME_EXTRA_DEMAND = 2
 ADJH_EXTRA_DEMAND = 1
@@ -86,8 +86,8 @@ for i in range(1, int(TOTAL_CELL+1)):
         m = 'Movable'
     else:
         m = 'Fixed'
-    if int(i/MASTERCELL_RATIO) >= TOTAL_MASTERCELL:
-        mc = int(i/MASTERCELL_RATIO)
+    if int(i/MASTERCELL_RATIO+1) > TOTAL_MASTERCELL:
+        mc = int(TOTAL_MASTERCELL)
     else:
         mc = int(i/MASTERCELL_RATIO+1)
     print('CellInst C{i} MC{mc} {x} {y} {m}'.format(i=i, mc=mc, x=x, y=y, m=m))

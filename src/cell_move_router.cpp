@@ -107,9 +107,7 @@ int main(int argc, char** argv)
     readMaxCellMove();
     readGGridBoundaryIdx();
     readLayer();
-
     init(); // after reading in row, column, layer, init first
-    
     readNumNonDefaultSupplyGGrid();
     readMasterCell();
     readNeighborCellExtraDemand();
@@ -122,11 +120,8 @@ int main(int argc, char** argv)
         placement_init();
         cerr << "Doing initial placement..." << endl;
         calculateCvalue_x();
-        //cerr << "1" << endl;
         calculateCvalue_y();
-        //cerr << "2" << endl;
         choose_movable();
-        cerr << "3" << endl;
         for(int i = 0; i < (numOfInitial-1); ++i) {
             calculateCvalue_x();
             solveInitialMatrix_x();

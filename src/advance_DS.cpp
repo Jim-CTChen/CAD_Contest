@@ -231,18 +231,18 @@ void D_Manager::countDemand(bool initial = false)
     }
 
     // counting blockage demand
-    cerr << "blockage..." << endl;
+    // cerr << "blockage..." << endl;
     for(auto &it : cells) // for every cell
     {
         Cell* tmp = it.second;
-        cerr << tmp->get_name() << ": "<< endl;
+        // cerr << tmp->get_name() << ": "<< endl;
         for(auto &iit : tmp->get_mc()->get_blkgs()){ // for every blockage in one cell
-            cerr << tmp->get_coord().first-1 << " " << tmp->get_coord().second-1 << " " << iit.get_layer()-1 << endl;
+            // cerr << tmp->get_coord().first-1 << " " << tmp->get_coord().second-1 << " " << iit.get_layer()-1 << endl;
             demands[tmp->get_coord().first-1][tmp->get_coord().second-1][iit.get_layer()-1].addDemand(iit.get_extra_demand());
         }
     }
 
-    cerr << "extra..." << endl;
+    // cerr << "extra..." << endl;
     // counting extra_demand by iteration for grids
     for (int i = 0; i < row_of_gGrid; ++i)
     {
@@ -289,7 +289,7 @@ void D_Manager::countDemand(bool initial = false)
             }
         }
     }
-    cerr << "finish calculating demand" << endl;
+    // cerr << "finish calculating demand" << endl;
 }
 
 void D_Manager::printDemand()

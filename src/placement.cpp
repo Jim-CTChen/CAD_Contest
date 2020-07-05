@@ -201,11 +201,11 @@ void solveInitialMatrix_x() {
     // select cell to move for first initial movement
     // cerr << "end of selecting" << endl;
 
-    for(int i = 0; i < numOfCells; ++i) {
-        cerr << movable_cells[i]->get_name() << ": " << endl;
-        cerr << "(" << movable_cells[i]->get_coord().first << ", " << movable_cells[i]->get_coord().second << ")"
-             << " >> " << "(" << result[i] << ", " << movable_cells[i]->get_coord().second << ")" << endl;
-    }
+    // for(int i = 0; i < numOfCells; ++i) { // printing result
+    //     cerr << movable_cells[i]->get_name() << ": " << endl;
+    //     cerr << "(" << movable_cells[i]->get_coord().first << ", " << movable_cells[i]->get_coord().second << ")"
+    //          << " >> " << "(" << result[i] << ", " << movable_cells[i]->get_coord().second << ")" << endl;
+    // }
 
     // cerr << "moving cells..." << endl;
     for(int i = 0; i < numOfCells; ++i) { // change position
@@ -240,14 +240,11 @@ void solveInitialMatrix_y() {
 
     result = C_y.colPivHouseholderQr().solve(D_y);
 
-    // select cell to move for first initial movement
-
-    result = C_y.colPivHouseholderQr().solve(D_y); // new y position for every cell
-    for(int i = 0; i < numOfCells; ++i) {
-        cout << movable_cells[i]->get_name() << ": "<< endl;
-        cout << "(" << movable_cells[i]->get_coord().first << ", " << movable_cells[i]->get_coord().second << ")"
-             << " >> " << "(" << movable_cells[i]->get_coord().second << ", " << result[i] << ")" << endl;
-    }
+    // for(int i = 0; i < numOfCells; ++i) {
+    //     cout << movable_cells[i]->get_name() << ": "<< endl;
+    //     cout << "(" << movable_cells[i]->get_coord().first << ", " << movable_cells[i]->get_coord().second << ")"
+    //          << " >> " << "(" << movable_cells[i]->get_coord().second << ", " << result[i] << ")" << endl;
+    // }
     for(int i = 0; i < numOfCells; ++i) { // change position
         int y = movable_cells[i]->get_coord().second + 
                         ((int(result[i]) - movable_cells[i]->get_coord().second)/INITIAL_DISTANCE_RATE);
@@ -368,14 +365,18 @@ void solveGlobalMatrix_y() {
 
 void calculate_phi_x () {
     int phi[row_of_gGrid][column_of_gGrid];
-    int x_max, x_min, y_max, y_min;  
-    //  cerr << "1" << endl;
+    int x_max, x_min, y_max, y_min;
+    // float k = GLOBAL_K_CONST;
+    // float total = cells.size();
+    // float maxcellmove = maxCellMove;
+    // int r = (maxcellmove/total)*100 - BASE_MOVABLE_RATIO;
+    // if(r > 0) k *= r;
+    // else k /= r;
     for(int i = 0; i < row_of_gGrid; i++){
         for(int j = 0; j < column_of_gGrid; j++){
             phi[i][j] = 0; 
         }
     }
-    // cerr << "2" << endl;
     for(auto it = movable_cells.begin(); it != movable_cells.end(); it++){
         if((*it)->get_coord().first <= row_of_gGrid*RANGE_OF_PHI/100){
             if((*it)->get_coord().second <= column_of_gGrid*RANGE_OF_PHI/100){
@@ -439,7 +440,6 @@ void calculate_phi_x () {
                 y_min = column_of_gGrid - 2*column_of_gGrid*RANGE_OF_PHI/100;
             }
         }
-        // cerr << "3" << endl;
 
         for(int i = x_min; i < x_max; i++){
             for(int j = y_min; j < y_max; j++){
@@ -453,18 +453,22 @@ void calculate_phi_x () {
                 
             }
         }
-        // cerr << "4" << endl;
     }
     for(auto it = movable_cells.begin(); it != movable_cells.end(); it++){
         phi_x.push_back(phi[(*it)->get_coord().first][(*it)->get_coord().second]);	
     }
-    // cerr << "5" << endl;
 	
 }
 
 void calculate_phi_y () {
     int phi[row_of_gGrid][column_of_gGrid];
     int x_max, x_min, y_max, y_min;  
+    // float k = GLOBAL_K_CONST;
+    // float total = cells.size();
+    // float maxcellmove = maxCellMove;
+    // int r = (maxcellmove/total)*100 - BASE_MOVABLE_RATIO;
+    // if(r > 0) k *= r;
+    // else k /= r;
     for(int i = 0; i < row_of_gGrid; i++){
         for(int j = 0; j < column_of_gGrid; j++){
             phi[i][j] = 0; 
