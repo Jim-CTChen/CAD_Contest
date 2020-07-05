@@ -49,8 +49,9 @@
 * output files please refer to [Result](#Result)
 * example:
 ``` bash
-./bin/cell_move_router -p test/case5.txt -i 1
-./bin/cell_move_router -i 2 -g 1
+./bin/cell_move_router                         // output initial placement distribution
+./bin/cell_move_router -p test/case5.txt -i 1  // output placement distribution after one initial placement
+./bin/cell_move_router -i 2 -g 1               // output placement distribution after two initial placement & one global placement
 ```
 
 ## Result 
