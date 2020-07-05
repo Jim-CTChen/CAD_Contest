@@ -4,7 +4,8 @@
 using namespace std;
 
 
-size_t myStrGetTok(const string& str, string& tok, size_t pos = 0,
+size_t 
+myStrGetTok(const string& str, string& tok, size_t pos = 0,
             const char del = ' ')
 {
    size_t begin = str.find_first_not_of(del, pos);

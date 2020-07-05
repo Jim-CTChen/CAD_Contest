@@ -94,7 +94,7 @@ void Netlist::B2B_weight_x(){
 
 
 void Netlist::B2B_weight_y(){
-    int max = pins[0]->get_cell()->get_coord().second , min = pins[0]->get_cell()->get_coord().second  ;
+    int max = pins[0]->get_cell()->get_coord().second , min = pins[0]->get_cell()->get_coord().second ;
     float w = 0;
     Pin* p_r = pins[0];
     Pin* p_l = pins[0];
@@ -112,9 +112,11 @@ void Netlist::B2B_weight_y(){
         if((*it) != p_r){
             if(p_r->get_cell()->get_coord().second == (*it)->get_cell()->get_coord().second){
                 w = BIG_CONST;
+                // cout <<  p_r->get_cell()->get_name() << " & " << (*it)->get_cell()->get_name() << ": " << w << endl; // DEBUG
             }
             else{
                 w = 2.0/((pins.size()-1)*abs(p_r->get_cell()->get_coord().second-(*it)->get_cell()->get_coord().second));
+                // cout <<  p_r->get_cell()->get_name() << " & " << (*it)->get_cell()->get_name() << ": " << w << endl; // DEBUG
             }
             if((p_r->get_cell()->is_movable()) && ((*it)->get_cell()->is_movable())){
                 cvalues_y[p_r->get_cell()->get_index()][p_r->get_cell()->get_index()] += w;
@@ -135,9 +137,11 @@ void Netlist::B2B_weight_y(){
         if((*it) != p_l && (*it) != p_r){
             if(p_l->get_cell()->get_coord().second == (*it)->get_cell()->get_coord().second){
                 w = BIG_CONST;
+                // cout <<  p_r->get_cell()->get_name() << " & " << (*it)->get_cell()->get_name() << ": " << w << endl; // DEBUG
             }
             else{
                 w = 2.0/((pins.size()-1)*abs(p_l->get_cell()->get_coord().second-(*it)->get_cell()->get_coord().second));
+                // cout <<  p_r->get_cell()->get_name() << " & " << (*it)->get_cell()->get_name() << ": " << w << endl; // DEBUG
             }
             if((p_l->get_cell()->is_movable()) && ((*it)->get_cell()->is_movable())){
                 cvalues_y[p_l->get_cell()->get_index()][p_l->get_cell()->get_index()] += w;
@@ -153,8 +157,8 @@ void Netlist::B2B_weight_y(){
                 cvalues_y[p_l->get_cell()->get_index()][p_l->get_cell()->get_index()] += w;
                 d_y[p_l->get_cell()->get_index()] -= w*(*it)->get_cell()->get_coord().second;
             } 
-        }     
-    }  
+        }
+    }
 }
 
 

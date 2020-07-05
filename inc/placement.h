@@ -13,7 +13,7 @@ void countC0();
 
 void calculateCvalue_x();
 void calculateCvalue_y();
-
+void choose_movable();
 void solveInitialMatrix_x();
 void solveInitialMatrix_y();
 void calculate_phi_x();

@@ -177,6 +177,8 @@ class Cell{
         int& get_index()    { return index;}
         void set_X(int x)   { coord.first = x; }
         void set_Y(int y)   { coord.second = y;}
+        void set_former_index(int x)   {former_index = x;}
+        int& get_former_index()  {return former_index;}
         
     private:
         // data member
@@ -186,6 +188,7 @@ class Cell{
         bool                        movable;
         string                      name;
         int                         index = -1;
+        int                         former_index = 0; //use for choose_movable
 };
 
 

@@ -119,11 +119,16 @@ int main(int argc, char** argv)
 
     if(numOfInitial) {
         placement_init();
+        calculateCvalue_x();
+        calculateCvalue_y();
+        choose_movable();
+        // solveInitialMatrix_x();
+        // solveInitialMatrix_y();
         cerr << "Doing initial placement..." << endl;
-        for(int i = 0; i < numOfInitial; ++i) {
+        for(int i = 0; i < (numOfInitial-1); ++i) {
             calculateCvalue_x();
-            calculateCvalue_y();
             solveInitialMatrix_x();
+            calculateCvalue_y();
             solveInitialMatrix_y();
         }
         cerr << "Done initial placement!" << endl;
