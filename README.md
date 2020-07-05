@@ -44,7 +44,7 @@
  make
  ./bin/cell_move_router <-p input_file_path> <-i numberOfInitialPlacement> <-g numberOfGlobalPlacement>
 ```
-* input_file_path default: case2
+* input_file_path default: test/case2.txt
 * must do at least one time of initial placement before global placement
 * output files please refer to [Result](#Result)
 * example:
@@ -55,3 +55,5 @@
 
 ## Result 
 - We generate cell.txt & demand.txt in specific format for online heatmap to visualize the result for re-placement. [online heatmap](http://www.heatmapper.ca/image/)
+
+## Generator.py

@@ -180,15 +180,15 @@ int main(int argc, char** argv)
     // demand_manager.printResult();
     // cout << "==============================================" << endl;
 
-    placement_init();
-    calculateCvalue_x();
-    solveInitialMatrix_x();
-    calculateCvalue_x();
-    solveInitialMatrix_x();
-    calculateCvalue_x();
-    solveInitialMatrix_x();
+    // placement_init();
+    // calculateCvalue_x();
+    // solveInitialMatrix_x();
+    // calculateCvalue_x();
+    // solveInitialMatrix_x();
+    // calculateCvalue_x();
+    // solveInitialMatrix_x();
     // cout << "C510 1" << endl;
-    countC0();
+    // countC0();
     // cout << "C0" << endl;
     // cout << cells["C510"]->get_coord().first << endl;
     // for(int i = 0; i < c0values.size(); ++i) cout << c0values[i] << " ";
@@ -196,11 +196,11 @@ int main(int argc, char** argv)
     // cout << "C510 2" << endl;
     // cout << cells["C510"]->get_coord().first << endl;
     // cout << "count demand" << endl;
-    demand_manager.countDemand(true);
+    // demand_manager.countDemand(true);
     // cerr << "counting phi_x" << endl;
     // cout << "C510 3" << endl;
     // cout << cells["C510"]->get_coord().first << endl;
-    calculateCvalue_x();
+    // calculateCvalue_x();
     // cout << "Cvalue" << endl;
     // for(int i = 0; i < cvalues_x.size(); ++i) {
     //     for(int j = 0; j < cvalues_x.size(); ++j){
@@ -212,19 +212,19 @@ int main(int argc, char** argv)
         
     // cout << endl;
 
-    calculate_phi_x();
-    solveGlobalMatrix_x();
+    // calculate_phi_x();
+    // solveGlobalMatrix_x();
     // cout << "count demand" << endl;
-    demand_manager.countDemand(true);
+    // demand_manager.countDemand(true);
     // cerr << "counting phi_x" << endl;
-    calculateCvalue_x();
-    calculate_phi_x();
-    solveGlobalMatrix_x();
+    // calculateCvalue_x();
+    // calculate_phi_x();
+    // solveGlobalMatrix_x();
 
     // demand_manager.countDemand(true);
-    cerr << "exporting...." << endl;
-    store_cell_pic(cell_output_path);
-    cerr << "finish!!!!!!!!!!" << endl;
+    // cerr << "exporting...." << endl;
+    // store_cell_pic(cell_output_path);
+    // cerr << "finish!!!!!!!!!!" << endl;
     
     // cout << "first movement: " << endl; 
     // demand_manager.countDemand(true);
