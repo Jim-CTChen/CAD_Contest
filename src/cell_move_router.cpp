@@ -91,10 +91,12 @@ int main(int argc, char** argv)
     infile.open(file_path);
     if(!infile.is_open()) {
         cerr << "Invalid file path!" << endl;
+        return 0;
     }
     infile.close();
     if(numOfInitial == 0 && numOfGlobal > 0) {
         cerr << "Must do initial placement before global placement!" << endl;
+        return 0;
     }
 
     cerr << "Reading input file..." << endl;
@@ -140,6 +142,9 @@ int main(int argc, char** argv)
     cerr << "Exporting output file test/cell.txt..." << endl;
     store_cell_pic(cell_output_path);
     cerr << "Exporting output file test/demand.txt..." << endl;
+    for(int i = 0; i < layer_of_gGrid; i++) {
+        store_demand_pic(demand_output_path, i);
+    }
     cerr << "Done!" << endl;
     return 0;
 
