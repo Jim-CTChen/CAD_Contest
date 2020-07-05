@@ -39,6 +39,25 @@ extern vector<float> d_y;
 extern vector<float> phi_x;
 extern vector<float> phi_y;
 
+
+
+// init cvalues_x & cvalues_y & d_x & d_y
+void placement_init() { 
+    for(size_t i = 0; i < movable_cells.size(); ++i) {
+        vector<float> tmp;
+        for(size_t j = 0; j < movable_cells.size(); ++j) {
+            tmp.push_back(0);
+        }
+        cvalues_x.push_back(tmp);
+        cvalues_y.push_back(tmp);
+        d_x.push_back(0);
+        d_y.push_back(0);
+    }
+
+}
+
+// init C0 
+// do it after at least one time of initial placement!
 void countC0() {  // P_i/P_avg*(1/numOfCells)
     float numOfPins, avgPins;
     float numOfCells = movable_cells.size();
@@ -51,29 +70,8 @@ void countC0() {  // P_i/P_avg*(1/numOfCells)
     }
 }
 
-void placement_init() {
-    for(size_t i = 0; i < movable_cells.size(); ++i) {
-        vector<float> tmp;
-        for(size_t j = 0; j < movable_cells.size(); ++j) {
-            tmp.push_back(0);
-        }
-        cvalues_x.push_back(tmp);
-        cvalues_y.push_back(tmp);
-        d_x.push_back(0);
-        d_y.push_back(0);
-    }
-
-    // cout << "C0: " << endl;
-    // for(size_t i = 0; i < movable_cells.size(); ++i) {
-    //     cout << c0values[i] << " " << endl;
-    // }
-    // cout << "==============" << endl;
-}
-
-// Only Call countC0 for one time!!
-
 bool cmp_value(pair<Cell*, float> a, pair<Cell*, float> b){ //use for displacement sorting
-    return a.second >b.second;
+    return a.second > b.second;
 }
 
 void calculateCvalue_x()

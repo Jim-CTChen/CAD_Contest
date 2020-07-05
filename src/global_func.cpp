@@ -70,7 +70,6 @@ void clear()
 }
 
 
-
 void readMaxCellMove(){
     ifstream file;
     string line;
@@ -84,7 +83,7 @@ void readMaxCellMove(){
             maxCellMove = stoi(tok);
         }
     }
-
+    file.close();
     
 }
 
@@ -107,7 +106,7 @@ void readGGridBoundaryIdx(){
             break;
         } 
     }
-    
+    file.close();
 };
 
 void readLayer(){
@@ -135,8 +134,9 @@ void readLayer(){
             break;
         }
     }
-
+    file.close();
 };
+
 void readNumNonDefaultSupplyGGrid(){
     ifstream file;
     file.open(file_path);
@@ -162,6 +162,7 @@ void readNumNonDefaultSupplyGGrid(){
             break;
         }
     }
+    file.close();
 };
 
 void readMasterCell(){
@@ -224,6 +225,7 @@ void readMasterCell(){
             break;
         }
     }
+    file.close();
 };
 
 void readNeighborCellExtraDemand(){
@@ -260,7 +262,7 @@ void readNeighborCellExtraDemand(){
             break;
         }
     }
-
+    file.close();
 };
 
 void readCellInst(){
@@ -296,6 +298,7 @@ void readCellInst(){
             break;
         }
     }
+    file.close();
 };
 
 void readNets(){
@@ -341,7 +344,7 @@ void readNets(){
             break;
         }
     }
-
+    file.close();
 };
 
 bool between_two_st_pts(Steiner_pts* a, Steiner_pts* b, Steiner_pts* x){
@@ -626,6 +629,7 @@ void readRoutes(){
             break;
         }
     }
+    file.close();
 };
  
 

@@ -65,28 +65,85 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
-    // MatrixXd t(2, 2);
-    if(argc == 2) file_path = argv[1];
+    int numOfInitial = 0;
+    int numOfGlobal = 0;
+    for(int i = 0; i < argc; i++) {
+        if(argv[i] == "-p") file_path = argv[i+1];
+        if(argv[i] == "-i") {
+            string istr = argv[i+1];
+            int raw = stoi(istr);
+            if(raw < 0) {
+                cerr << "Invalid parameter for -i!" << endl;
+                return 0;
+            }
+            numOfInitial = stoi(istr);
+        }
+        if(argv[i] == "-g") {
+            string istr = argv[i+1];
+            int raw = stoi(istr);
+            if(raw < 0) {
+                cerr << "Invalid parameter for -g!" << endl;
+                return 0;
+            }
+        }
+    }
+    ifstream infile;
+    infile.open(file_path);
+    if(!infile.is_open()) {
+        cerr << "Invalid file path!" << endl;
+    }
+    infile.close();
+    if(numOfInitial == 0 && numOfGlobal > 0) {
+        cerr << "Must do initial placement before global placement!" << endl;
+    }
+
+    cerr << "Reading input file..." << endl;
     readMaxCellMove();
     readGGridBoundaryIdx();
     readLayer();
 
     init(); // after reading in row, column, layer, init first
     
-    // cout << "1" << endl;
     readNumNonDefaultSupplyGGrid();
-    // cout << "2" << endl;
     readMasterCell();
-    // cout << "3" << endl;
     readNeighborCellExtraDemand();
-    // cout << "4" << endl;
     readCellInst();
-    // cout << "5" << endl;
     readNets();
-    // readRoutes();
+    readRoutes();
+    cerr << "Finish reading!" << endl;
+
+
+    if(!numOfInitial) {
+        placement_init();
+        for(int i = 0; i < numOfInitial; ++i) {
+            calculateCvalue_x();
+            calculateCvalue_y();
+            solveInitialMatrix_x();
+            solveInitialMatrix_y();
+        }
+        if(!numOfGlobal) {
+            countC0();
+            for(int i = 0; i < numOfGlobal; ++i) {
+                demand_manager.countDemand(true);
+                calculateCvalue_x();
+                calculateCvalue_y();
+                calculate_phi_x();
+                calculate_phi_y();
+                solveGlobalMatrix_x();
+                solveGlobalMatrix_y();
+            }
+        }
+    }
+
+    // output files
+    demand_manager.countDemand(true);
+    cerr << "Exporting output file test/cell.txt..." << endl;
+    store_cell_pic(cell_output_path);
+    cerr << "Exporting output file test/demand.txt..." << endl;
+    cerr << "Done!" << endl;
+    return 0;
 
     // cout << movable_cells.size();
-    // placement_init();
     // for(auto& it : netlists) {
     //     // cout << "Netlist: " << it.first << endl;
         // it.second->B2B_weight_x();
@@ -98,9 +155,7 @@ int main(int argc, char** argv)
     //         cout << cvalues_x[i][j] << " ";
     //     }
     //     cout << endl;
-    // }
-    // cout << endl;
-    // for(size_t i = 0; i < d_x.size(); i++) {
+    // }alculate_Cvalued_x.size(); i++) {
     //     cout << d_x[i] << " ";
     // }
     // cout << endl; 
@@ -188,4 +243,5 @@ int main(int argc, char** argv)
     // cout << "solveGlobalMatrix_x" << endl;
     // solveGlobalMatrix_x();
     // return 0;
+    clear();
 }
