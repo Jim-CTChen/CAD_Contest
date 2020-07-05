@@ -226,7 +226,6 @@ void D_Manager::countDemand(bool initial = false)
         }
     }
 
-    cout << "blk" << endl;
     // counting blockage demand
     for(auto &it : cells) // for every cell
     {
@@ -236,7 +235,6 @@ void D_Manager::countDemand(bool initial = false)
         }
     }
 
-    cerr << "extra" << endl;
     // counting extra_demand by iteration for grids
     for (int i = 0; i < row_of_gGrid; ++i)
     {

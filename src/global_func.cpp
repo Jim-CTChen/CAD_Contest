@@ -744,7 +744,9 @@ bool store_output(string path){
 
 
 void store_demand_pic(string path ,int layer){
-    ofstream fout(path.c_str(), ios::out);
+    string path_s = path + to_string(layer+1) + ".txt";
+    // path_s.append(".txt");
+    ofstream fout(path_s.c_str(), ios::out);
     string demand = "y\tx\tvalue\n";
 
     for(int i = 0; i < row_of_gGrid; i++){

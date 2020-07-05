@@ -98,7 +98,7 @@ void solveInitialMatrix_x() {
         cerr << "d_x size does not match!";
         return;
     }
-    cerr << "building matrices..." << endl;
+    // cerr << "building matrices..." << endl;
     MatrixXf C_x(numOfCells, numOfCells);
     VectorXf D_x(numOfCells), result(numOfCells);
     for(int i = 0; i < numOfCells; ++i) {
@@ -107,14 +107,14 @@ void solveInitialMatrix_x() {
             C_x(i, j) = cvalues_x[i][j];
         }
     }
-    cerr << "end of building." << endl << "calculating initial x..." << endl;
+    // cerr << "end of building." << endl << "calculating initial x..." << endl;
     result = C_x.colPivHouseholderQr().solve(D_x); // new x position for every cell
-    cerr << "finish" << endl;
+    // cerr << "finish" << endl;
 
 
     // select cell to move for first initial movement
     if(movable_cells.size() > maxCellMove){
-        cerr << "selecting cells..." << endl;
+        // cerr << "selecting cells..." << endl;
         vector<pair<Cell*, float>> displacement;
         for(int i = 0; i < numOfCells; ++i) { // sort placement
             displacement.push_back(pair<Cell*, float>(movable_cells[i],abs(result[i]-movable_cells[i]->get_coord().first)));
@@ -146,22 +146,22 @@ void solveInitialMatrix_x() {
             d_x.push_back(0);
         }
 
-    cerr << "end of selecting" << endl;
+    // cerr << "end of selecting" << endl;
     }
 
-    for(int i = 0; i < numOfCells; ++i) {
-        cerr << movable_cells[i]->get_name() << ": " << endl;
-        cerr << "(" << movable_cells[i]->get_coord().first << ", " << movable_cells[i]->get_coord().second << ")"
-             << " >> " << "(" << result[i] << ", " << movable_cells[i]->get_coord().second << ")" << endl;
-    }
+    // for(int i = 0; i < numOfCells; ++i) {
+    //     cerr << movable_cells[i]->get_name() << ": " << endl;
+    //     cerr << "(" << movable_cells[i]->get_coord().first << ", " << movable_cells[i]->get_coord().second << ")"
+    //          << " >> " << "(" << result[i] << ", " << movable_cells[i]->get_coord().second << ")" << endl;
+    // }
 
-    cerr << "moving cells..." << endl;
+    // cerr << "moving cells..." << endl;
     for(int i = 0; i < numOfCells; ++i) { // change position
         movable_cells[i]->set_X(movable_cells[i]->get_coord().first + 
                         ((int(result[i]) - movable_cells[i]->get_coord().first)/INITIAL_DISTANCE_RATE));
     }
  
-    cerr << "end of moving" << endl;
+    // cerr << "end of moving" << endl;
 }
 
 void solveInitialMatrix_y() {
@@ -221,11 +221,11 @@ void solveInitialMatrix_y() {
 
     
     result = C_y.colPivHouseholderQr().solve(D_y); // new y position for every cell
-    for(int i = 0; i < numOfCells; ++i) {
-        cout << movable_cells[i]->get_name() << ": "<< endl;
-        cout << "(" << movable_cells[i]->get_coord().first << ", " << movable_cells[i]->get_coord().second << ")"
-             << " >> " << "(" << movable_cells[i]->get_coord().second << ", " << result[i] << ")" << endl;
-    }
+    // for(int i = 0; i < numOfCells; ++i) {
+    //     cout << movable_cells[i]->get_name() << ": "<< endl;
+    //     cout << "(" << movable_cells[i]->get_coord().first << ", " << movable_cells[i]->get_coord().second << ")"
+    //          << " >> " << "(" << movable_cells[i]->get_coord().second << ", " << result[i] << ")" << endl;
+    // }
 }
 
 void solveGlobalMatrix_x() {
@@ -268,20 +268,20 @@ void solveGlobalMatrix_x() {
     
 
     // moving...
-    cerr << "moving cells..." << endl;
+    // cerr << "moving cells..." << endl;
     for(int i = 0; i < numOfCells; ++i) { // change position if out of range then move to boundary
         if((int(result[i])+movable_cells[i]->get_coord().first) > row_of_gGrid) movable_cells[i]->set_X(row_of_gGrid);
         else if((int(result[i])+movable_cells[i]->get_coord().first) < 0 ) movable_cells[i]->set_X(0);
         else   movable_cells[i]->set_X((int(result[i]) + movable_cells[i]->get_coord().first));
     }
 
-    for(int i = 0; i < numOfCells; ++i) { // print movement
-        cerr << movable_cells[i]->get_name() << ": " << endl;
-        cerr << "(" << previous_pos[i] << ", " << movable_cells[i]->get_coord().second << ")"
-             << " >> " << "(" << movable_cells[i]->get_coord().first << ", " << movable_cells[i]->get_coord().second << ")" << endl;
-    }
+    // for(int i = 0; i < numOfCells; ++i) { // print movement
+    //     cerr << movable_cells[i]->get_name() << ": " << endl;
+    //     cerr << "(" << previous_pos[i] << ", " << movable_cells[i]->get_coord().second << ")"
+    //          << " >> " << "(" << movable_cells[i]->get_coord().first << ", " << movable_cells[i]->get_coord().second << ")" << endl;
+    // }
 
-    cerr << "end of moving" << endl;
+    // cerr << "end of moving" << endl;
 }
 
 void solveGlobalMatrix_y() {
@@ -317,7 +317,7 @@ void solveGlobalMatrix_y() {
         previous_pos.push_back(movable_cells[i]->get_coord().second);
     }
 
-    cerr << "moving cells..." << endl;
+    // cerr << "moving cells..." << endl;
     for(int i = 0; i < numOfCells; ++i) { // cchange position if out of range then move to boundary
         if((int(result[i]) + movable_cells[i]->get_coord().second) > column_of_gGrid)   movable_cells[i]->set_Y(column_of_gGrid);
         else if((int(result[i]) + movable_cells[i]->get_coord().second) < 0) movable_cells[i]->set_Y(0);
@@ -326,12 +326,12 @@ void solveGlobalMatrix_y() {
 
     phi_y.clear();
  
-    for(int i = 0; i < numOfCells; ++i) { // print movement
-        cerr << movable_cells[i]->get_name() << ": " << endl;
-        cerr << "(" << movable_cells[i]->get_coord().first << ", " << previous_pos[i] << ")"
-             << " >> " << "(" << movable_cells[i]->get_coord().first << ", " << movable_cells[i]->get_coord().second << ")" << endl;
-    }
-    cerr << "end of moving" << endl;
+    // for(int i = 0; i < numOfCells; ++i) { // print movement
+    //     cerr << movable_cells[i]->get_name() << ": " << endl;
+    //     cerr << "(" << movable_cells[i]->get_coord().first << ", " << previous_pos[i] << ")"
+    //          << " >> " << "(" << movable_cells[i]->get_coord().first << ", " << movable_cells[i]->get_coord().second << ")" << endl;
+    // }
+    // cerr << "end of moving" << endl;
 }
 
 void calculate_phi_x () {

@@ -68,8 +68,11 @@ int main(int argc, char** argv)
     int numOfInitial = 0;
     int numOfGlobal = 0;
     for(int i = 0; i < argc; i++) {
-        if(argv[i] == "-p") file_path = argv[i+1];
-        if(argv[i] == "-i") {
+        string str = argv[i];
+        if(str == "-p") {
+            file_path = argv[i+1];
+        }
+        if(str == "-i") {
             string istr = argv[i+1];
             int raw = stoi(istr);
             if(raw < 0) {
@@ -78,13 +81,14 @@ int main(int argc, char** argv)
             }
             numOfInitial = stoi(istr);
         }
-        if(argv[i] == "-g") {
+        if(str == "-g") {
             string istr = argv[i+1];
             int raw = stoi(istr);
             if(raw < 0) {
                 cerr << "Invalid parameter for -g!" << endl;
                 return 0;
             }
+            numOfGlobal = stoi(istr);
         }
     }
     ifstream infile;
@@ -98,7 +102,6 @@ int main(int argc, char** argv)
         cerr << "Must do initial placement before global placement!" << endl;
         return 0;
     }
-
     cerr << "Reading input file..." << endl;
     readMaxCellMove();
     readGGridBoundaryIdx();
@@ -112,19 +115,21 @@ int main(int argc, char** argv)
     readCellInst();
     readNets();
     readRoutes();
-    cerr << "Finish reading!" << endl;
+    cerr << "Done reading!" << endl;
 
-
-    if(!numOfInitial) {
+    if(numOfInitial) {
         placement_init();
+        cerr << "Doing initial placement..." << endl;
         for(int i = 0; i < numOfInitial; ++i) {
             calculateCvalue_x();
             calculateCvalue_y();
             solveInitialMatrix_x();
             solveInitialMatrix_y();
         }
-        if(!numOfGlobal) {
+        cerr << "Done initial placement!" << endl;
+        if(numOfGlobal) {
             countC0();
+            cerr << "Doing global placement..." << endl;
             for(int i = 0; i < numOfGlobal; ++i) {
                 demand_manager.countDemand(true);
                 calculateCvalue_x();
@@ -134,10 +139,12 @@ int main(int argc, char** argv)
                 solveGlobalMatrix_x();
                 solveGlobalMatrix_y();
             }
+            cerr << "Done global placement!" << endl;
         }
     }
 
     // output files
+    
     demand_manager.countDemand(true);
     cerr << "Exporting output file test/cell.txt..." << endl;
     store_cell_pic(cell_output_path);
@@ -145,8 +152,7 @@ int main(int argc, char** argv)
     for(int i = 0; i < layer_of_gGrid; i++) {
         store_demand_pic(demand_output_path, i);
     }
-    cerr << "Done!" << endl;
-    return 0;
+    cerr << "Done exporting!" << endl;
 
     // cout << movable_cells.size();
     // for(auto& it : netlists) {
@@ -248,5 +254,5 @@ int main(int argc, char** argv)
     // cout << "solveGlobalMatrix_x" << endl;
     // solveGlobalMatrix_x();
     // return 0;
-    clear();
+    // clear();
 }
